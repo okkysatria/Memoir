@@ -1,0 +1,537 @@
+<resources>
+    <string name="app_name">Memoir</string>
+
+    <!-- Navigasi -->
+    <string name="nav_home">Beranda</string>
+    <string name="nav_explore">Jelajah</string>
+    <string name="nav_albums">Album</string>
+    <string name="nav_profile">Profil</string>
+
+    <!-- Beranda -->
+    <string name="home_title">Memoir</string>
+    <string name="on_this_day">Hari Ini</string>
+    <string name="memories_found">%d Kenangan</string>
+    <string name="empty_home_title">Belum Ada Kenangan</string>
+    <string name="empty_home_desc">Impor foto atau video dari galeri atau NAS.</string>
+    <string name="btn_add_memory">Tambah Kenangan</string>
+    <string name="btn_add_story">Tambah Cerita</string>
+    <string name="kilas_balik">Kilas Balik</string>
+    <string name="one_month_ago">1 Bulan Lalu</string>
+    <string name="six_months_ago">6 Bulan Lalu</string>
+    <string name="years_ago">%d Tahun Lalu</string>
+
+    <string name="one_month">1 Bulan</string>
+    <string name="six_months">6 Bulan</string>
+    <string name="years">%d Tahun</string>
+
+    <!-- Profil -->
+    <string name="edit_profile">Edit Profil</string>
+    <string name="posts">Postingan</string>
+    <string name="saved">Tersimpan</string>
+    <string name="bio_placeholder">Tulis ceritamu di sini…</string>
+
+    <!-- Pengaturan -->
+    <string name="settings_title">Pengaturan</string>
+    <string name="settings_subtitle">Preferensi &amp; Keamanan</string>
+    <string name="sec_profile">Profil Saya</string>
+    <string name="sec_appearance">Tampilan</string>
+    <string name="sec_security">Keamanan</string>
+    <string name="sec_storage">Penyimpanan &amp; Sinkronisasi</string>
+    <string name="sec_others">Lainnya</string>
+
+    <string name="pref_language">Bahasa Aplikasi</string>
+    <string name="pref_dark_mode">Mode Gelap</string>
+    <string name="pref_theme_color">Warna Aksen</string>
+    <string name="pref_pin_lock">Kunci PIN</string>
+    <string name="pref_biometric">Biometrik</string>
+    <string name="pref_hide_location">Sembunyikan Lokasi</string>
+    <string name="pref_hide_location_desc">Otomatis hapus data GPS dari media baru.</string>
+    <string name="pref_clear_cache">Hapus Cache</string>
+    <string name="pref_smb_explorer">Penelusur SMB</string>
+    <string name="pref_smb_explorer_desc">Kelola data di server NAS.</string>
+    <string name="pref_manage_smb">Kelola Koneksi</string>
+    <string name="pref_manual_backup">Pencadangan Lokal</string>
+    <string name="pref_reset_app">Reset Aplikasi</string>
+
+    <!-- Dialog & Tombol -->
+    <string name="btn_save">Simpan</string>
+    <string name="btn_back">Kembali</string>
+    <string name="btn_cancel">Batal</string>
+    <string name="btn_done">Selesai</string>
+    <string name="btn_delete">Hapus</string>
+    <string name="btn_reset">Reset</string>
+    <string name="empty_home_title_alt">Abadikan Momen</string>
+    <string name="empty_home_desc_alt">Mulai isi arsip pribadi dengan kenangan Anda.</string>
+    <string name="confirm_reset_title">Hapus Semua Data?</string>
+    <string name="confirm_reset_desc">Seluruh konten dan pengaturan akan dihapus secara permanen.</string>
+    <string name="msg_understand">Saya Mengerti</string>
+    <string name="operation_result">Hasil Operasi</string>
+
+    <!-- Jelajah -->
+    <string name="cat_all">Semua</string>
+    <string name="cat_photo">Foto</string>
+    <string name="cat_video">Video</string>
+    <string name="cat_story">Cerita</string>
+    <string name="cat_album">Album</string>
+
+    <string name="filter_sort">Urutkan</string>
+    <string name="filter_latest">Terbaru</string>
+    <string name="filter_oldest">Terlama</string>
+    <string name="filter_quick_time">Rentang Waktu</string>
+    <string name="filter_this_week">Minggu Ini</string>
+    <string name="filter_this_month">Bulan Ini</string>
+    <string name="filter_this_year">Tahun Ini</string>
+    <string name="filter_custom_time">Pilih Tanggal</string>
+    <string name="filter_month">Bulan</string>
+    <string name="filter_year">Tahun</string>
+    <string name="filter_reset_time">Reset Tanggal</string>
+
+    <string name="search_placeholder">Cari kenangan, lokasi…</string>
+    <string name="no_search_results">Tidak ditemukan hasil</string>
+    <string name="no_media_yet">Belum ada media</string>
+    <string name="btn_reset_filter">Reset Filter</string>
+
+    <string name="status_online">Online</string>
+    <string name="status_connected">Terhubung</string>
+
+    <!-- Album -->
+    <string name="album_archive">Arsip Album</string>
+    <string name="btn_create_album">Buat Album</string>
+    <string name="new_album_title">Buat Album Baru</string>
+    <string name="label_album_name">Nama Album</string>
+    <string name="placeholder_album_name">Misal: Liburan Musim Panas</string>
+    <string name="label_cover_gradient">Sampul Gradien</string>
+    <string name="label_storage_source">Sumber Penyimpanan</string>
+    <string name="label_source_path">Jalur Sumber</string>
+    <string name="btn_create">Buat</string>
+    <string name="msg_album_not_found">Album tidak ditemukan</string>
+    <string name="msg_no_album_yet">Belum ada album</string>
+    <string name="media_count">%d Media</string>
+    <string name="status_offline">Offline</string>
+
+    <string name="label_conn_source">Sumber: %s</string>
+    <string name="title_album_empty">Album Kosong</string>
+    <string name="desc_album_empty">Tambahkan kenangan terbaik Anda ke album ini.</string>
+    <string name="title_add_to_album">Tambah ke Album</string>
+    <string name="tab_posts">Postingan</string>
+    <string name="tab_stories">Cerita</string>
+    <string name="tab_gradients">Preset</string>
+    <string name="msg_no_feed_media">Tidak ada postingan.</string>
+    <string name="msg_no_story_media">Tidak ada cerita.</string>
+    <string name="desc_tap_to_add">Ketuk pada media untuk menambahkannya.</string>
+    <string name="btn_delete_album">Hapus Album</string>
+    <string name="btn_delete_item">Hapus Item</string>
+
+    <!-- Profil Spesifik -->
+    <string name="btn_change">Ubah</string>
+    <string name="new_highlight">Baru</string>
+    <string name="msg_no_post">Belum ada postingan.</string>
+    <string name="msg_no_album">Belum ada album.</string>
+    <string name="msg_no_memories">Belum ada kenangan.</string>
+    <string name="msg_no_memories_cat">Tidak ada item di kategori ini.</string>
+    <string name="msg_memories_desc">Kenangan masa lalu Anda akan muncul di sini secara otomatis.</string>
+    <string name="msg_memories_filter_desc">Gunakan filter untuk melihat kenangan lainnya.</string>
+    <string name="msg_profile_updated">Profil berhasil diperbarui</string>
+    <string name="msg_highlight_added">Sorotan ditambahkan</string>
+    <string name="msg_highlight_updated">Sorotan diperbarui</string>
+    <string name="msg_highlight_deleted">Sorotan dihapus</string>
+    <string name="btn_view_highlight">Lihat</string>
+    <string name="btn_edit_highlight">Edit</string>
+    <string name="btn_delete_highlight">Hapus</string>
+    <string name="msg_back_exit">Tekan kembali sekali lagi untuk keluar</string>
+
+    <!-- Layar Kunci -->
+    <string name="lock_title">Memoir Terkunci</string>
+    <string name="lock_desc">Dilindungi oleh Keamanan Pribadi</string>
+    <string name="label_enter_pin">Masukkan PIN</string>
+    <string name="btn_unlock">Buka</string>
+    <string name="msg_unlocked">Berhasil dibuka</string>
+    <string name="msg_wrong_pin">PIN Salah</string>
+    <string name="msg_story_removed">Dihapus dari sorotan</string>
+    <string name="msg_story_added">Ditambahkan ke sorotan</string>
+    <string name="msg_highlight_created">Sorotan berhasil dibuat</string>
+    <string name="msg_highlight_created_only">Berhasil dibuat</string>
+    <string name="msg_story_published">Cerita berhasil dipublikasikan</string>
+
+    <!-- Story Creator -->
+    <string name="label_tap_text">Ketuk untuk mengetik</string>
+    <string name="label_date">Tanggal</string>
+    <string name="label_reset">Reset</string>
+    <string name="label_text">Teks</string>
+    <string name="btn_edit_text">Edit</string>
+    <string name="btn_add_text">Tambah</string>
+    <string name="btn_publish">Bagikan</string>
+    <string name="label_align_text">Perataan</string>
+    <string name="placeholder_type_text">Ketik di sini…</string>
+
+    <string name="style_modern">MODERN</string>
+    <string name="style_classic">KLASIK</string>
+    <string name="style_neon">NEON</string>
+    <string name="style_typewriter">TIK</string>
+    <string name="style_serif">SERIF</string>
+    <string name="style_strong">TEGAS</string>
+    <string name="style_elegant">ELEGAN</string>
+
+    <string name="color_white">Putih</string>
+    <string name="color_black">Hitam</string>
+    <string name="color_yellow">Kuning</string>
+    <string name="color_green">Hijau</string>
+    <string name="color_pink">Pink</string>
+    <string name="color_cyan">Sian</string>
+    <string name="color_purple">Ungu</string>
+    <string name="color_orange">Oranye</string>
+    <string name="color_red">Merah</string>
+    <string name="color_blue">Biru</string>
+
+    <string name="filter_normal">Normal</string>
+    <string name="filter_warm">Hangat</string>
+    <string name="filter_cool">Dingin</string>
+    <string name="filter_vintage">Vintage</string>
+    <string name="filter_bw">B&amp;W</string>
+    <string name="filter_dramatic">Dramatis</string>
+    <string name="msg_filter_applied">Filter: %s</string>
+
+    <!-- Tambah Post -->
+    <string name="step_select_media">Pilih Media</string>
+    <string name="step_adjust_media">Edit Media</string>
+    <string name="step_edit_memory">Edit Kenangan</string>
+    <string name="step_share_memory">Bagikan Kenangan</string>
+    <string name="btn_next">Lanjut</string>
+    <string name="msg_min_media">Pilih setidaknya satu media</string>
+    <string name="msg_max_media">Maksimal 10 media</string>
+    <string name="msg_memory_updated">Kenangan diperbarui</string>
+    <string name="msg_memory_shared">Berhasil dibagikan</string>
+    <string name="msg_saving_memory">Menyimpan kenangan…</string>
+    <string name="label_original">Asli</string>
+    <string name="label_selected_count">%d dipilih</string>
+    <string name="btn_select_multiple">Pilih Beberapa</string>
+    <string name="label_fit_fill">Pas/Penuh</string>
+    <string name="label_filter_normal">Normal</string>
+    <string name="label_rotate_90">Putar</string>
+    <string name="label_aspect_original">Asli</string>
+    <string name="label_aspect_square">1:1</string>
+    <string name="label_aspect_portrait">4:5</string>
+    <string name="label_aspect_landscape">16:9</string>
+    <string name="label_aspect_story">9:16</string>
+    <string name="btn_select_some">Pilih Beberapa</string>
+    <string name="msg_selected">%d dipilih</string>
+    <string name="label_device_gallery">Galeri Perangkat</string>
+    <string name="item_gallery">Galeri Ponsel</string>
+    <string name="item_camera">Kamera</string>
+    <string name="item_smb">Server NAS (SMB)</string>
+    <string name="item_cloud">Cloud Storage</string>
+    <string name="btn_grant_permission">Beri Izin</string>
+    <string name="btn_previous">Kembali</string>
+    <string name="btn_next_item">Lanjut</string>
+    <string name="label_from">dari</string>
+    <string name="placeholder_caption">Tulis keterangan kenangan ini…</string>
+    <string name="label_location">Lokasi</string>
+    <string name="placeholder_location">Tambahkan lokasi</string>
+    <string name="label_memory_date">Tanggal</string>
+    <string name="label_album_collection">Album</string>
+    <string name="item_no_album">Tidak Ada Album</string>
+    <string name="item_create_new">+ Buat Baru</string>
+    <string name="placeholder_new_album">Nama album baru</string>
+    <string name="label_extra_settings">Pengaturan Tambahan</string>
+    <string name="item_pin_feed">Sematkan Postingan</string>
+    <string name="item_lock_private">Pribadi / Terkunci</string>
+    <string name="title_choose_smb">Pilih dari SMB</string>
+    <string name="title_choose_cloud">Pilih dari Cloud</string>
+    <string name="btn_quick_add">Tambah Cepat</string>
+    <string name="btn_manage_all">Kelola Semua</string>
+    <string name="msg_back_confirm">Tekan kembali lagi</string>
+    <string name="msg_cancel_confirm">Tekan batal lagi</string>
+    <string name="msg_cancel_story">Batalkan Cerita?</string>
+
+    <!-- Feed -->
+    <string name="my_memoir">Memoir Saya</string>
+    <string name="item_unpin">Lepas Pin</string>
+    <string name="item_pin">Sematkan</string>
+    <string name="item_edit_memory">Edit</string>
+    <string name="item_delete_memory">Hapus</string>
+    <string name="msg_share_footer">\n— Dibagikan melalui Memoir App</string>
+    <string name="title_share">Bagikan</string>
+    <string name="btn_view_album">Lihat Album</string>
+    <string name="label_liked">Disukai</string>
+    <string name="label_add_favorite">Tambah ke Favorit</string>
+    <string name="label_view_journal">Lihat Catatan</string>
+    <string name="title_delete_memory">Hapus Memori?</string>
+    <string name="msg_delete_memory">Apakah Anda yakin ingin menghapus ini?</string>
+    <string name="msg_memory_deleted">Berhasil dihapus</string>
+
+    <!-- Jurnal -->
+    <string name="title_notes">Catatan Jurnal</string>
+    <string name="btn_close_notes">Tutup</string>
+    <string name="msg_no_notes">Belum ada catatan.</string>
+    <string name="msg_notes_desc">Tambahkan pikiran atau jurnal Anda di sini.</string>
+    <string name="placeholder_notes">Tulis catatan…</string>
+    <string name="btn_save_note">Simpan</string>
+    <string name="label_caption">Keterangan</string>
+    <string name="label_my_note">Catatan Saya</string>
+    <string name="btn_delete_note">Hapus Catatan</string>
+
+    <string name="msg_story_random_hint">Ketuk untuk memutar cerita</string>
+
+    <!-- Cerita -->
+    <string name="msg_just_now">Baru saja</string>
+    <string name="msg_minutes_ago">%d menit lalu</string>
+    <string name="msg_hours_ago">%d jam lalu</string>
+    <string name="msg_yesterday">Kemarin</string>
+    <string name="label_highlight">Sorotan</string>
+    <string name="label_private">Pribadi</string>
+    <string name="label_highlighted">Tersorot</string>
+    <string name="title_save_highlight">Simpan ke Sorotan</string>
+    <string name="title_new_highlight">Sorotan Baru</string>
+    <string name="label_highlight_name">Nama</string>
+    <string name="placeholder_highlight_name">Nama</string>
+    <string name="btn_create_add">Buat &amp; Tambah</string>
+    <string name="title_delete_story">Hapus Cerita?</string>
+    <string name="msg_delete_story">Hapus cerita ini secara permanen?</string>
+
+    <!-- Dialog Profil -->
+    <string name="msg_save_profile_failed">Gagal menyimpan foto profil</string>
+    <string name="label_change_photo">Ganti Foto</string>
+    <string name="btn_pick_gallery">Galeri HP</string>
+    <string name="label_or_preset">Preset Avatar</string>
+    <string name="label_name">Nama</string>
+    <string name="label_username">Username</string>
+    <string name="label_bio">Biodata</string>
+    <string name="btn_next_step">Lanjut</string>
+    <string name="label_edit_cover">Edit Sampul</string>
+    <string name="placeholder_highlight_name_alt">Nama Sorotan</string>
+    <string name="tab_story">Cerita</string>
+    <string name="tab_selected">Terpilih (%d)</string>
+    <string name="msg_no_story_selected">Belum ada cerita terpilih.</string>
+    <string name="msg_no_story_archive">Arsip cerita kosong.</string>
+    <string name="title_choose_cover">Pilih Sampul</string>
+    <string name="label_choose_story_preset">Sumber Sampul</string>
+    <string name="tab_add">Tambah (%d)</string>
+    <string name="msg_no_story_highlight">Tidak ada cerita di sini.</string>
+    <string name="msg_no_story_extra">Arsip cerita Anda kosong.</string>
+    <string name="msg_story_removed_highlight">Berhasil dilepas</string>
+    <string name="msg_story_added_highlight">Berhasil ditambah</string>
+    <string name="title_delete_highlight">Hapus Sorotan?</string>
+    <string name="msg_delete_highlight">Apakah Anda yakin ingin menghapus sorotan ini?</string>
+
+    <!-- Koneksi -->
+    <string name="title_manage_conn">Koneksi Server</string>
+    <string name="label_server_name">Nama Server</string>
+    <string name="label_ip_host">IP / Host</string>
+    <string name="placeholder_ip">192.168.1.100</string>
+    <string name="label_share_name">Nama Share</string>
+    <string name="placeholder_share">Photos</string>
+    <string name="label_target_folder">Folder Tujuan</string>
+    <string name="placeholder_target">Backup</string>
+    <string name="title_delete_conn">Hapus Koneksi?</string>
+    <string name="msg_delete_conn">Hapus \"%1$s\" (%2$s) dari daftar?</string>
+
+    <!-- Cadangan -->
+    <string name="msg_processing_folder">Memproses…</string>
+    <string name="title_import_folder">Impor Folder</string>
+    <string name="msg_scanning_folder">Memindai…</string>
+    <string name="btn_rescan_folder">Pindai Ulang</string>
+
+    <!-- Misc -->
+    <string name="msg_success_export">✅ Berhasil ekspor %d file</string>
+    <string name="msg_failed_export">❌ Gagal: %s</string>
+
+    <!-- Koneksi SMB -->
+    <string name="title_manage_nas">Penyimpanan NAS (SMB)</string>
+    <string name="label_auto_discovery">Cari Otomatis</string>
+    <string name="msg_no_smb_found">Server tidak ditemukan.</string>
+    <string name="msg_scanning">Mencari…</string>
+    <string name="btn_scan_network">Scan Jaringan</string>
+    <string name="label_smb_found">Server Ditemukan</string>
+    <string name="msg_host_set">Host: %s</string>
+    <string name="label_smb_config">Konfigurasi Server</string>
+    <string name="label_guest_mode">Mode Tamu (Tanpa Password)</string>
+    <string name="msg_guest_active">Mode Tamu aktif</string>
+    <string name="msg_fill_host_share">Isi Host dan Share</string>
+    <string name="msg_read_folder_failed">Gagal membaca: %s</string>
+    <string name="btn_test_conn">Tes</string>
+    <string name="msg_fill_host_share_test">Isi detail lengkap</string>
+    <string name="btn_save_server">Simpan Server</string>
+    <string name="msg_server_saved">Berhasil disimpan</string>
+    <string name="msg_fill_name_host">Harap isi nama dan host</string>
+    <string name="label_connected_servers">Terhubung (%d)</string>
+    <string name="msg_no_conn_saved">Tidak ada koneksi tersimpan.</string>
+    <string name="btn_open_explorer">Penjelajah</string>
+    <string name="label_media">Media</string>
+    <string name="title_choose_folder">Pilih Folder</string>
+    <string name="msg_no_subfolder">Tidak ada subfolder.</string>
+    <string name="msg_folder_selected">Terpilih: %s</string>
+    <string name="msg_conn_deleted">Koneksi dihapus</string>
+    <string name="btn_use_pin">Pakai PIN</string>
+
+    <!-- Onboarding -->
+    <string name="ob_title_1">Selamat Datang</string>
+    <string name="ob_desc_1">Galeri kenangan pribadi 100% offline.</string>
+    <string name="ob_title_2">Sinkronisasi NAS</string>
+    <string name="ob_desc_2">Hubungkan ke penyimpanan NAS lokal Anda.</string>
+    <string name="ob_title_3">Privasi Penuh</string>
+    <string name="ob_desc_3">Lindungi memori dengan PIN &amp; Biometrik.</string>
+    <string name="btn_skip">Lewati</string>
+    <string name="btn_start_memoir">Mulai Sekarang</string>
+    <string name="btn_continue">Lanjut</string>
+
+    <!-- Izin -->
+    <string name="perm_title">Perizinan</string>
+    <string name="perm_desc">Dibutuhkan akses ke media perangkat.</string>
+    <string name="perm_media_title">Akses Media</string>
+    <string name="perm_media_desc">Membaca foto dan video di perangkat.</string>
+    <string name="perm_camera_title">Akses Kamera</string>
+    <string name="perm_camera_desc">Mengambil foto atau video secara langsung.</string>
+    <string name="status_granted">Aktif</string>
+    <string name="status_pending">Tertunda</string>
+    <string name="btn_grant_media">Beri Izin</string>
+    <string name="btn_continue_memoir">Lanjut</string>
+    <string name="btn_skip_later">Nanti Saja</string>
+
+    <!-- Notifikasi -->
+    <string name="title_notifications">Aktivitas</string>
+    <string name="msg_no_activity">Belum ada aktivitas terbaru.</string>
+    <string name="title_mem_added">Ditambahkan</string>
+    <string name="desc_mem_added">Memori baru telah disimpan</string>
+    <string name="title_story_expiring">Segera Kedaluwarsa</string>
+    <string name="label_your_story">Cerita</string>
+    <string name="desc_story_expiring">Hapus dlm %2$d menit.</string>
+    <string name="title_mem_collection">Koleksi</string>
+    <string name="desc_mem_collection">%d kenangan tersimpan.</string>
+    <string name="title_local_sec">Keamanan Data</string>
+    <string name="desc_local_sec">100% Pribadi &amp; Aman.</string>
+    <string name="label_mem_flashback">🗓️ %s</string>
+    <string name="desc_mem_date">Diposting pada %s</string>
+
+    <!-- SMB Explorer -->
+    <string name="title_smb_explorer">Eksplorer SMB</string>
+    <string name="msg_no_smb_saved">Tidak ada koneksi.</string>
+    <string name="label_select_server">Server</string>
+    <string name="label_location_path">Jalur: %s</string>
+    <string name="btn_up">Naik</string>
+    <string name="btn_export_here">Ekspor</string>
+    <string name="msg_empty_folder">Kosong.</string>
+    <string name="label_memoir_archive">Arsip</string>
+    <string name="btn_import">Impor</string>
+    <string name="msg_smb_load_failed">Gagal memuat</string>
+
+    <string name="msg_smb_sync_title">Sinkronisasi NAS Berhasil</string>
+    <string name="msg_smb_sync_desc">%d file baru telah disinkronkan.</string>
+
+    <!-- Toasts & Messages -->
+    <string name="msg_album_deleted">Album telah dihapus</string>
+    <string name="msg_item_removed_album">Item dihapus</string>
+    <string name="msg_photo_added_album">Foto berhasil ditambah</string>
+    <string name="msg_story_added_album">Cerita berhasil ditambah</string>
+    <string name="msg_gradient_added_album">Preset berhasil ditambah</string>
+    <string name="msg_export_folder_success">✅ Berhasil ekspor %d file</string>
+    <string name="msg_export_folder_failed">❌ Gagal: %s</string>
+    <string name="msg_import_folder_success">✅ Berhasil impor %d file</string>
+    <string name="msg_import_folder_failed">❌ Gagal: %s</string>
+    <string name="msg_rescan_success">✅ Done: %d kenangan baru</string>
+    <string name="msg_no_story_highlight_edit">Sorotan masih kosong</string>
+
+    <!-- Nama Bahasa -->
+    <string name="lang_en">English</string>
+    <string name="lang_id">Indonesia</string>
+    <string name="lang_zh">中文</string>
+    <string name="lang_ja">日本語</string>
+    <string name="lang_ru">Русский</string>
+    <string name="lang_ar">العربية</string>
+
+    <!-- Pengaturan spesifik -->
+    <string name="status_active">Aktif</string>
+    <string name="status_inactive">Nonaktif</string>
+    <string name="btn_remove_pin">Hapus PIN</string>
+    <string name="placeholder_new_pin">PIN Baru</string>
+    <string name="btn_open">Buka</string>
+    <string name="btn_clean">Bersihkan</string>
+    <string name="desc_manage_smb">Konfiguras NAS</string>
+    <string name="desc_manual_backup">Ekspor data lokal</string>
+
+    <string name="label_memoir_user">Memoir (%s)</string>
+    <string name="channel_sync_name">Sinkron NAS</string>
+    <string name="channel_sync_desc">Sinkronisasi media dari server</string>
+
+    <string name="label_video">Video</string>
+    <string name="label_multi_photo">Multi</string>
+
+    <string name="back_to_explore">Kembali</string>
+    <string name="back_to_profile">Profil</string>
+    <string name="label_exploration">JELAJAH</string>
+    <string name="msg_no_saved_post">Tidak ada postingan tersimpan</string>
+
+    <string name="title_backup_slideshow">Cadangan</string>
+    <string name="tab_backup_folder">Folder</string>
+    <string name="tab_slideshow">Slideshow</string>
+    <string name="title_folder_backup">Cadangan</string>
+    <string name="label_post_folder_structure">%d postingan</string>
+    <string name="btn_export_folder_data">Ekspor Folder</string>
+    <string name="title_data_folder_guide">Panduan</string>
+    <string name="desc_data_folder_guide">Media tersimpan di \'memoir_data/posts/\'.</string>
+    <string name="title_slideshow_generator">Slideshow</string>
+    <string name="desc_slideshow_generator">Pilih foto favorit Anda.</string>
+    <string name="msg_no_slideshow_post">Tidak ada foto</string>
+    <string name="label_select_photo_count">Terpilih (%d)</string>
+
+    <string name="label_me">Saya</string>
+    <string name="theme_signature">Tanda Tangan</string>
+    <string name="theme_navy">Angkatan Laut</string>
+    <string name="theme_charcoal">Arang</string>
+    <string name="theme_rose">Mawar</string>
+    <string name="theme_ocean">Samudra</string>
+    <string name="theme_emerald">Zamrud</string>
+    <string name="theme_sunset">Matahari Terbenam</string>
+    <string name="theme_violet">Lembayung</string>
+
+    <string name="desc_pinned">Disematkan</string>
+    <string name="desc_menu">Menu</string>
+    <string name="desc_like">Suka</string>
+    <string name="desc_notes">Catatan</string>
+    <string name="desc_error_media">Gagal memuat media</string>
+    <string name="desc_close_camera">Tutup Kamera</string>
+    <string name="desc_flash_toggle">Flash</string>
+    <string name="desc_switch_camera">Ganti Kamera</string>
+    <string name="desc_selected">Terpilih</string>
+    <string name="desc_in_highlight">Dalam Sorotan</string>
+
+    <string name="err_invalid_share">Share \'%s\' bukan direktori disk yang valid.</string>
+    <string name="err_folder_not_found_smb">Folder \'%s\' tidak ditemukan di server SMB.</string>
+    <string name="label_nas_server_default">Server NAS (%s)</string>
+
+    <string name="msg_test_conn_success">Koneksi SMB/NAS Berhasil!</string>
+    <string name="msg_test_conn_failed">Gagal terhubung ke SMB</string>
+    <string name="msg_sync_searching">Mencari file media di %s…</string>
+    <string name="msg_sync_no_files">Tidak ditemukan file foto/video di folder tersebut.</string>
+    <string name="msg_sync_downloading">Mengunduh %d file media dari SMB…</string>
+    <string name="msg_sync_item_progress">Mengunduh (%1$d/%2$d): %3$s</string>
+    <string name="msg_sync_success_album">Berhasil mengimpor %d media dari SMB ke Album!</string>
+    <string name="msg_sync_failed_media">Gagal mengunduh file media.</string>
+    <string name="label_nas_import_caption">📁 Impor dari NAS %s</string>
+    <string name="msg_sync_starting">Memulai sinkronisasi folder ke SMB (%s)…</string>
+    <string name="msg_sync_export_success">✅ Berhasil menyinkronkan %d file baru ke SMB (%s)</string>
+    <string name="msg_sync_export_failed">❌ Gagal ekspor ke SMB: %s</string>
+    <string name="msg_import_searching">Mencari folder postingan di SMB (%s)…</string>
+    <string name="msg_import_success_smb">✅ Berhasil mengimpor &amp; mengindeks %d memori baru dari SMB!</string>
+    <string name="msg_import_failed_smb">❌ Gagal impor dari SMB: %s</string>
+    <string name="msg_export_starting_folder">Memulai sinkronisasi ke folder \'%s\' di SMB…</string>
+    <string name="msg_export_success_files">✅ Berhasil mengekspor %d file ke folder \'%s\'!</string>
+    <string name="msg_importing_from">Mengimpor data dari \'%s\'…</string>
+    <string name="msg_import_success_from">✅ Berhasil mengimpor %1$d memori baru dari \'%2$s\'!</string>
+
+    <string name="preset_blue">Pantai Melasti 🌊</string>
+    <string name="preset_sunset">Sunset Bali 🌅</string>
+    <string name="preset_temple">Pura Luhur 🛕</string>
+    <string name="preset_nature">Taman Hijau 🍃</string>
+    <string name="preset_orange">Second Floor Cafe ☕</string>
+    <string name="preset_slate">Sudut Kota 🌆</string>
+    <string name="preset_purple">Memoir Zen 🧘</string>
+    <string name="preset_default">Foto Memoir</string>
+
+    <string name="widget_title_memory">📅 Kenangan Hari Ini</string>
+    <string name="widget_title_welcome">✨ Selamat Datang di Memoir</string>
+    <string name="widget_desc_years_ago">%1$d tahun lalu • %2$s</string>
+    <string name="widget_desc_empty">Tambah postingan untuk memulai</string>
+
+    <string name="about_memoir">Tentang</string>
+    <string name="memoir_version">v1.2.0 • Galeri Offline</string>
+</resources>

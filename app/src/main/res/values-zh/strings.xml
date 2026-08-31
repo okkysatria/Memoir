@@ -1,0 +1,537 @@
+<resources>
+    <string name="app_name">Memoir</string>
+
+    <!-- 导航 -->
+    <string name="nav_home">主页</string>
+    <string name="nav_explore">探索</string>
+    <string name="nav_albums">相册</string>
+    <string name="nav_profile">个人资料</string>
+
+    <!-- 主页 -->
+    <string name="home_title">Memoir</string>
+    <string name="on_this_day">那年今日</string>
+    <string name="memories_found">%d 条回忆</string>
+    <string name="empty_home_title">暂无回忆</string>
+    <string name="empty_home_desc">从相册或 NAS 导入媒体。</string>
+    <string name="btn_add_memory">添加回忆</string>
+    <string name="btn_add_story">添加快拍</string>
+    <string name="kilas_balik">往事重温</string>
+    <string name="one_month_ago">1 个月前</string>
+    <string name="six_months_ago">6 个月前</string>
+    <string name="years_ago">%d 年前</string>
+
+    <string name="one_month">1 个月</string>
+    <string name="six_months">6 个月</string>
+    <string name="years">%d 年</string>
+
+    <!-- 个人资料 -->
+    <string name="edit_profile">编辑资料</string>
+    <string name="posts">帖子</string>
+    <string name="saved">已保存</string>
+    <string name="bio_placeholder">写下你的故事...</string>
+
+    <!-- 设置 -->
+    <string name="settings_title">设置</string>
+    <string name="settings_subtitle">偏好与安全</string>
+    <string name="sec_profile">个人资料</string>
+    <string name="sec_appearance">外观</string>
+    <string name="sec_security">安全</string>
+    <string name="sec_storage">存储与同步</string>
+    <string name="sec_others">其他</string>
+
+    <string name="pref_language">语言</string>
+    <string name="pref_dark_mode">深色模式</string>
+    <string name="pref_theme_color">主题色</string>
+    <string name="pref_pin_lock">PIN 码锁</string>
+    <string name="pref_biometric">生物识别</string>
+    <string name="pref_hide_location">隐藏位置</string>
+    <string name="pref_hide_location_desc">从新媒体中移除 GPS。</string>
+    <string name="pref_clear_cache">清除缓存</string>
+    <string name="pref_smb_explorer">SMB 浏览器</string>
+    <string name="pref_smb_explorer_desc">管理 NAS 数据。</string>
+    <string name="pref_manage_smb">连接管理</string>
+    <string name="pref_manual_backup">本地备份</string>
+    <string name="pref_reset_app">重置应用</string>
+
+    <!-- 对话框与按钮 -->
+    <string name="btn_save">保存</string>
+    <string name="btn_back">返回</string>
+    <string name="btn_cancel">取消</string>
+    <string name="btn_done">完成</string>
+    <string name="btn_delete">删除</string>
+    <string name="btn_reset">重置</string>
+    <string name="empty_home_title_alt">记录瞬间</string>
+    <string name="empty_home_desc_alt">将照片导入私人存档。</string>
+    <string name="confirm_reset_title">清除所有数据？</string>
+    <string name="confirm_reset_desc">所有内容将被永久移除。</string>
+    <string name="msg_understand">明白</string>
+    <string name="operation_result">结果</string>
+
+    <!-- 探索 -->
+    <string name="cat_all">全部</string>
+    <string name="cat_photo">照片</string>
+    <string name="cat_video">视频</string>
+    <string name="cat_story">快拍</string>
+    <string name="cat_album">相册</string>
+
+    <string name="filter_sort">排序</string>
+    <string name="filter_latest">最新</string>
+    <string name="filter_oldest">最早</string>
+    <string name="filter_quick_time">快速筛选</string>
+    <string name="filter_this_week">本周</string>
+    <string name="filter_this_month">本月</string>
+    <string name="filter_this_year">今年</string>
+    <string name="filter_custom_time">选择日期</string>
+    <string name="filter_month">月份</string>
+    <string name="filter_year">年份</string>
+    <string name="filter_reset_time">重置日期</string>
+
+    <string name="search_placeholder">搜索...</string>
+    <string name="no_search_results">无结果</string>
+    <string name="no_media_yet">暂无媒体</string>
+    <string name="btn_reset_filter">重置筛选</string>
+
+    <string name="status_online">在线</string>
+    <string name="status_connected">已连接</string>
+
+    <!-- 相册 -->
+    <string name="album_archive">存档</string>
+    <string name="btn_create_album">新建相册</string>
+    <string name="new_album_title">创建相册</string>
+    <string name="label_album_name">名称</string>
+    <string name="placeholder_album_name">相册名称</string>
+    <string name="label_cover_gradient">封面</string>
+    <string name="label_storage_source">存储</string>
+    <string name="label_source_path">路径</string>
+    <string name="btn_create">创建</string>
+    <string name="msg_album_not_found">未找到</string>
+    <string name="msg_no_album_yet">暂无相册</string>
+    <string name="media_count">%d 个项目</string>
+    <string name="status_offline">离线</string>
+
+    <string name="label_conn_source">来源: %s</string>
+    <string name="title_album_empty">相册为空</string>
+    <string name="desc_album_empty">向此相册添加照片或快拍。</string>
+    <string name="title_add_to_album">添加到相册</string>
+    <string name="tab_posts">帖子</string>
+    <string name="tab_stories">快拍</string>
+    <string name="tab_gradients">预设</string>
+    <string name="msg_no_feed_media">无帖子。</string>
+    <string name="msg_no_story_media">无快拍。</string>
+    <string name="desc_tap_to_add">点击添加媒体。</string>
+    <string name="btn_delete_album">删除相册</string>
+    <string name="btn_delete_item">删除项目</string>
+
+    <!-- 个人资料特定 -->
+    <string name="btn_change">更改</string>
+    <string name="new_highlight">新建</string>
+    <string name="msg_no_post">暂无帖子。</string>
+    <string name="msg_no_album">暂无相册。</string>
+    <string name="msg_no_memories">暂无回忆。</string>
+    <string name="msg_no_memories_cat">此处无项目。</string>
+    <string name="msg_memories_desc">过去的回忆将自动显示在此处。</string>
+    <string name="msg_memories_filter_desc">更改筛选以查看更多。</string>
+    <string name="msg_profile_updated">资料已更新</string>
+    <string name="msg_highlight_added">精彩已添加</string>
+    <string name="msg_highlight_updated">已更新</string>
+    <string name="msg_highlight_deleted">已删除</string>
+    <string name="btn_view_highlight">查看</string>
+    <string name="btn_edit_highlight">编辑</string>
+    <string name="btn_delete_highlight">删除</string>
+    <string name="msg_back_exit">再次按下返回键退出</string>
+
+    <!-- 锁屏 -->
+    <string name="lock_title">Memoir 已锁定</string>
+    <string name="lock_desc">安全保护中</string>
+    <string name="label_enter_pin">输入 PIN 码</string>
+    <string name="btn_unlock">解锁</string>
+    <string name="msg_unlocked">已解锁</string>
+    <string name="msg_wrong_pin">PIN 码错误</string>
+    <string name="msg_story_removed">已移除</string>
+    <string name="msg_story_added">已添加</string>
+    <string name="msg_highlight_created">精彩已创建</string>
+    <string name="msg_highlight_created_only">已创建</string>
+    <string name="msg_story_published">快拍已发布</string>
+
+    <!-- 快拍编辑 -->
+    <string name="label_tap_text">点击输入文本</string>
+    <string name="label_date">日期</string>
+    <string name="label_reset">重置</string>
+    <string name="label_text">文本</string>
+    <string name="btn_edit_text">编辑</string>
+    <string name="btn_add_text">添加</string>
+    <string name="btn_publish">发布</string>
+    <string name="label_align_text">对齐</string>
+    <string name="placeholder_type_text">在此输入...</string>
+
+    <string name="style_modern">现代</string>
+    <string name="style_classic">经典</string>
+    <string name="style_neon">霓虹</string>
+    <string name="style_typewriter">打字机</string>
+    <string name="style_serif">衬线</string>
+    <string name="style_strong">粗体</string>
+    <string name="style_elegant">优雅</string>
+
+    <string name="color_white">白色</string>
+    <string name="color_black">黑色</string>
+    <string name="color_yellow">黄色</string>
+    <string name="color_green">绿色</string>
+    <string name="color_pink">粉色</string>
+    <string name="color_cyan">青色</string>
+    <string name="color_purple">紫色</string>
+    <string name="color_orange">橙色</string>
+    <string name="color_red">红色</string>
+    <string name="color_blue">蓝色</string>
+
+    <string name="filter_normal">正常</string>
+    <string name="filter_warm">暖色</string>
+    <string name="filter_cool">冷色</string>
+    <string name="filter_vintage">复古</string>
+    <string name="filter_bw">黑白</string>
+    <string name="filter_dramatic">戏剧</string>
+    <string name="msg_filter_applied">滤镜: %s</string>
+
+    <!-- 添加帖子 -->
+    <string name="step_select_media">选择媒体</string>
+    <string name="step_adjust_media">编辑</string>
+    <string name="step_edit_memory">编辑回忆</string>
+    <string name="step_share_memory">分享</string>
+    <string name="btn_next">下一步</string>
+    <string name="msg_min_media">选择媒体</string>
+    <string name="msg_max_media">最多 10 个项目</string>
+    <string name="msg_memory_updated">已更新</string>
+    <string name="msg_memory_shared">已分享</string>
+    <string name="msg_saving_memory">保存中...</string>
+    <string name="label_original">原图</string>
+    <string name="label_selected_count">已选 %d</string>
+    <string name="btn_select_multiple">多选</string>
+    <string name="label_fit_fill">适应/填充</string>
+    <string name="label_filter_normal">正常</string>
+    <string name="label_rotate_90">旋转</string>
+    <string name="label_aspect_original">原图</string>
+    <string name="label_aspect_square">1:1</string>
+    <string name="label_aspect_portrait">4:5</string>
+    <string name="label_aspect_landscape">16:9</string>
+    <string name="label_aspect_story">9:16</string>
+    <string name="btn_select_some">多选</string>
+    <string name="msg_selected">已选 %d</string>
+    <string name="label_device_gallery">图库</string>
+    <string name="item_gallery">手机图库</string>
+    <string name="item_camera">相机</string>
+    <string name="item_smb">SMB / NAS</string>
+    <string name="item_cloud">云端</string>
+    <string name="btn_grant_permission">授权</string>
+    <string name="btn_previous">返回</string>
+    <string name="btn_next_item">继续</string>
+    <string name="label_from">/</string>
+    <string name="placeholder_caption">编写说明...</string>
+    <string name="label_location">位置</string>
+    <string name="placeholder_location">添加位置</string>
+    <string name="label_memory_date">日期</string>
+    <string name="label_album_collection">相册</string>
+    <string name="item_no_album">无</string>
+    <string name="item_create_new">+ 新建</string>
+    <string name="placeholder_new_album">相册名称</string>
+    <string name="label_extra_settings">设置</string>
+    <string name="item_pin_feed">置顶</string>
+    <string name="item_lock_private">私人</string>
+    <string name="title_choose_smb">从 SMB 选择</string>
+    <string name="title_choose_cloud">从云端选择</string>
+    <string name="btn_quick_add">快速添加</string>
+    <string name="btn_manage_all">管理</string>
+    <string name="msg_back_confirm">再次返回</string>
+    <string name="msg_cancel_confirm">再次取消</string>
+    <string name="msg_cancel_story">舍弃快拍？</string>
+
+    <!-- 动态 -->
+    <string name="my_memoir">我的 Memoir</string>
+    <string name="item_unpin">取消置顶</string>
+    <string name="item_pin">置顶</string>
+    <string name="item_edit_memory">编辑</string>
+    <string name="item_delete_memory">删除</string>
+    <string name="msg_share_footer">\n— 通过 Memoir 分享</string>
+    <string name="title_share">分享</string>
+    <string name="btn_view_album">查看相册</string>
+    <string name="label_liked">赞</string>
+    <string name="label_add_favorite">加入收藏</string>
+    <string name="label_view_journal">查看备注</string>
+    <string name="title_delete_memory">删除回忆？</string>
+    <string name="msg_delete_memory">永久移除这条回忆？</string>
+    <string name="msg_memory_deleted">已删除</string>
+
+    <!-- 备注 -->
+    <string name="title_notes">备注</string>
+    <string name="btn_close_notes">关闭</string>
+    <string name="msg_no_notes">暂无备注。</string>
+    <string name="msg_notes_desc">在此处添加想法。</string>
+    <string name="placeholder_notes">编写备注...</string>
+    <string name="btn_save_note">保存</string>
+    <string name="label_caption">说明</string>
+    <string name="label_my_note">我的备注</string>
+    <string name="btn_delete_note">删除</string>
+
+    <string name="msg_story_random_hint">点击播放快拍</string>
+
+    <!-- 快拍 -->
+    <string name="msg_just_now">刚刚</string>
+    <string name="msg_minutes_ago">%d 分钟前</string>
+    <string name="msg_hours_ago">%d 小时前</string>
+    <string name="msg_yesterday">昨天</string>
+    <string name="label_highlight">精彩</string>
+    <string name="label_private">私人</string>
+    <string name="label_highlighted">已设为精彩</string>
+    <string name="title_save_highlight">存至精彩</string>
+    <string name="title_new_highlight">新建精彩</string>
+    <string name="label_highlight_name">名称</string>
+    <string name="placeholder_highlight_name">名称</string>
+    <string name="btn_create_add">创建</string>
+    <string name="title_delete_story">删除快拍？</string>
+    <string name="msg_delete_story">移除这条快拍？</string>
+
+    <!-- 资料对话框 -->
+    <string name="msg_save_profile_failed">保存失败</string>
+    <string name="label_change_photo">更换照片</string>
+    <string name="btn_pick_gallery">图库</string>
+    <string name="label_or_preset">预设</string>
+    <string name="label_name">名称</string>
+    <string name="label_username">用户名</string>
+    <string name="label_bio">简介</string>
+    <string name="btn_next_step">继续</string>
+    <string name="label_edit_cover">编辑封面</string>
+    <string name="placeholder_highlight_name_alt">名称</string>
+    <string name="tab_story">快拍</string>
+    <string name="tab_selected">已选 (%d)</string>
+    <string name="msg_no_story_selected">无快拍。</string>
+    <string name="msg_no_story_archive">存档为空。</string>
+    <string name="title_choose_cover">选择封面</string>
+    <string name="label_choose_story_preset">来源</string>
+    <string name="tab_add">添加 (%d)</string>
+    <string name="msg_no_story_highlight">无快拍。</string>
+    <string name="msg_no_story_extra">无更多存档。</string>
+    <string name="msg_story_removed_highlight">已移除</string>
+    <string name="msg_story_added_highlight">已添加</string>
+    <string name="title_delete_highlight">删除精彩？</string>
+    <string name="msg_delete_highlight">移除此精彩集？</string>
+
+    <!-- 连接管理 -->
+    <string name="title_manage_conn">连接</string>
+    <string name="label_server_name">名称</string>
+    <string name="label_ip_host">IP / 主机</string>
+    <string name="placeholder_ip">192.168.1.100</string>
+    <string name="label_share_name">共享名</string>
+    <string name="placeholder_share">Photos</string>
+    <string name="label_target_folder">文件夹</string>
+    <string name="placeholder_target">Backup</string>
+    <string name="title_delete_conn">删除连接？</string>
+    <string name="msg_delete_conn">删除 \"%1$s\" (%2$s)？</string>
+
+    <!-- 备份 -->
+    <string name="msg_processing_folder">处理中...</string>
+    <string name="title_import_folder">导入文件夹</string>
+    <string name="msg_scanning_folder">扫描中...</string>
+    <string name="btn_rescan_folder">重新扫描</string>
+
+    <!-- 其他 -->
+    <string name="msg_success_export">✅ 已导出 %d 个文件</string>
+    <string name="msg_failed_export">❌ 失败: %s</string>
+
+    <!-- 连接管理 -->
+    <string name="title_manage_nas">SMB 存储</string>
+    <string name="label_auto_discovery">自动发现</string>
+    <string name="msg_no_smb_found">未找到服务器。</string>
+    <string name="msg_scanning">扫描中...</string>
+    <string name="btn_scan_network">扫描</string>
+    <string name="label_smb_found">发现服务器</string>
+    <string name="msg_host_set">设为 %s</string>
+    <string name="label_smb_config">配置</string>
+    <string name="label_guest_mode">访客模式</string>
+    <string name="msg_guest_active">访客模式已启用</string>
+    <string name="msg_fill_host_share">请输入主机和共享名</string>
+    <string name="msg_read_folder_failed">读取失败: %s</string>
+    <string name="btn_test_conn">测试</string>
+    <string name="msg_fill_host_share_test">请输入详细信息</string>
+    <string name="btn_save_server">保存</string>
+    <string name="msg_server_saved">已保存</string>
+    <string name="msg_fill_name_host">必填</string>
+    <string name="label_connected_servers">已连接 (%d)</string>
+    <string name="msg_no_conn_saved">无连接。</string>
+    <string name="btn_open_explorer">打开浏览器</string>
+    <string name="label_media">媒体</string>
+    <string name="title_choose_folder">选择文件夹</string>
+    <string name="msg_no_subfolder">无子文件夹。</string>
+    <string name="msg_folder_selected">已选: %s</string>
+    <string name="msg_conn_deleted">已删除</string>
+    <string name="btn_use_pin">使用 PIN</string>
+
+    <!-- 引导页 -->
+    <string name="ob_title_1">欢迎</string>
+    <string name="ob_desc_1">离线优先的私人相册。</string>
+    <string name="ob_title_2">NAS 同步</string>
+    <string name="ob_desc_2">连接至本地 NAS。</string>
+    <string name="ob_title_3">隐私</string>
+    <string name="ob_desc_3">PIN 码与生物识别保护。</string>
+    <string name="btn_skip">跳过</string>
+    <string name="btn_start_memoir">开始使用</string>
+    <string name="btn_continue">继续</string>
+
+    <!-- 权限 -->
+    <string name="perm_title">权限</string>
+    <string name="perm_desc">需要媒体访问权限。</string>
+    <string name="perm_media_title">媒体权限</string>
+    <string name="perm_media_desc">读取照片和视频。</string>
+    <string name="perm_camera_title">相机权限</string>
+    <string name="perm_camera_desc">记录瞬间。</string>
+    <string name="status_granted">已启用</string>
+    <string name="status_pending">待处理</string>
+    <string name="btn_grant_media">授予访问权限</string>
+    <string name="btn_continue_memoir">继续</string>
+    <string name="btn_skip_later">稍后</string>
+
+    <!-- 通知 -->
+    <string name="title_notifications">动态</string>
+    <string name="msg_no_activity">暂无动态。</string>
+    <string name="title_mem_added">已添加</string>
+    <string name="desc_mem_added">新回忆已保存</string>
+    <string name="title_story_expiring">即将过期</string>
+    <string name="label_your_story">快拍</string>
+    <string name="desc_story_expiring">%2$d 分钟后过期。</string>
+    <string name="title_mem_collection">回忆集</string>
+    <string name="desc_mem_collection">%d 条珍贵回忆。</string>
+    <string name="title_local_sec">数据安全</string>
+    <string name="desc_local_sec">100% 私人存储。</string>
+    <string name="label_mem_flashback">🗓️ %s</string>
+    <string name="desc_mem_date">发布于 %s</string>
+
+    <!-- SMB 浏览器 -->
+    <string name="title_smb_explorer">SMB 浏览器</string>
+    <string name="msg_no_smb_saved">无连接。</string>
+    <string name="label_select_server">服务器</string>
+    <string name="label_location_path">路径: %s</string>
+    <string name="btn_up">向上</string>
+    <string name="btn_export_here">导出</string>
+    <string name="msg_empty_folder">空。</string>
+    <string name="label_memoir_archive">存档</string>
+    <string name="btn_import">导入</string>
+    <string name="msg_smb_load_failed">加载失败</string>
+
+    <string name="msg_smb_sync_title">NAS 同步完成</string>
+    <string name="msg_smb_sync_desc">%d 个新文件已同步。</string>
+
+    <!-- 消息与 Toast -->
+    <string name="msg_album_deleted">相册已删除</string>
+    <string name="msg_item_removed_album">项目已移除</string>
+    <string name="msg_photo_added_album">照片已添加</string>
+    <string name="msg_story_added_album">快拍已添加</string>
+    <string name="msg_gradient_added_album">预设已添加</string>
+    <string name="msg_export_folder_success">✅ 已导出 %d 个文件</string>
+    <string name="msg_export_folder_failed">❌ 失败: %s</string>
+    <string name="msg_import_folder_success">✅ 已导入 %d 个文件</string>
+    <string name="msg_import_folder_failed">❌ 失败: %s</string>
+    <string name="msg_rescan_success">✅ 完成: 新增 %d 个</string>
+    <string name="msg_no_story_highlight_edit">精彩集为空</string>
+
+    <!-- 语言名称 -->
+    <string name="lang_en">English</string>
+    <string name="lang_id">Indonesia</string>
+    <string name="lang_zh">中文</string>
+    <string name="lang_ja">日本語</string>
+    <string name="lang_ru">Русский</string>
+    <string name="lang_ar">العربية</string>
+
+    <!-- 设置 -->
+    <string name="status_active">启用</string>
+    <string name="status_inactive">禁用</string>
+    <string name="btn_remove_pin">移除 PIN</string>
+    <string name="placeholder_new_pin">新 PIN</string>
+    <string name="btn_open">打开</string>
+    <string name="btn_clean">清理</string>
+    <string name="desc_manage_smb">NAS 配置</string>
+    <string name="desc_manual_backup">导出数据</string>
+
+    <string name="label_memoir_user">Memoir (%s)</string>
+    <string name="channel_sync_name">NAS 同步</string>
+    <string name="channel_sync_desc">NAS 媒体同步</string>
+
+    <string name="label_video">视频</string>
+    <string name="label_multi_photo">多选</string>
+
+    <string name="back_to_explore">返回</string>
+    <string name="back_to_profile">返回</string>
+    <string name="label_exploration">探索</string>
+    <string name="msg_no_saved_post">无已保存帖子</string>
+
+    <string name="title_backup_slideshow">备份</string>
+    <string name="tab_backup_folder">文件夹</string>
+    <string name="tab_slideshow">幻灯片</string>
+    <string name="title_folder_backup">备份</string>
+    <string name="label_post_folder_structure">%d 条帖子</string>
+    <string name="btn_export_folder_data">导出文件夹</string>
+    <string name="title_data_folder_guide">指南</string>
+    <string name="desc_data_folder_guide">媒体存储于 \'memoir_data/posts/\'。</string>
+    <string name="title_slideshow_generator">幻灯片</string>
+    <string name="desc_slideshow_generator">选择照片</string>
+    <string name="msg_no_slideshow_post">无照片</string>
+    <string name="label_select_photo_count">已选 (%d)</string>
+
+    <string name="label_me">我</string>
+    <string name="theme_signature">经典</string>
+    <string name="theme_navy">藏青</string>
+    <string name="theme_charcoal">炭灰</string>
+    <string name="theme_rose">玫瑰</string>
+    <string name="theme_ocean">海洋</string>
+    <string name="theme_emerald">翡翠</string>
+    <string name="theme_sunset">落日</string>
+    <string name="theme_violet">紫罗兰</string>
+
+    <string name="desc_pinned">已置顶</string>
+    <string name="desc_menu">菜单</string>
+    <string name="desc_like">赞</string>
+    <string name="desc_notes">备注</string>
+    <string name="desc_error_media">加载失败</string>
+    <string name="desc_close_camera">关闭相机</string>
+    <string name="desc_flash_toggle">闪光灯</string>
+    <string name="desc_switch_camera">切换相机</string>
+    <string name="desc_selected">已选择</string>
+    <string name="desc_in_highlight">精彩集</string>
+
+    <string name="err_invalid_share">共享 \'%s\' 不是有效的磁盘目录。</string>
+    <string name="err_folder_not_found_smb">在 SMB 服务器上未找到文件夹 \'%s\'。</string>
+    <string name="label_nas_server_default">NAS 服务器 (%s)</string>
+
+    <string name="msg_test_conn_success">SMB/NAS 连接成功！</string>
+    <string name="msg_test_conn_failed">连接 SMB 失败</string>
+    <string name="msg_sync_searching">正在搜索 %s 的媒体文件...</string>
+    <string name="msg_sync_no_files">该文件夹中未找到照片/视频文件。</string>
+    <string name="msg_sync_downloading">正在从 SMB 下载 %d 个文件...</string>
+    <string name="msg_sync_item_progress">下载中 (%1$d/%2$d): %3$s</string>
+    <string name="msg_sync_success_album">已将 %d 个媒体导入相册！</string>
+    <string name="msg_sync_failed_media">下载媒体文件失败。</string>
+    <string name="label_nas_import_caption">📁 从 NAS %s 导入</string>
+    <string name="msg_sync_starting">开始同步文件夹到 SMB (%s)...</string>
+    <string name="msg_sync_export_success">✅ 已同步 %d 个新文件到 SMB (%s)</string>
+    <string name="msg_sync_export_failed">❌ 导出到 SMB 失败: %s</string>
+    <string name="msg_import_searching">正在 SMB (%s) 搜索帖子文件夹...</string>
+    <string name="msg_import_success_smb">✅ 已从 SMB 导入并索引 %d 条新回忆！</string>
+    <string name="msg_import_failed_smb">❌ 从 SMB 导入失败: %s</string>
+    <string name="msg_export_starting_folder">开始同步到 SMB 文件夹 \'%s\'...</string>
+    <string name="msg_export_success_files">✅ 已将 %d 个文件导出到 \'%s\'！</string>
+    <string name="msg_importing_from">正在从 \'%s\' 导入数据...</string>
+    <string name="msg_import_success_from">✅ 已从 \'%2$s\' 导入 %1$d 条新回忆！</string>
+
+    <string name="preset_blue">梅拉斯蒂海滩 🌊</string>
+    <string name="preset_sunset">巴厘岛日落 🌅</string>
+    <string name="preset_temple">卢胡尔神庙 🛕</string>
+    <string name="preset_nature">绿地公园 🍃</string>
+    <string name="preset_orange">二楼咖啡馆 ☕</string>
+    <string name="preset_slate">城市一角 🌆</string>
+    <string name="preset_purple">禅意回忆 🧘</string>
+    <string name="preset_default">回忆照片</string>
+
+    <string name="widget_title_memory">📅 那年今日</string>
+    <string name="widget_title_welcome">✨ 欢迎使用 Memoir</string>
+    <string name="widget_desc_years_ago">%1$d 年前 • %2$s</string>
+    <string name="widget_desc_empty">添加帖子以开始使用</string>
+
+    <string name="about_memoir">关于</string>
+    <string name="memoir_version">v1.2.0 • 离线相册</string>
+</resources>

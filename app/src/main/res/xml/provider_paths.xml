@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<paths>
+    <!-- Untuk foto kamera yang disimpan ke filesDir -->
+    <files-path name="memoir_internal_files" path="." />
+    <!-- Untuk foto dari cache -->
+    <cache-path name="memoir_cache" path="." />
+    <!-- Untuk file di external files dir (Pictures) -->
+    <external-files-path name="memoir_external_files" path="." />
+</paths>

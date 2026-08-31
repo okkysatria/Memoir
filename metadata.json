@@ -1,0 +1,5 @@
+{
+  "name": "Memoir",
+  "description": "Jurnal visual offline pribadi bergaya Instagram dengan integrasi penyimpanan album lokal, SMB, dan cloud.",
+  "requestFramePermissions": []
+}

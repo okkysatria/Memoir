@@ -1,0 +1,537 @@
+<resources>
+    <string name="app_name">Memoir</string>
+
+    <!-- ナビゲーション -->
+    <string name="nav_home">ホーム</string>
+    <string name="nav_explore">発見</string>
+    <string name="nav_albums">アルバム</string>
+    <string name="nav_profile">プロフィール</string>
+
+    <!-- ホーム -->
+    <string name="home_title">Memoir</string>
+    <string name="on_this_day">あの日</string>
+    <string name="memories_found">%d 件の思い出</string>
+    <string name="empty_home_title">思い出がありません</string>
+    <string name="empty_home_desc">ギャラリーまたは NAS から読み込む。</string>
+    <string name="btn_add_memory">思い出を追加</string>
+    <string name="btn_add_story">ストーリーズを追加</string>
+    <string name="kilas_balik">回想</string>
+    <string name="one_month_ago">1ヶ月前</string>
+    <string name="six_months_ago">6ヶ月前</string>
+    <string name="years_ago">%d 年前</string>
+
+    <string name="one_month">1ヶ月</string>
+    <string name="six_months">6ヶ月</string>
+    <string name="years">%d 年</string>
+
+    <!-- プロフィール -->
+    <string name="edit_profile">編集</string>
+    <string name="posts">投稿</string>
+    <string name="saved">保存済み</string>
+    <string name="bio_placeholder">ストーリーを書きましょう...</string>
+
+    <!-- 設定 -->
+    <string name="settings_title">設定</string>
+    <string name="settings_subtitle">設定とセキュリティ</string>
+    <string name="sec_profile">プロフィール</string>
+    <string name="sec_appearance">外観</string>
+    <string name="sec_security">セキュリティ</string>
+    <string name="sec_storage">保存と同期</string>
+    <string name="sec_others">その他</string>
+
+    <string name="pref_language">言語</string>
+    <string name="pref_dark_mode">ダークモード</string>
+    <string name="pref_theme_color">アクセントカラー</string>
+    <string name="pref_pin_lock">PINロック</string>
+    <string name="pref_biometric">生体認証</string>
+    <string name="pref_hide_location">位置情報を隠す</string>
+    <string name="pref_hide_location_desc">新規メディアから GPS を削除。</string>
+    <string name="pref_clear_cache">キャッシュを消去</string>
+    <string name="pref_smb_explorer">SMBエクスプローラー</string>
+    <string name="pref_smb_explorer_desc">NAS データを管理。</string>
+    <string name="pref_manage_smb">接続</string>
+    <string name="pref_manual_backup">ローカルバックアップ</string>
+    <string name="pref_reset_app">アプリをリセット</string>
+
+    <!-- ダイアログとボタン -->
+    <string name="btn_save">保存</string>
+    <string name="btn_back">戻る</string>
+    <string name="btn_cancel">キャンセル</string>
+    <string name="btn_done">完了</string>
+    <string name="btn_delete">削除</string>
+    <string name="btn_reset">リセット</string>
+    <string name="empty_home_title_alt">瞬間をキャプチャ</string>
+    <string name="empty_home_desc_alt">写真をアーカイブに読み込む。</string>
+    <string name="confirm_reset_title">全データを消去？</string>
+    <string name="confirm_reset_desc">すべてのコンテンツが完全に削除されます。</string>
+    <string name="msg_understand">了解</string>
+    <string name="operation_result">結果</string>
+
+    <!-- 発見 -->
+    <string name="cat_all">すべて</string>
+    <string name="cat_photo">写真</string>
+    <string name="cat_video">動画</string>
+    <string name="cat_story">ストーリーズ</string>
+    <string name="cat_album">アルバム</string>
+
+    <string name="filter_sort">並べ替え</string>
+    <string name="filter_latest">最新</string>
+    <string name="filter_oldest">古い順</string>
+    <string name="filter_quick_time">期間</string>
+    <string name="filter_this_week">今週</string>
+    <string name="filter_this_month">今月</string>
+    <string name="filter_this_year">今年</string>
+    <string name="filter_custom_time">日付を選択</string>
+    <string name="filter_month">月</string>
+    <string name="filter_year">年</string>
+    <string name="filter_reset_time">リセット</string>
+
+    <string name="search_placeholder">検索...</string>
+    <string name="no_search_results">結果なし</string>
+    <string name="no_media_yet">メディアなし</string>
+    <string name="btn_reset_filter">フィルターをリセット</string>
+
+    <string name="status_online">オンライン</string>
+    <string name="status_connected">接続済み</string>
+
+    <!-- アルバム -->
+    <string name="album_archive">アーカイブ</string>
+    <string name="btn_create_album">新規アルバム</string>
+    <string name="new_album_title">アルバム作成</string>
+    <string name="label_album_name">名前</string>
+    <string name="placeholder_album_name">アルバム名</string>
+    <string name="label_cover_gradient">カバー</string>
+    <string name="label_storage_source">保存先</string>
+    <string name="label_source_path">パス</string>
+    <string name="btn_create">作成</string>
+    <string name="msg_album_not_found">見つかりません</string>
+    <string name="msg_no_album_yet">アルバムなし</string>
+    <string name="media_count">%d 件</string>
+    <string name="status_offline">オフライン</string>
+
+    <string name="label_conn_source">ソース: %s</string>
+    <string name="title_album_empty">空のアルバム</string>
+    <string name="desc_album_empty">写真やストーリーを追加してください。</string>
+    <string name="title_add_to_album">アルバムに追加</string>
+    <string name="tab_posts">投稿</string>
+    <string name="tab_stories">ストーリー</string>
+    <string name="tab_gradients">プリセット</string>
+    <string name="msg_no_feed_media">投稿なし。</string>
+    <string name="msg_no_story_media">ストーリーなし。</string>
+    <string name="desc_tap_to_add">タップして追加。</string>
+    <string name="btn_delete_album">削除</string>
+    <string name="btn_delete_item">アイテム削除</string>
+
+    <!-- プロフィール固有 -->
+    <string name="btn_change">変更</string>
+    <string name="new_highlight">新規</string>
+    <string name="msg_no_post">投稿なし。</string>
+    <string name="msg_no_album">アルバムなし。</string>
+    <string name="msg_no_memories">思い出なし。</string>
+    <string name="msg_no_memories_cat">ここにはありません。</string>
+    <string name="msg_memories_desc">過去の思い出がここに自動表示されます。</string>
+    <string name="msg_memories_filter_desc">フィルターを変えて探す。</string>
+    <string name="msg_profile_updated">更新完了</string>
+    <string name="msg_highlight_added">追加完了</string>
+    <string name="msg_highlight_updated">更新完了</string>
+    <string name="msg_highlight_deleted">削除完了</string>
+    <string name="btn_view_highlight">表示</string>
+    <string name="btn_edit_highlight">編集</string>
+    <string name="btn_delete_highlight">削除</string>
+    <string name="msg_back_exit">もう一度戻るで終了</string>
+
+    <!-- ロック画面 -->
+    <string name="lock_title">ロック中</string>
+    <string name="lock_desc">セキュリティで保護</string>
+    <string name="label_enter_pin">PIN を入力</string>
+    <string name="btn_unlock">ロック解除</string>
+    <string name="msg_unlocked">解除済み</string>
+    <string name="msg_wrong_pin">PIN が違います</string>
+    <string name="msg_story_removed">削除完了</string>
+    <string name="msg_story_added">追加完了</string>
+    <string name="msg_highlight_created">作成完了</string>
+    <string name="msg_highlight_created_only">作成完了</string>
+    <string name="msg_story_published">投稿完了</string>
+
+    <!-- ストーリーズ編集 -->
+    <string name="label_tap_text">タップして入力</string>
+    <string name="label_date">日付</string>
+    <string name="label_reset">リセット</string>
+    <string name="label_text">テキスト</string>
+    <string name="btn_edit_text">編集</string>
+    <string name="btn_add_text">追加</string>
+    <string name="btn_publish">投稿</string>
+    <string name="label_align_text">配置</string>
+    <string name="placeholder_type_text">入力...</string>
+
+    <string name="style_modern">モダン</string>
+    <string name="style_classic">クラシック</string>
+    <string name="style_neon">ネオン</string>
+    <string name="style_typewriter">タイプ</string>
+    <string name="style_serif">明朝</string>
+    <string name="style_strong">太字</string>
+    <string name="style_elegant">優雅</string>
+
+    <string name="color_white">白</string>
+    <string name="color_black">黒</string>
+    <string name="color_yellow">黄</string>
+    <string name="color_green">緑</string>
+    <string name="color_pink">桃</string>
+    <string name="color_cyan">シアン</string>
+    <string name="color_purple">紫</string>
+    <string name="color_orange">橙</string>
+    <string name="color_red">赤</string>
+    <string name="color_blue">青</string>
+
+    <string name="filter_normal">通常</string>
+    <string name="filter_warm">暖色</string>
+    <string name="filter_cool">寒色</string>
+    <string name="filter_vintage">ビンテージ</string>
+    <string name="filter_bw">モノクロ</string>
+    <string name="filter_dramatic">ドラマチック</string>
+    <string name="msg_filter_applied">フィルター: %s</string>
+
+    <!-- 投稿追加 -->
+    <string name="step_select_media">メディア選択</string>
+    <string name="step_adjust_media">編集</string>
+    <string name="step_edit_memory">編集</string>
+    <string name="step_share_memory">共有</string>
+    <string name="btn_next">次へ</string>
+    <string name="msg_min_media">メディアを選んでください</string>
+    <string name="msg_max_media">最大 10 件</string>
+    <string name="msg_memory_updated">更新完了</string>
+    <string name="msg_memory_shared">共有完了</string>
+    <string name="msg_saving_memory">保存中...</string>
+    <string name="label_original">オリジナル</string>
+    <string name="label_selected_count">%d 件選択</string>
+    <string name="btn_select_multiple">複数選択</string>
+    <string name="label_fit_fill">フィット</string>
+    <string name="label_filter_normal">通常</string>
+    <string name="label_rotate_90">回転</string>
+    <string name="label_aspect_original">オリジナル</string>
+    <string name="label_aspect_square">1:1</string>
+    <string name="label_aspect_portrait">4:5</string>
+    <string name="label_aspect_landscape">16:9</string>
+    <string name="label_aspect_story">9:16</string>
+    <string name="btn_select_some">複数選択</string>
+    <string name="msg_selected">%d 件選択</string>
+    <string name="label_device_gallery">ギャラリー</string>
+    <string name="item_gallery">スマホ内</string>
+    <string name="item_camera">カメラ</string>
+    <string name="item_smb">SMB / NAS</string>
+    <string name="item_cloud">クラウド</string>
+    <string name="btn_grant_permission">許可する</string>
+    <string name="btn_previous">戻る</string>
+    <string name="btn_next_item">次へ</string>
+    <string name="label_from">/</string>
+    <string name="placeholder_caption">キャプションを入力...</string>
+    <string name="label_location">場所</string>
+    <string name="placeholder_location">場所を追加</string>
+    <string name="label_memory_date">日付</string>
+    <string name="label_album_collection">アルバム</string>
+    <string name="item_no_album">なし</string>
+    <string name="item_create_new">+ 新規作成</string>
+    <string name="placeholder_new_album">アルバム名</string>
+    <string name="label_extra_settings">設定</string>
+    <string name="item_pin_feed">固定する</string>
+    <string name="item_lock_private">非公開</string>
+    <string name="title_choose_smb">SMB から選択</string>
+    <string name="title_choose_cloud">クラウドから選択</string>
+    <string name="btn_quick_add">クイック追加</string>
+    <string name="btn_manage_all">管理</string>
+    <string name="msg_back_confirm">もう一度戻る</string>
+    <string name="msg_cancel_confirm">もう一度キャンセル</string>
+    <string name="msg_cancel_story">破棄しますか？</string>
+
+    <!-- フィード -->
+    <string name="my_memoir">マイ・メモワール</string>
+    <string name="item_unpin">固定解除</string>
+    <string name="item_pin">固定</string>
+    <string name="item_edit_memory">編集</string>
+    <string name="item_delete_memory">削除</string>
+    <string name="msg_share_footer">\n— Memoir より共有</string>
+    <string name="title_share">共有</string>
+    <string name="btn_view_album">アルバムを表示</string>
+    <string name="label_liked">いいね</string>
+    <string name="label_add_favorite">お気に入りに追加</string>
+    <string name="label_view_journal">ノートを表示</string>
+    <string name="title_delete_memory">思い出を削除？</string>
+    <string name="msg_delete_memory">完全に削除しますか？</string>
+    <string name="msg_memory_deleted">削除完了</string>
+
+    <!-- ノート -->
+    <string name="title_notes">ノート</string>
+    <string name="btn_close_notes">閉じる</string>
+    <string name="msg_no_notes">ノートなし。</string>
+    <string name="msg_notes_desc">ここに記録を残しましょう。</string>
+    <string name="placeholder_notes">ノートを書く...</string>
+    <string name="btn_save_note">保存</string>
+    <string name="label_caption">キャプション</string>
+    <string name="label_my_note">マイノート</string>
+    <string name="btn_delete_note">削除</string>
+
+    <string name="msg_story_random_hint">タップして再生</string>
+
+    <!-- ハイライト -->
+    <string name="msg_just_now">今</string>
+    <string name="msg_minutes_ago">%d 分前</string>
+    <string name="msg_hours_ago">%d 時間前</string>
+    <string name="msg_yesterday">昨日</string>
+    <string name="label_highlight">ハイライト</string>
+    <string name="label_private">非公開</string>
+    <string name="label_highlighted">追加済み</string>
+    <string name="title_save_highlight">ハイライトに保存</string>
+    <string name="title_new_highlight">新規ハイライト</string>
+    <string name="label_highlight_name">名前</string>
+    <string name="placeholder_highlight_name">名前</string>
+    <string name="btn_create_add">作成</string>
+    <string name="title_delete_story">削除？</string>
+    <string name="msg_delete_story">このストーリーを削除しますか？</string>
+
+    <!-- プロフィールダイアログ -->
+    <string name="msg_save_profile_failed">保存失敗</string>
+    <string name="label_change_photo">写真を変更</string>
+    <string name="btn_pick_gallery">ギャラリー</string>
+    <string name="label_or_preset">プリセット</string>
+    <string name="label_name">名前</string>
+    <string name="label_username">ユーザー名</string>
+    <string name="label_bio">自己紹介</string>
+    <string name="btn_next_step">次へ</string>
+    <string name="label_edit_cover">カバー編集</string>
+    <string name="placeholder_highlight_name_alt">名前</string>
+    <string name="tab_story">ストーリー</string>
+    <string name="tab_selected">選択中 (%d)</string>
+    <string name="msg_no_story_selected">ストーリーなし。</string>
+    <string name="msg_no_story_archive">アーカイブなし。</string>
+    <string name="title_choose_cover">カバー選択</string>
+    <string name="label_choose_story_preset">ソース</string>
+    <string name="tab_add">追加 (%d)</string>
+    <string name="msg_no_story_highlight">ストーリーなし。</string>
+    <string name="msg_no_story_extra">履歴なし。</string>
+    <string name="msg_story_removed_highlight">削除完了</string>
+    <string name="msg_story_added_highlight">追加完了</string>
+    <string name="title_delete_highlight">ハイライト削除？</string>
+    <string name="msg_delete_highlight">このハイライトを削除しますか？</string>
+
+    <!-- 接続管理 -->
+    <string name="title_manage_conn">接続</string>
+    <string name="label_server_name">名前</string>
+    <string name="label_ip_host">IP / ホスト</string>
+    <string name="placeholder_ip">192.168.1.100</string>
+    <string name="label_share_name">共有名</string>
+    <string name="placeholder_share">Photos</string>
+    <string name="label_target_folder">フォルダ</string>
+    <string name="placeholder_target">Backup</string>
+    <string name="title_delete_conn">接続解除？</string>
+    <string name="msg_delete_conn">\"%1$s\" (%2$s) を解除しますか？</string>
+
+    <!-- バックアップ -->
+    <string name="msg_processing_folder">処理中...</string>
+    <string name="title_import_folder">フォルダ読み込み</string>
+    <string name="msg_scanning_folder">スキャン中...</string>
+    <string name="btn_rescan_folder">再スキャン</string>
+
+    <!-- その他 -->
+    <string name="msg_success_export">✅ %d 件エクスポート完了</string>
+    <string name="msg_failed_export">❌ 失敗: %s</string>
+
+    <!-- NAS 管理 -->
+    <string name="title_manage_nas">SMB ストレージ</string>
+    <string name="label_auto_discovery">自動検出</string>
+    <string name="msg_no_smb_found">見つかりません。</string>
+    <string name="msg_scanning">スキャン中...</string>
+    <string name="btn_scan_network">スキャン</string>
+    <string name="label_smb_found">検出サーバー</string>
+    <string name="msg_host_set">%s に設定</string>
+    <string name="label_smb_config">設定</string>
+    <string name="label_guest_mode">ゲストモード</string>
+    <string name="msg_guest_active">ゲストモード有効</string>
+    <string name="msg_fill_host_share">ホストと共有名を入力</string>
+    <string name="msg_read_folder_failed">読み込み失敗: %s</string>
+    <string name="btn_test_conn">テスト</string>
+    <string name="msg_fill_host_share_test">詳細を入力</string>
+    <string name="btn_save_server">保存</string>
+    <string name="msg_server_saved">保存完了</string>
+    <string name="msg_fill_name_host">必須</string>
+    <string name="label_connected_servers">接続中 (%d)</string>
+    <string name="msg_no_conn_saved">接続なし。</string>
+    <string name="btn_open_explorer">表示</string>
+    <string name="label_media">メディア</string>
+    <string name="title_choose_folder">フォルダ選択</string>
+    <string name="msg_no_subfolder">サブフォルダなし。</string>
+    <string name="msg_folder_selected">選択中: %s</string>
+    <string name="msg_conn_deleted">解除完了</string>
+    <string name="btn_use_pin">PIN を使う</string>
+
+    <!-- 導入 -->
+    <string name="ob_title_1">ようこそ</string>
+    <string name="ob_desc_1">完全オフラインのフォトギャラリー。</string>
+    <string name="ob_title_2">NAS 同期</string>
+    <string name="ob_desc_2">自宅の NAS と接続。</string>
+    <string name="ob_title_3">プライバシー</string>
+    <string name="ob_desc_3">PIN と生体認証で保護。</string>
+    <string name="btn_skip">スキップ</string>
+    <string name="btn_start_memoir">はじめる</string>
+    <string name="btn_continue">次へ</string>
+
+    <!-- 権限 -->
+    <string name="perm_title">権限設定</string>
+    <string name="perm_desc">メディアへのアクセスが必要です。</string>
+    <string name="perm_media_title">メディア権限</string>
+    <string name="perm_media_desc">写真と動画の読み込み。</string>
+    <string name="perm_camera_title">カメラ権限</string>
+    <string name="perm_camera_desc">撮影して保存。</string>
+    <string name="status_granted">許可済み</string>
+    <string name="status_pending">未許可</string>
+    <string name="btn_grant_media">許可を与える</string>
+    <string name="btn_continue_memoir">次へ</string>
+    <string name="btn_skip_later">あとで</string>
+
+    <!-- 通知 -->
+    <string name="title_notifications">アクティビティ</string>
+    <string name="msg_no_activity">履歴なし。</string>
+    <string name="title_mem_added">保存完了</string>
+    <string name="desc_mem_added">思い出を保存しました</string>
+    <string name="title_story_expiring">まもなく終了</string>
+    <string name="label_your_story">ストーリー</string>
+    <string name="desc_story_expiring">%2$d 分で終了します。</string>
+    <string name="title_mem_collection">思い出集</string>
+    <string name="desc_mem_collection">%d 件の思い出。</string>
+    <string name="title_local_sec">データ保護</string>
+    <string name="desc_local_sec">100% プライベート。</string>
+    <string name="label_mem_flashback">🗓️ %s</string>
+    <string name="desc_mem_date">%s の投稿</string>
+
+    <!-- SMB -->
+    <string name="title_smb_explorer">SMBエクスプローラー</string>
+    <string name="msg_no_smb_saved">接続なし。</string>
+    <string name="label_select_server">サーバー</string>
+    <string name="label_location_path">パス: %s</string>
+    <string name="btn_up">戻る</string>
+    <string name="btn_export_here">書き出し</string>
+    <string name="msg_empty_folder">空です。</string>
+    <string name="label_memoir_archive">アーカイブ</string>
+    <string name="btn_import">読み込み</string>
+    <string name="msg_smb_load_failed">読み込み失敗</string>
+
+    <string name="msg_smb_sync_title">NAS 同期完了</string>
+    <string name="msg_smb_sync_desc">%d 件のファイルを同期。</string>
+
+    <!-- メッセージ -->
+    <string name="msg_album_deleted">削除完了</string>
+    <string name="msg_item_removed_album">削除完了</string>
+    <string name="msg_photo_added_album">写真を追加</string>
+    <string name="msg_story_added_album">ストーリーズを追加</string>
+    <string name="msg_gradient_added_album">プリセットを追加</string>
+    <string name="msg_export_folder_success">✅ %d 件書き出し完了</string>
+    <string name="msg_export_folder_failed">❌ 失敗: %s</string>
+    <string name="msg_import_folder_success">✅ %d 件読み込み完了</string>
+    <string name="msg_import_folder_failed">❌ 失敗: %s</string>
+    <string name="msg_rescan_success">✅ 完了: %d 件新規</string>
+    <string name="msg_no_story_highlight_edit">ハイライトなし</string>
+
+    <!-- 言語 -->
+    <string name="lang_en">English</string>
+    <string name="lang_id">Indonesia</string>
+    <string name="lang_zh">中文</string>
+    <string name="lang_ja">日本語</string>
+    <string name="lang_ru">Русский</string>
+    <string name="lang_ar">العربية</string>
+
+    <!-- 設定 -->
+    <string name="status_active">有効</string>
+    <string name="status_inactive">無効</string>
+    <string name="btn_remove_pin">PIN 削除</string>
+    <string name="placeholder_new_pin">新規 PIN</string>
+    <string name="btn_open">開く</string>
+    <string name="btn_clean">クリーン</string>
+    <string name="desc_manage_smb">NAS 設定</string>
+    <string name="desc_manual_backup">データの書き出し</string>
+
+    <string name="label_memoir_user">Memoir (%s)</string>
+    <string name="channel_sync_name">NAS 同期</string>
+    <string name="channel_sync_desc">NAS 同期設定</string>
+
+    <string name="label_video">動画</string>
+    <string name="label_multi_photo">マルチ</string>
+
+    <string name="back_to_explore">戻る</string>
+    <string name="back_to_profile">戻る</string>
+    <string name="label_exploration">発見</string>
+    <string name="msg_no_saved_post">保存なし</string>
+
+    <string name="title_backup_slideshow">バックアップ</string>
+    <string name="tab_backup_folder">フォルダ</string>
+    <string name="tab_slideshow">スライド</string>
+    <string name="title_folder_backup">保存</string>
+    <string name="label_post_folder_structure">%d 件の投稿</string>
+    <string name="btn_export_folder_data">エクスポート</string>
+    <string name="title_data_folder_guide">ガイド</string>
+    <string name="desc_data_folder_guide">\'memoir_data/posts/\' に保存されます。</string>
+    <string name="title_slideshow_generator">スライドショー</string>
+    <string name="desc_slideshow_generator">写真を選択</string>
+    <string name="msg_no_slideshow_post">写真なし</string>
+    <string name="label_select_photo_count">選択中 (%d)</string>
+
+    <string name="label_me">自分</string>
+    <string name="theme_signature">シグネチャ</string>
+    <string name="theme_navy">ネイビー</string>
+    <string name="theme_charcoal">チャコール</string>
+    <string name="theme_rose">ローズ</string>
+    <string name="theme_ocean">オーシャン</string>
+    <string name="theme_emerald">エメラルド</string>
+    <string name="theme_sunset">サンセット</string>
+    <string name="theme_violet">バイオレット</string>
+
+    <string name="desc_pinned">固定済み</string>
+    <string name="desc_menu">メニュー</string>
+    <string name="desc_like">いいね</string>
+    <string name="desc_notes">ノート</string>
+    <string name="desc_error_media">読み込み失敗</string>
+    <string name="desc_close_camera">カメラを閉じる</string>
+    <string name="desc_flash_toggle">フラッシュ</string>
+    <string name="desc_switch_camera">カメラ切替</string>
+    <string name="desc_selected">選択済み</string>
+    <string name="desc_in_highlight">ハイライト</string>
+
+    <string name="err_invalid_share">共有 \'%s\' は有効なディスクディレクトリではありません。</string>
+    <string name="err_folder_not_found_smb">SMB サーバー上にフォルダ \'%s\' が見つかりません。</string>
+    <string name="label_nas_server_default">NAS サーバー (%s)</string>
+
+    <string name="msg_test_conn_success">SMB/NAS 接続に成功しました！</string>
+    <string name="msg_test_conn_failed">SMB への接続に失敗しました</string>
+    <string name="msg_sync_searching">%s でメディアファイルを検索中...</string>
+    <string name="msg_sync_no_files">このフォルダには写真/動画ファイルが見つかりませんでした。</string>
+    <string name="msg_sync_downloading">SMB から %d 個のファイルをダウンロード中...</string>
+    <string name="msg_sync_item_progress">ダウンロード中 (%1$d/%2$d): %3$s</string>
+    <string name="msg_sync_success_album">%d 件のメディアをアルバムに読み込みました！</string>
+    <string name="msg_sync_failed_media">メディアファイルのダウンロードに失敗しました。</string>
+    <string name="label_nas_import_caption">📁 NAS %s からインポート</string>
+    <string name="msg_sync_starting">SMB (%s) へのフォルダ同期を開始します...</string>
+    <string name="msg_sync_export_success">✅ %d 件の新規ファイルを SMB (%s) に同期しました</string>
+    <string name="msg_sync_export_failed">❌ SMB へのエクスポートに失敗しました: %s</string>
+    <string name="msg_import_searching">SMB (%s) で投稿フォルダを検索中...</string>
+    <string name="msg_import_success_smb">✅ SMB から %d 件の新しい思い出をインポートしました！</string>
+    <string name="msg_import_failed_smb">❌ SMB からのインポートに失敗しました: %s</string>
+    <string name="msg_export_starting_folder">SMB の \'%s\' フォルダへの同期を開始します...</string>
+    <string name="msg_export_success_files">✅ %d 件のファイルを \'%s\' フォルダにエクスポートしました！</string>
+    <string name="msg_importing_from">\'%s\' からデータをインポート中...</string>
+    <string name="msg_import_success_from">✅ \'%2$s\' から %1$d 件の新しい思い出をインポートしました！</string>
+
+    <string name="preset_blue">メラスティ・ビーチ 🌊</string>
+    <string name="preset_sunset">バリ島の夕日 🌅</string>
+    <string name="preset_temple">ルフル寺院 🛕</string>
+    <string name="preset_nature">緑の庭園 🍃</string>
+    <string name="preset_orange">2階のカフェ ☕</string>
+    <string name="preset_slate">街の片隅 🌆</string>
+    <string name="preset_purple">禅の思い出 🧘</string>
+    <string name="preset_default">思い出の写真</string>
+
+    <string name="widget_title_memory">📅 あの日の思い出</string>
+    <string name="widget_title_welcome">✨ Memoirへようこそ</string>
+    <string name="widget_desc_years_ago">%1$d 年前 • %2$s</string>
+    <string name="widget_desc_empty">投稿を追加してはじめましょう</string>
+
+    <string name="about_memoir">情報</string>
+    <string name="memoir_version">v1.2.0 • オフラインギャラリー</string>
+</resources>

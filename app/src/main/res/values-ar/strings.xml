@@ -1,0 +1,537 @@
+<resources>
+    <string name="app_name">Memoir</string>
+
+    <!-- التنقل -->
+    <string name="nav_home">الرئيسية</string>
+    <string name="nav_explore">استكشاف</string>
+    <string name="nav_albums">الألبومات</string>
+    <string name="nav_profile">الملف الشخصي</string>
+
+    <!-- الرئيسية -->
+    <string name="home_title">Memoir</string>
+    <string name="on_this_day">في مثل هذا اليوم</string>
+    <string name="memories_found">%d ذكريات</string>
+    <string name="empty_home_title">لا توجد ذكريات</string>
+    <string name="empty_home_desc">استيراد الوسائط من المعرض أو NAS.</string>
+    <string name="btn_add_memory">إضافة ذكرى</string>
+    <string name="btn_add_story">إضافة قصة</string>
+    <string name="kilas_balik">استرجاع</string>
+    <string name="one_month_ago">قبل شهر</string>
+    <string name="six_months_ago">قبل 6 أشهر</string>
+    <string name="years_ago">قبل %d سنوات</string>
+
+    <string name="one_month">شهر</string>
+    <string name="six_months">6 أشهر</string>
+    <string name="years">%d سنوات</string>
+
+    <!-- الملف الشخصي -->
+    <string name="edit_profile">تعديل الملف</string>
+    <string name="posts">المنشورات</string>
+    <string name="saved">المحفوظات</string>
+    <string name="bio_placeholder">اكتب قصتك...</string>
+
+    <!-- الإعدادات -->
+    <string name="settings_title">الإعدادات</string>
+    <string name="settings_subtitle">التفضيلات والأمان</string>
+    <string name="sec_profile">الملف الشخصي</string>
+    <string name="sec_appearance">المظهر</string>
+    <string name="sec_security">الأمان</string>
+    <string name="sec_storage">التخزين والمزامنة</string>
+    <string name="sec_others">أخرى</string>
+
+    <string name="pref_language">اللغة</string>
+    <string name="pref_dark_mode">الوضع الداكن</string>
+    <string name="pref_theme_color">لون المظهر</string>
+    <string name="pref_pin_lock">قفل PIN</string>
+    <string name="pref_biometric">البصمة</string>
+    <string name="pref_hide_location">إخفاء الموقع</string>
+    <string name="pref_hide_location_desc">إزالة GPS من الوسائط الجديدة.</string>
+    <string name="pref_clear_cache">مسح التخزين المؤقت</string>
+    <string name="pref_smb_explorer">مستكشف SMB</string>
+    <string name="pref_smb_explorer_desc">إدارة بيانات NAS.</string>
+    <string name="pref_manage_smb">الاتصالات</string>
+    <string name="pref_manual_backup">نسخ احتياطي محلي</string>
+    <string name="pref_reset_app">إعادة تعيين التطبيق</string>
+
+    <!-- الأزرار -->
+    <string name="btn_save">حفظ</string>
+    <string name="btn_back">رجوع</string>
+    <string name="btn_cancel">إلغاء</string>
+    <string name="btn_done">تم</string>
+    <string name="btn_delete">حذف</string>
+    <string name="btn_reset">إعادة تعيين</string>
+    <string name="empty_home_title_alt">سجل لحظة</string>
+    <string name="empty_home_desc_alt">استيراد الصور إلى أرشيفك الخاص.</string>
+    <string name="confirm_reset_title">مسح جميع البيانات؟</string>
+    <string name="confirm_reset_desc">سيتم إزالة جميع المحتويات بشكل دائم.</string>
+    <string name="msg_understand">موافق</string>
+    <string name="operation_result">النتيجة</string>
+
+    <!-- استكشاف -->
+    <string name="cat_all">الكل</string>
+    <string name="cat_photo">صور</string>
+    <string name="cat_video">فيديو</string>
+    <string name="cat_story">قصص</string>
+    <string name="cat_album">ألبوم</string>
+
+    <string name="filter_sort">ترتيب</string>
+    <string name="filter_latest">الأحدث</string>
+    <string name="filter_oldest">الأقدم</string>
+    <string name="filter_quick_time">الوقت</string>
+    <string name="filter_this_week">هذا الأسبوع</string>
+    <string name="filter_this_month">هذا الشهر</string>
+    <string name="filter_this_year">هذه السنة</string>
+    <string name="filter_custom_time">اختر التاريخ</string>
+    <string name="filter_month">الشهر</string>
+    <string name="filter_year">السنة</string>
+    <string name="filter_reset_time">إعادة تعيين</string>
+
+    <string name="search_placeholder">بحث...</string>
+    <string name="no_search_results">لا توجد نتائج</string>
+    <string name="no_media_yet">لا توجد وسائط</string>
+    <string name="btn_reset_filter">إعادة تعيين</string>
+
+    <string name="status_online">متصل</string>
+    <string name="status_connected">تم الاتصال</string>
+
+    <!-- الألبومات -->
+    <string name="album_archive">الأرشيف</string>
+    <string name="btn_create_album">ألبوم جديد</string>
+    <string name="new_album_title">إنشاء ألبوم</string>
+    <string name="label_album_name">الاسم</string>
+    <string name="placeholder_album_name">اسم الألبوم</string>
+    <string name="label_cover_gradient">الغلاف</string>
+    <string name="label_storage_source">التخزين</string>
+    <string name="label_source_path">المسار</string>
+    <string name="btn_create">إنشاء</string>
+    <string name="msg_album_not_found">غير موجود</string>
+    <string name="msg_no_album_yet">لا توجد ألبومات</string>
+    <string name="media_count">%d عناصر</string>
+    <string name="status_offline">غير متصل</string>
+
+    <string name="label_conn_source">المصدر: %s</string>
+    <string name="title_album_empty">الألبوم فارغ</string>
+    <string name="desc_album_empty">أضف صوراً أو قصصاً لهذا الألبوم.</string>
+    <string name="title_add_to_album">إضافة للألبوم</string>
+    <string name="tab_posts">منشورات</string>
+    <string name="tab_stories">قصص</string>
+    <string name="tab_gradients">قوالب</string>
+    <string name="msg_no_feed_media">لا توجد منشورات.</string>
+    <string name="msg_no_story_media">لا توجد قصص.</string>
+    <string name="desc_tap_to_add">اضغط للإضافة.</string>
+    <string name="btn_delete_album">حذف الألبوم</string>
+    <string name="btn_delete_item">حذف العنصر</string>
+
+    <!-- الملف الشخصي -->
+    <string name="btn_change">تغيير</string>
+    <string name="new_highlight">جديد</string>
+    <string name="msg_no_post">لا توجد منشورات.</string>
+    <string name="msg_no_album">لا توجد ألبومات.</string>
+    <string name="msg_no_memories">لا توجد ذكريات.</string>
+    <string name="msg_no_memories_cat">لا توجد عناصر هنا.</string>
+    <string name="msg_memories_desc">ستظهر الذكريات القديمة هنا تلقائياً.</string>
+    <string name="msg_memories_filter_desc">غير الفلتر لرؤية المزيد.</string>
+    <string name="msg_profile_updated">تم تحديث الملف</string>
+    <string name="msg_highlight_added">تمت الإضافة</string>
+    <string name="msg_highlight_updated">تم التحديث</string>
+    <string name="msg_highlight_deleted">تم الحذف</string>
+    <string name="btn_view_highlight">عرض</string>
+    <string name="btn_edit_highlight">تعديل</string>
+    <string name="btn_delete_highlight">حذف</string>
+    <string name="msg_back_exit">اضغط رجوع مجدداً للخروج</string>
+
+    <!-- قفل الشاشة -->
+    <string name="lock_title">Memoir مقفل</string>
+    <string name="lock_desc">محمي بواسطة الأمان</string>
+    <string name="label_enter_pin">أدخل PIN</string>
+    <string name="btn_unlock">فتح</string>
+    <string name="msg_unlocked">تم الفتح</string>
+    <string name="msg_wrong_pin">PIN خاطئ</string>
+    <string name="msg_story_removed">تمت الإزالة</string>
+    <string name="msg_story_added">تمت الإضافة</string>
+    <string name="msg_highlight_created">تم الإنشاء</string>
+    <string name="msg_highlight_created_only">تم الإنشاء</string>
+    <string name="msg_story_published">تم النشر</string>
+
+    <!-- محرر القصص -->
+    <string name="label_tap_text">اضغط للكتابة</string>
+    <string name="label_date">التاريخ</string>
+    <string name="label_reset">إعادة تعيين</string>
+    <string name="label_text">النص</string>
+    <string name="btn_edit_text">تعديل</string>
+    <string name="btn_add_text">إضافة</string>
+    <string name="btn_publish">نشر</string>
+    <string name="label_align_text">المحاذاة</string>
+    <string name="placeholder_type_text">اكتب هنا...</string>
+
+    <string name="style_modern">عصري</string>
+    <string name="style_classic">كلاسيكي</string>
+    <string name="style_neon">نيون</string>
+    <string name="style_typewriter">آلة كاتبة</string>
+    <string name="style_serif">بسيط</string>
+    <string name="style_strong">قوي</string>
+    <string name="style_elegant">أنيق</string>
+
+    <string name="color_white">أبيض</string>
+    <string name="color_black">أسود</string>
+    <string name="color_yellow">أصفر</string>
+    <string name="color_green">أخضر</string>
+    <string name="color_pink">وردي</string>
+    <string name="color_cyan">سماوي</string>
+    <string name="color_purple">أرجواني</string>
+    <string name="color_orange">برتقالي</string>
+    <string name="color_red">أحمر</string>
+    <string name="color_blue">أزرق</string>
+
+    <string name="filter_normal">عادي</string>
+    <string name="filter_warm">دافئ</string>
+    <string name="filter_cool">بارد</string>
+    <string name="filter_vintage">قديم</string>
+    <string name="filter_bw">أبيض وأسود</string>
+    <string name="filter_dramatic">درامي</string>
+    <string name="msg_filter_applied">الفلتر: %s</string>
+
+    <!-- إضافة منشور -->
+    <string name="step_select_media">اختر الوسائط</string>
+    <string name="step_adjust_media">تعديل</string>
+    <string name="step_edit_memory">تعديل الذكرى</string>
+    <string name="step_share_memory">نشر</string>
+    <string name="btn_next">التالي</string>
+    <string name="msg_min_media">اختر وسائط</string>
+    <string name="msg_max_media">10 عناصر كحد أقصى</string>
+    <string name="msg_memory_updated">تم التحديث</string>
+    <string name="msg_memory_shared">تم النشر</string>
+    <string name="msg_saving_memory">جاري الحفظ...</string>
+    <string name="label_original">الأصلي</string>
+    <string name="label_selected_count">تم اختيار %d</string>
+    <string name="btn_select_multiple">اختيار متعدد</string>
+    <string name="label_fit_fill">ملء/احتواء</string>
+    <string name="label_filter_normal">عادي</string>
+    <string name="label_rotate_90">تدوير</string>
+    <string name="label_aspect_original">الأصلي</string>
+    <string name="label_aspect_square">1:1</string>
+    <string name="label_aspect_portrait">4:5</string>
+    <string name="label_aspect_landscape">16:9</string>
+    <string name="label_aspect_story">9:16</string>
+    <string name="btn_select_some">اختيار متعدد</string>
+    <string name="msg_selected">تم اختيار %d</string>
+    <string name="label_device_gallery">المعرض</string>
+    <string name="item_gallery">معرض الصور</string>
+    <string name="item_camera">الكاميرا</string>
+    <string name="item_smb">SMB / NAS</string>
+    <string name="item_cloud">سحابي</string>
+    <string name="btn_grant_permission">منح الإذن</string>
+    <string name="btn_previous">رجوع</string>
+    <string name="btn_next_item">التالي</string>
+    <string name="label_from">من</string>
+    <string name="placeholder_caption">اكتب تعليقاً...</string>
+    <string name="label_location">الموقع</string>
+    <string name="placeholder_location">أضف موقعاً</string>
+    <string name="label_memory_date">التاريخ</string>
+    <string name="label_album_collection">الألبوم</string>
+    <string name="item_no_album">بدون ألبوم</string>
+    <string name="item_create_new">+ إنشاء جديد</string>
+    <string name="placeholder_new_album">اسم الألبوم</string>
+    <string name="label_extra_settings">الإعدادات</string>
+    <string name="item_pin_feed">تثبيت المنشور</string>
+    <string name="item_lock_private">خاص</string>
+    <string name="title_choose_smb">اختر من SMB</string>
+    <string name="title_choose_cloud">اختر من السحابة</string>
+    <string name="btn_quick_add">إضافة سريعة</string>
+    <string name="btn_manage_all">إدارة</string>
+    <string name="msg_back_confirm">اضغط رجوع مجدداً</string>
+    <string name="msg_cancel_confirm">اضغط إلغاء مجدداً</string>
+    <string name="msg_cancel_story">إلغاء القصة؟</string>
+
+    <!-- المنشورات -->
+    <string name="my_memoir">مذكراتي</string>
+    <string name="item_unpin">إلغاء التثبيت</string>
+    <string name="item_pin">تثبيت</string>
+    <string name="item_edit_memory">تعديل</string>
+    <string name="item_delete_memory">حذف</string>
+    <string name="msg_share_footer">\n— تمت المشاركة عبر Memoir</string>
+    <string name="title_share">مشاركة</string>
+    <string name="btn_view_album">عرض الألبوم</string>
+    <string name="label_liked">أعجبني</string>
+    <string name="label_add_favorite">إضافة للمفضلة</string>
+    <string name="label_view_journal">عرض الملاحظات</string>
+    <string name="title_delete_memory">حذف الذكرى؟</string>
+    <string name="msg_delete_memory">حذف هذه الذكرى نهائياً؟</string>
+    <string name="msg_memory_deleted">تم الحذف</string>
+
+    <!-- الملاحظات -->
+    <string name="title_notes">الملاحظات</string>
+    <string name="btn_close_notes">إغلاق</string>
+    <string name="msg_no_notes">لا توجد ملاحظات.</string>
+    <string name="msg_notes_desc">أضف أفكارك هنا.</string>
+    <string name="placeholder_notes">اكتب ملاحظة...</string>
+    <string name="btn_save_note">حفظ</string>
+    <string name="label_caption">التعليق</string>
+    <string name="label_my_note">ملاحظتي</string>
+    <string name="btn_delete_note">حذف</string>
+
+    <string name="msg_story_random_hint">اضغط للتشغيل</string>
+
+    <!-- القصص -->
+    <string name="msg_just_now">الآن</string>
+    <string name="msg_minutes_ago">منذ %d د</string>
+    <string name="msg_hours_ago">منذ %d س</string>
+    <string name="msg_yesterday">أمس</string>
+    <string name="label_highlight">تميز</string>
+    <string name="label_private">خاص</string>
+    <string name="label_highlighted">متميز</string>
+    <string name="title_save_highlight">حفظ في المتميز</string>
+    <string name="title_new_highlight">متميز جديد</string>
+    <string name="label_highlight_name">الاسم</string>
+    <string name="placeholder_highlight_name">الاسم</string>
+    <string name="btn_create_add">إنشاء</string>
+    <string name="title_delete_story">حذف القصة؟</string>
+    <string name="msg_delete_story">إزالة هذه القصة؟</string>
+
+    <!-- الملف الشخصي -->
+    <string name="msg_save_profile_failed">فشل الحفظ</string>
+    <string name="label_change_photo">تغيير الصورة</string>
+    <string name="btn_pick_gallery">المعرض</string>
+    <string name="label_or_preset">قوالب</string>
+    <string name="label_name">الاسم</string>
+    <string name="label_username">اسم المستخدم</string>
+    <string name="label_bio">نبذة</string>
+    <string name="btn_next_step">التالي</string>
+    <string name="label_edit_cover">تعديل الغلاف</string>
+    <string name="placeholder_highlight_name_alt">الاسم</string>
+    <string name="tab_story">قصة</string>
+    <string name="tab_selected">مختار (%d)</string>
+    <string name="msg_no_story_selected">لا توجد قصص.</string>
+    <string name="msg_no_story_archive">الأرشيف فارغ.</string>
+    <string name="title_choose_cover">اختر غلافاً</string>
+    <string name="label_choose_story_preset">المصدر</string>
+    <string name="tab_add">إضافة (%d)</string>
+    <string name="msg_no_story_highlight">لا توجد قصص.</string>
+    <string name="msg_no_story_extra">لا توجد قصص إضافية.</string>
+    <string name="msg_story_removed_highlight">تمت الإزالة</string>
+    <string name="msg_story_added_highlight">تمت الإضافة</string>
+    <string name="title_delete_highlight">حذف المتميز؟</string>
+    <string name="msg_delete_highlight">حذف هذه المجموعة؟</string>
+
+    <!-- الاتصالات -->
+    <string name="title_manage_conn">الاتصالات</string>
+    <string name="label_server_name">الاسم</string>
+    <string name="label_ip_host">IP / المضيف</string>
+    <string name="placeholder_ip">192.168.1.100</string>
+    <string name="label_share_name">اسم المشاركة</string>
+    <string name="placeholder_share">Photos</string>
+    <string name="label_target_folder">المجلد</string>
+    <string name="placeholder_target">Backup</string>
+    <string name="title_delete_conn">حذف الاتصال؟</string>
+    <string name="msg_delete_conn">حذف \"%1$s\" (%2$s)؟</string>
+
+    <!-- النسخ الاحتياطي -->
+    <string name="msg_processing_folder">جاري المعالجة...</string>
+    <string name="title_import_folder">استيراد مجلد</string>
+    <string name="msg_scanning_folder">جاري الفحص...</string>
+    <string name="btn_rescan_folder">إعادة فحص</string>
+
+    <!-- متفرقات -->
+    <string name="msg_success_export">✅ تم تصدير %d ملفات</string>
+    <string name="msg_failed_export">❌ فشل: %s</string>
+
+    <!-- إدارة NAS -->
+    <string name="title_manage_nas">تخزين SMB</string>
+    <string name="label_auto_discovery">اكتشاف تلقائي</string>
+    <string name="msg_no_smb_found">لم يتم العثور على خوادم.</string>
+    <string name="msg_scanning">جاري الفحص...</string>
+    <string name="btn_scan_network">فحص</string>
+    <string name="label_smb_found">الخوادم الموجودة</string>
+    <string name="msg_host_set">تم التعيين إلى %s</string>
+    <string name="label_smb_config">الإعدادات</string>
+    <string name="label_guest_mode">وضع الزائر</string>
+    <string name="msg_guest_active">وضع الزائر مفعل</string>
+    <string name="msg_fill_host_share">أدخل المضيف والمشاركة</string>
+    <string name="msg_read_folder_failed">فشل القراءة: %s</string>
+    <string name="btn_test_conn">اختبار</string>
+    <string name="msg_fill_host_share_test">أدخل التفاصيل</string>
+    <string name="btn_save_server">حفظ</string>
+    <string name="msg_server_saved">تم الحفظ</string>
+    <string name="msg_fill_name_host">مطلوب</string>
+    <string name="label_connected_servers">متصل (%d)</string>
+    <string name="msg_no_conn_saved">لا توجد اتصالات.</string>
+    <string name="btn_open_explorer">فتح المستكشف</string>
+    <string name="label_media">الوسائط</string>
+    <string name="title_choose_folder">اختر مجلداً</string>
+    <string name="msg_no_subfolder">لا توجد مجلدات فرعية.</string>
+    <string name="msg_folder_selected">المختار: %s</string>
+    <string name="msg_conn_deleted">تم الحذف</string>
+    <string name="btn_use_pin">استخدم PIN</string>
+
+    <!-- الترحيب -->
+    <string name="ob_title_1">مرحباً</string>
+    <string name="ob_desc_1">معرض خاص بدون إنترنت.</string>
+    <string name="ob_title_2">مزامنة NAS</string>
+    <string name="ob_desc_2">اتصل بجهاز NAS الخاص بك.</string>
+    <string name="ob_title_3">الخصوصية</string>
+    <string name="ob_desc_3">أمان مع PIN والبصمة.</string>
+    <string name="btn_skip">تخطي</string>
+    <string name="btn_start_memoir">ابدأ الآن</string>
+    <string name="btn_continue">متابعة</string>
+
+    <!-- الأذونات -->
+    <string name="perm_title">الأذونات</string>
+    <string name="perm_desc">مطلوب الوصول للوسائط.</string>
+    <string name="perm_media_title">الوصول للصور</string>
+    <string name="perm_media_desc">قراءة الصور والفيديوهات.</string>
+    <string name="perm_camera_title">الوصول للكاميرا</string>
+    <string name="perm_camera_desc">تسجيل اللحظات.</string>
+    <string name="status_granted">مفعل</string>
+    <string name="status_pending">قيد الانتظار</string>
+    <string name="btn_grant_media">منح الوصول</string>
+    <string name="btn_continue_memoir">متابعة</string>
+    <string name="btn_skip_later">لاحقاً</string>
+
+    <!-- التنبيهات -->
+    <string name="title_notifications">النشاط</string>
+    <string name="msg_no_activity">لا يوجد نشاط.</string>
+    <string name="title_mem_added">تمت الإضافة</string>
+    <string name="desc_mem_added">تم حفظ ذكرى جديدة</string>
+    <string name="title_story_expiring">ستنتهي الصلاحية</string>
+    <string name="label_your_story">قصتك</string>
+    <string name="desc_story_expiring">ستنتهي القصة خلال %2$d د.</string>
+    <string name="title_mem_collection">المجموعة</string>
+    <string name="desc_mem_collection">%d ذكريات ثمينة.</string>
+    <string name="title_local_sec">أمن البيانات</string>
+    <string name="desc_local_sec">خاص 100%.</string>
+    <string name="label_mem_flashback">🗓️ %s</string>
+    <string name="desc_mem_date">منشور من %s</string>
+
+    <!-- مستكشف SMB -->
+    <string name="title_smb_explorer">مستكشف SMB</string>
+    <string name="msg_no_smb_saved">لا توجد اتصالات.</string>
+    <string name="label_select_server">الخادم</string>
+    <string name="label_location_path">المسار: %s</string>
+    <string name="btn_up">للأعلى</string>
+    <string name="btn_export_here">تصدير</string>
+    <string name="msg_empty_folder">فارغ.</string>
+    <string name="label_memoir_archive">الأرشيف</string>
+    <string name="btn_import">استيراد</string>
+    <string name="msg_smb_load_failed">فشل التحميل</string>
+
+    <string name="msg_smb_sync_title">انتهت مزامنة NAS</string>
+    <string name="msg_smb_sync_desc">تمت مزامنة %d ملفات جديدة.</string>
+
+    <!-- رسائل -->
+    <string name="msg_album_deleted">تم حذف الألبوم</string>
+    <string name="msg_item_removed_album">تمت إزالة العنصر</string>
+    <string name="msg_photo_added_album">تمت إضافة الصورة</string>
+    <string name="msg_story_added_album">تمت إضافة القصة</string>
+    <string name="msg_gradient_added_album">تمت إضافة القالب</string>
+    <string name="msg_export_folder_success">✅ تم تصدير %d ملفات</string>
+    <string name="msg_export_folder_failed">❌ فشل: %s</string>
+    <string name="msg_import_folder_success">✅ تم استيراد %d ملفات</string>
+    <string name="msg_import_folder_failed">❌ فشل: %s</string>
+    <string name="msg_rescan_success">✅ تم: %d جديد</string>
+    <string name="msg_no_story_highlight_edit">مجموعة فارغة</string>
+
+    <!-- أسماء اللغات -->
+    <string name="lang_en">English</string>
+    <string name="lang_id">Indonesia</string>
+    <string name="lang_zh">中文</string>
+    <string name="lang_ja">日本語</string>
+    <string name="lang_ru">Русский</string>
+    <string name="lang_ar">العربية</string>
+
+    <!-- الإعدادات -->
+    <string name="status_active">نشط</string>
+    <string name="status_inactive">غير نشط</string>
+    <string name="btn_remove_pin">إزالة PIN</string>
+    <string name="placeholder_new_pin">PIN جديد</string>
+    <string name="btn_open">فتح</string>
+    <string name="btn_clean">تنظيف</string>
+    <string name="desc_manage_smb">إعدادات NAS</string>
+    <string name="desc_manual_backup">تصدير البيانات</string>
+
+    <string name="label_memoir_user">Memoir (%s)</string>
+    <string name="channel_sync_name">مزامنة NAS</string>
+    <string name="channel_sync_desc">مزامنة وسائط NAS</string>
+
+    <string name="label_video">فيديو</string>
+    <string name="label_multi_photo">متعدد</string>
+
+    <string name="back_to_explore">رجوع</string>
+    <string name="back_to_profile">رجوع</string>
+    <string name="label_exploration">استكشاف</string>
+    <string name="msg_no_saved_post">لا توجد محفوظات</string>
+
+    <string name="title_backup_slideshow">نسخ احتياطي</string>
+    <string name="tab_backup_folder">مجلد</string>
+    <string name="tab_slideshow">عرض</string>
+    <string name="title_folder_backup">نسخ احتياطي</string>
+    <string name="label_post_folder_structure">%d منشورات</string>
+    <string name="btn_export_folder_data">تصدير المجلد</string>
+    <string name="title_data_folder_guide">دليل</string>
+    <string name="desc_data_folder_guide">الوسائط في \'memoir_data/posts/\'.</string>
+    <string name="title_slideshow_generator">عرض شرائح</string>
+    <string name="desc_slideshow_generator">اختر صوراً</string>
+    <string name="msg_no_slideshow_post">لا توجد صور</string>
+    <string name="label_select_photo_count">مختار (%d)</string>
+
+    <string name="label_me">أنا</string>
+    <string name="theme_signature">توقيع</string>
+    <string name="theme_navy">كحلي</string>
+    <string name="theme_charcoal">فحمي</string>
+    <string name="theme_rose">وردي</string>
+    <string name="theme_ocean">محيطي</string>
+    <string name="theme_emerald">زمردي</string>
+    <string name="theme_sunset">غروب</string>
+    <string name="theme_violet">بنفسجي</string>
+
+    <string name="desc_pinned">مثبت</string>
+    <string name="desc_menu">قائمة</string>
+    <string name="desc_like">أعجبني</string>
+    <string name="desc_notes">ملاحظات</string>
+    <string name="desc_error_media">فشل التحميل</string>
+    <string name="desc_close_camera">إغلاق الكاميرا</string>
+    <string name="desc_flash_toggle">فلاش</string>
+    <string name="desc_switch_camera">تغيير الكاميرا</string>
+    <string name="desc_selected">مختار</string>
+    <string name="desc_in_highlight">متميز</string>
+
+    <string name="err_invalid_share">المشاركة \'%s\' ليست دليل قرص صالحاً.</string>
+    <string name="err_folder_not_found_smb">المجلد \'%s\' غير موجود على خادم SMB.</string>
+    <string name="label_nas_server_default">خادم NAS (%s)</string>
+
+    <string name="msg_test_conn_success">تم الاتصال بـ SMB/NAS بنجاح!</string>
+    <string name="msg_test_conn_failed">فشل الاتصال بـ SMB</string>
+    <string name="msg_sync_searching">جاري البحث عن ملفات الوسائط في %s...</string>
+    <string name="msg_sync_no_files">لم يتم العثور على ملفات صور/فيديو في هذا المجلد.</string>
+    <string name="msg_sync_downloading">جاري تحميل %d ملفات وسائط من SMB...</string>
+    <string name="msg_sync_item_progress">جاري التحميل (%1$d/%2$d): %3$s</string>
+    <string name="msg_sync_success_album">تم استيراد %d من الوسائط بنجاح إلى الألبوم!</string>
+    <string name="msg_sync_failed_media">فشل تحميل ملفات الوسائط.</string>
+    <string name="label_nas_import_caption">📁 مستورد من NAS %s</string>
+    <string name="msg_sync_starting">بدء مزامنة المجلد مع SMB (%s)...</string>
+    <string name="msg_sync_export_success">✅ تمت مزامنة %d ملفات جديدة إلى SMB (%s)</string>
+    <string name="msg_sync_export_failed">❌ فشل التصدير إلى SMB: %s</string>
+    <string name="msg_import_searching">جاري البحث عن مجلدات المنشورات في SMB (%s)...</string>
+    <string name="msg_import_success_smb">✅ تم استيراد وفهرسة %d ذكريات جديدة من SMB!</string>
+    <string name="msg_import_failed_smb">❌ فشل الاستيراد من SMB: %s</string>
+    <string name="msg_export_starting_folder">بدء المزامنة إلى المجلد \'%s\' على SMB...</string>
+    <string name="msg_export_success_files">✅ تم تصدير %d ملفات إلى المجلد \'%s\' بنجاح!</string>
+    <string name="msg_importing_from">جاري استيراد البيانات من \'%s\'...</string>
+    <string name="msg_import_success_from">✅ تم استيراد %1$d ذكريات جديدة من \'%2$s\' بنجاح!</string>
+
+    <string name="preset_blue">شاطئ ميلاستي 🌊</string>
+    <string name="preset_sunset">غروب بالي 🌅</string>
+    <string name="preset_temple">معبد لوهور 🛕</string>
+    <string name="preset_nature">الحديقة الخضراء 🍃</string>
+    <string name="preset_orange">مقهى الطابق الثاني ☕</string>
+    <string name="preset_slate">زاوية المدينة 🌆</string>
+    <string name="preset_purple">زين ميموار 🧘</string>
+    <string name="preset_default">صورة ميموار</string>
+
+    <string name="widget_title_memory">📅 ذكريات اليوم</string>
+    <string name="widget_title_welcome">✨ مرحباً بك في ميموار</string>
+    <string name="widget_desc_years_ago">منذ %1$d سنوات • %2$s</string>
+    <string name="widget_desc_empty">أضف منشوراً للبدء</string>
+
+    <string name="about_memoir">حول</string>
+    <string name="memoir_version">v1.2.0 • معرض بدون إنترنت</string>
+</resources>
