@@ -80,13 +80,11 @@ fun CameraView(
             .fillMaxSize()
             .background(Color.Black)
     ) {
-        
         AndroidView(
             factory = { previewView },
             modifier = Modifier.fillMaxSize()
         )
 
-        
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -134,7 +132,6 @@ fun CameraView(
             }
         }
 
-        
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -146,7 +143,6 @@ fun CameraView(
         ) {
             Spacer(modifier = Modifier.size(44.dp))
 
-            
             Box(
                 modifier = Modifier
                     .size(80.dp)
@@ -171,7 +167,6 @@ fun CameraView(
                 )
             }
 
-            
             IconButton(
                 onClick = {
                     lensFacing = if (lensFacing == CameraSelector.LENS_FACING_BACK) {

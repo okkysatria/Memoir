@@ -52,16 +52,13 @@ fun MemoirApp(viewModel: MemoirViewModel) {
     val isAppLocked by viewModel.isAppLocked.collectAsStateWithLifecycle()
     val highlights by viewModel.highlights.collectAsStateWithLifecycle()
     val screenStack by viewModel.screenStack.collectAsStateWithLifecycle()
-
     var showPinDialog by remember { mutableStateOf(false) }
     var pinInput by remember { mutableStateOf("") }
     var showStoryCreator by remember { mutableStateOf(false) }
     val context = LocalContext.current
     var lastBackPressTime by remember { mutableLongStateOf(0L) }
-
     val hasSeenOnboarding by viewModel.hasSeenOnboarding.collectAsStateWithLifecycle()
     val hasGrantedPermissions by viewModel.hasGrantedPermissions.collectAsStateWithLifecycle()
-
     BackHandler {
         if (screenStack.size > 1) {
             viewModel.navigateBack()
@@ -78,7 +75,6 @@ fun MemoirApp(viewModel: MemoirViewModel) {
             }
         }
     }
-
     Box(modifier = Modifier.fillMaxSize()) {
         if (!hasSeenOnboarding) {
             OnboardingScreen(
@@ -122,7 +118,10 @@ fun MemoirApp(viewModel: MemoirViewModel) {
                             ) {
                                 NavigationBarItem(
                                     selected = currentTab == "home",
-                                    onClick = { viewModel.selectTab("home") },
+                                    onClick = { 
+                                        if (currentTab == "home") viewModel.triggerScrollToTop()
+                                        else viewModel.selectTab("home") 
+                                    },
                                     icon = { Icon(imageVector = if (currentTab == "home") Icons.Default.Home else Icons.Outlined.Home, contentDescription = stringResource(R.string.nav_home)) },
                                     label = { Text(stringResource(R.string.nav_home), fontSize = 11.sp, fontWeight = if (currentTab == "home") FontWeight.Bold else FontWeight.Medium) },
                                     colors = NavigationBarItemDefaults.colors(
@@ -134,7 +133,10 @@ fun MemoirApp(viewModel: MemoirViewModel) {
                                 )
                                 NavigationBarItem(
                                     selected = currentTab == "explore",
-                                    onClick = { viewModel.selectTab("explore") },
+                                    onClick = { 
+                                        if (currentTab == "explore") viewModel.triggerScrollToTop()
+                                        else viewModel.selectTab("explore") 
+                                    },
                                     icon = { Icon(imageVector = Icons.Default.Search, contentDescription = stringResource(R.string.nav_explore)) },
                                     label = { Text(stringResource(R.string.nav_explore), fontSize = 11.sp, fontWeight = if (currentTab == "explore") FontWeight.Bold else FontWeight.Medium) },
                                     colors = NavigationBarItemDefaults.colors(
@@ -175,7 +177,10 @@ fun MemoirApp(viewModel: MemoirViewModel) {
                                 )
                                 NavigationBarItem(
                                     selected = currentTab == "album",
-                                    onClick = { viewModel.selectTab("album") },
+                                    onClick = { 
+                                        if (currentTab == "album") viewModel.triggerScrollToTop()
+                                        else viewModel.selectTab("album") 
+                                    },
                                     icon = { Icon(imageVector = if (currentTab == "album") Icons.Default.PhotoLibrary else Icons.Outlined.PhotoLibrary, contentDescription = stringResource(R.string.nav_albums)) },
                                     label = { Text(stringResource(R.string.nav_albums), fontSize = 11.sp, fontWeight = if (currentTab == "album") FontWeight.Bold else FontWeight.Medium) },
                                     colors = NavigationBarItemDefaults.colors(
@@ -187,7 +192,10 @@ fun MemoirApp(viewModel: MemoirViewModel) {
                                 )
                                 NavigationBarItem(
                                     selected = currentTab == "profile",
-                                    onClick = { viewModel.selectTab("profile") },
+                                    onClick = { 
+                                        if (currentTab == "profile") viewModel.triggerScrollToTop()
+                                        else viewModel.selectTab("profile") 
+                                    },
                                     icon = { Icon(imageVector = if (currentTab == "profile") Icons.Default.Person else Icons.Outlined.Person, contentDescription = stringResource(R.string.nav_profile)) },
                                     label = { Text(stringResource(R.string.nav_profile), fontSize = 11.sp, fontWeight = if (currentTab == "profile") FontWeight.Bold else FontWeight.Medium) },
                                     colors = NavigationBarItemDefaults.colors(
@@ -213,7 +221,6 @@ fun MemoirApp(viewModel: MemoirViewModel) {
                         transitionSpec = {
                             val initialDepth = initialState.second
                             val targetDepth = targetState.second
-
                             if (initialDepth <= 1 && targetDepth <= 1) {
                                 fadeIn(animationSpec = tween(300)) togetherWith fadeOut(animationSpec = tween(300))
                             } else if (targetDepth > initialDepth) {
@@ -234,7 +241,6 @@ fun MemoirApp(viewModel: MemoirViewModel) {
                             is Screen.AlbumDetail -> AlbumDetailScreen(targetScreen.albumId, viewModel)
                             is Screen.Settings -> SettingsScreen(viewModel)
                             is Screen.ManageConnections -> ManageConnectionsScreen(viewModel)
-                            is Screen.Notifications -> NotificationsScreen(viewModel)
                             is Screen.Backup -> BackupScreen(viewModel, onBack = { viewModel.navigateBack() })
                             is Screen.SmbExplorer -> SmbExplorerScreen(viewModel)
                             is Screen.AddPost -> AddPostScreen(
@@ -260,7 +266,6 @@ fun MemoirApp(viewModel: MemoirViewModel) {
                     }
                 }
             }
-
             if (storyViewerOpen) {
                 StoryViewer(
                     stories = activeStories,
@@ -298,7 +303,6 @@ fun MemoirApp(viewModel: MemoirViewModel) {
                     }
                 )
             }
-
             if (showStoryCreator) {
                 StoryCreatorDialog(
                     onDismiss = { showStoryCreator = false },
@@ -322,7 +326,6 @@ fun LockScreen(
 ) {
     var pin by remember { mutableStateOf("") }
     val context = LocalContext.current
-
     val triggerBiometric = remember(context, isBiometricEnabled) {
         {
             if (isBiometricEnabled && context is androidx.fragment.app.FragmentActivity) {
@@ -334,13 +337,11 @@ fun LockScreen(
             }
         }
     }
-
     LaunchedEffect(Unit) {
         if (isBiometricEnabled) {
             triggerBiometric()
         }
     }
-
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -376,9 +377,7 @@ fun LockScreen(
             color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f),
             textAlign = TextAlign.Center
         )
-
         Spacer(modifier = Modifier.height(32.dp))
-
         OutlinedTextField(
             value = pin,
             onValueChange = { if (it.length <= 4) pin = it },
@@ -391,9 +390,7 @@ fun LockScreen(
                 .width(240.dp)
                 .testTag("pin_lock_input")
         )
-
         Spacer(modifier = Modifier.height(20.dp))
-
         Row(
             modifier = Modifier.width(240.dp),
             horizontalArrangement = Arrangement.spacedBy(10.dp),
@@ -412,7 +409,6 @@ fun LockScreen(
             ) {
                 Text(stringResource(R.string.btn_unlock), fontWeight = FontWeight.SemiBold)
             }
-
             if (isBiometricEnabled && com.example.utils.BiometricHelper.isBiometricAvailable(context)) {
                 IconButton(
                     onClick = { triggerBiometric() },

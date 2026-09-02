@@ -4,7 +4,6 @@ import com.example.data.database.*
 import com.example.data.backup.MemoirBackupPayload
 import kotlinx.coroutines.flow.Flow
 
-
 class MemoirRepository(private val memoirDao: MemoirDao) {
     val allPosts: Flow<List<PostEntity>> = memoirDao.getAllPosts()
     val allStories: Flow<List<StoryEntity>> = memoirDao.getAllStories()
@@ -72,4 +71,3 @@ class MemoirRepository(private val memoirDao: MemoirDao) {
         payload.connections.forEach { memoirDao.insertConnection(it) }
     }
 }
-

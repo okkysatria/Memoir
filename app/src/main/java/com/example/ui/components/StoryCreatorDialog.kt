@@ -7,6 +7,7 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.*
+import androidx.compose.animation.core.*
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -51,7 +52,6 @@ import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
@@ -100,11 +100,9 @@ private fun rememberStoryDimens(maxWidth: Dp, maxHeight: Dp): StoryDimens {
     return remember(maxWidth, maxHeight) {
         val wScale = (maxWidth.value / 390f).coerceIn(0.82f, 1.30f)
         val hScale = (maxHeight.value / 844f).coerceIn(0.75f, 1.20f)
-
         fun w(base: Int): Dp = (base * wScale).dp
         fun h(base: Int): Dp = (base * hScale).dp
         fun sp(base: Int): TextUnit = (base * wScale).coerceIn(base * 0.82f, base * 1.25f).sp
-
         StoryDimens(
             iconButtonSize = w(38),
             iconSize = w(20),
@@ -139,9 +137,7 @@ fun StoryCreatorDialog(
         "gradient_sunset", "gradient_blue", "gradient_orange",
         "gradient_nature", "gradient_temple", "gradient_purple", "gradient_slate"
     )
-
     val fontStyles = listOf("MODERN", "CLASSIC", "NEON", "TYPEWRITER", "SERIF", "STRONG", "ELEGANT")
-
     val textColors = listOf(
         "#FFFFFFFF" to stringResource(R.string.color_white),
         "#FF000000" to stringResource(R.string.color_black),
@@ -154,7 +150,6 @@ fun StoryCreatorDialog(
         "#FFF44336" to stringResource(R.string.color_red),
         "#FF2196F3" to stringResource(R.string.color_blue)
     )
-
     val filters = listOf(
         stringResource(R.string.filter_normal),
         stringResource(R.string.filter_warm),
@@ -163,33 +158,26 @@ fun StoryCreatorDialog(
         stringResource(R.string.filter_bw),
         stringResource(R.string.filter_dramatic)
     )
-
     var selectedGradient by remember { mutableStateOf(quickPickGradients.first()) }
     var captionText by remember { mutableStateOf("") }
     var selectedStyle by remember { mutableStateOf("MODERN") }
     var selectedColorPair by remember { mutableStateOf(textColors.first()) }
     var storyDate by remember { mutableLongStateOf(System.currentTimeMillis()) }
-
     var isEditingText by remember { mutableStateOf(false) }
     var textAlignState by remember { mutableStateOf(TextAlign.Center) }
     var textBgMode by remember { mutableIntStateOf(0) }
     var textPositionFraction by remember { mutableStateOf(DEFAULT_TEXT_POSITION_FRACTION) }
-
     var activeFilterIndex by remember { mutableIntStateOf(0) }
     var scale by remember { mutableFloatStateOf(1f) }
     var rotation by remember { mutableFloatStateOf(0f) }
     var offset by remember { mutableStateOf(Offset.Zero) }
-    
     val isGesturing by remember {
         derivedStateOf { scale != 1f || rotation != 0f || offset != Offset.Zero }
     }
-    
     var showDateBadge by remember { mutableStateOf(true) }
     var lastBackTime by remember { mutableLongStateOf(0L) }
-
     val context = LocalContext.current
     val cameraPermissionState = rememberPermissionState(android.Manifest.permission.CAMERA)
-
     androidx.activity.compose.BackHandler {
         if (isEditingText) {
             isEditingText = false
@@ -203,9 +191,7 @@ fun StoryCreatorDialog(
             }
         }
     }
-
     var latestCapturedPhotoUri by rememberSaveable { mutableStateOf<Uri?>(null) }
-
     val galleryLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.PickVisualMedia()
     ) { uri ->
@@ -219,7 +205,6 @@ fun StoryCreatorDialog(
             }
         }
     }
-
     val cameraLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.TakePicture()
     ) { success ->
@@ -236,7 +221,6 @@ fun StoryCreatorDialog(
         }
         latestCapturedPhotoUri = null
     }
-
     val parsedColor = remember(selectedColorPair.first) {
         try {
             Color(android.graphics.Color.parseColor(selectedColorPair.first))
@@ -244,21 +228,18 @@ fun StoryCreatorDialog(
             Color.White
         }
     }
-
     val currentFontFamily = when (selectedStyle) {
         "CLASSIC", "SERIF" -> FontFamily.Serif
         "TYPEWRITER" -> FontFamily.Monospace
         "STRONG" -> FontFamily.SansSerif
         else -> FontFamily.Default
     }
-
     val currentFontStyle = if (selectedStyle == "ELEGANT") FontStyle.Italic else FontStyle.Normal
     val currentFontWeight = when (selectedStyle) {
         "STRONG", "MODERN" -> FontWeight.Black
         "NEON" -> FontWeight.Bold
         else -> FontWeight.Normal
     }
-
     Dialog(
         onDismissRequest = onDismiss,
         properties = DialogProperties(
@@ -271,12 +252,6 @@ fun StoryCreatorDialog(
                 .fillMaxSize()
                 .background(Color.Black)
         ) {
-            
-            
-            
-            
-            
-            
             val view = LocalView.current
             SideEffect {
                 val window = (view.parent as? DialogWindowProvider)?.window
@@ -284,7 +259,6 @@ fun StoryCreatorDialog(
                     WindowCompat.setDecorFitsSystemWindows(window, false)
                 }
             }
-
             val dimens = rememberStoryDimens(maxWidth, maxHeight)
             Box(
                 modifier = Modifier
@@ -400,7 +374,6 @@ private fun StoryCreatorContent(
     onPublish: (mediaPath: String, caption: String?, textColor: String?, textStyle: String?, createdAt: Long) -> Unit
 ) {
     val density = LocalDensity.current
-
     Scaffold(
         modifier = Modifier.fillMaxSize().imePadding(),
         containerColor = Color.Black
@@ -433,7 +406,6 @@ private fun StoryCreatorContent(
                         }
                 ) {
                     MediaView(path = selectedGradient, modifier = Modifier.fillMaxSize())
-
                     val filterName = filters[activeFilterIndex]
                     val filterColor = when {
                         filterName == context.getString(R.string.filter_warm) -> Color(0x33FF9800)
@@ -443,12 +415,10 @@ private fun StoryCreatorContent(
                         filterName == context.getString(R.string.filter_dramatic) -> Color(0x55000000)
                         else -> Color.Transparent
                     }
-
                     if (filterColor != Color.Transparent) {
                         Box(modifier = Modifier.fillMaxSize().background(filterColor))
                     }
                 }
-
                 AnimatedVisibility(
                     visible = isGesturing,
                     enter = fadeIn(),
@@ -457,7 +427,6 @@ private fun StoryCreatorContent(
                 ) {
                     RuleOfThirdsGridOverlay()
                 }
-
                 if (showDateBadge) {
                     Box(
                         modifier = Modifier
@@ -501,22 +470,18 @@ private fun StoryCreatorContent(
                         }
                     }
                 }
-
                 if (captionText.isNotBlank() && !isEditingText) {
                     val textBgModifier = when (textBgMode) {
                         1 -> Modifier.background(parsedColor, RoundedCornerShape(8.dp)).padding(horizontal = 14.dp, vertical = 8.dp)
                         2 -> Modifier.background(Color.Black.copy(alpha = 0.65f), RoundedCornerShape(8.dp)).border(1.dp, Color.White.copy(alpha = 0.3f), RoundedCornerShape(8.dp)).padding(horizontal = 14.dp, vertical = 8.dp)
                         else -> Modifier.padding(12.dp)
                     }
-
                     val textColorToUse = if (textBgMode == 1) {
                         if (selectedColorPair.first == "#FFFFFFFF" || selectedColorPair.first == "#FFFFEB3B") Color.Black else Color.White
                     } else parsedColor
-
                     val canvasWidthPx = with(density) { canvasWidth.toPx() }
                     val canvasHeightPx = with(density) { canvasHeight.toPx() }
                     var elementSizePx by remember { mutableStateOf(IntSize.Zero) }
-
                     Box(
                         modifier = Modifier
                             .align(Alignment.TopStart)
@@ -556,7 +521,6 @@ private fun StoryCreatorContent(
                         )
                     }
                 }
-
                 if (captionText.isBlank() && !isEditingText) {
                     Box(
                         modifier = Modifier
@@ -582,7 +546,6 @@ private fun StoryCreatorContent(
                     }
                 }
             }
-
             AnimatedVisibility(
                 visible = !isEditingText,
                 enter = fadeIn() + slideInVertically(initialOffsetY = { -it / 2 }),
@@ -610,7 +573,6 @@ private fun StoryCreatorContent(
                     ) {
                         Icon(Icons.Default.Close, stringResource(R.string.btn_done), tint = Color.White, modifier = Modifier.size(dimens.iconSize))
                     }
-
                     Row(
                         horizontalArrangement = Arrangement.spacedBy(10.dp),
                         verticalAlignment = Alignment.CenterVertically
@@ -621,7 +583,6 @@ private fun StoryCreatorContent(
                         ) {
                             Icon(Icons.Default.DateRange, stringResource(R.string.label_date), tint = Color.White, modifier = Modifier.size(dimens.smallIconSize + 2.dp))
                         }
-
                         IconButton(
                             onClick = {
                                 val next = (activeFilterIndex + 1) % filters.size
@@ -633,7 +594,6 @@ private fun StoryCreatorContent(
                         ) {
                             Icon(Icons.Default.AutoAwesome, "Filter", tint = Color.White, modifier = Modifier.size(dimens.smallIconSize + 2.dp))
                         }
-
                         if (scale != 1f || rotation != 0f || offset != Offset.Zero) {
                             IconButton(
                                 onClick = { onScaleChange(1f); onRotationChange(0f); onOffsetChange(Offset.Zero) },
@@ -645,7 +605,6 @@ private fun StoryCreatorContent(
                     }
                 }
             }
-
             if (!isEditingText) {
                 Box(
                     modifier = Modifier
@@ -662,33 +621,34 @@ private fun StoryCreatorContent(
                         Text(if (captionText.isNotEmpty()) stringResource(R.string.btn_edit_text) else stringResource(R.string.btn_add_text), color = if (captionText.isNotEmpty()) Color.Black else Color.White, fontWeight = FontWeight.Bold, fontSize = 14.sp)
                     }
                 }
-
+                IconButton(
+                    onClick = {
+                        onPublish(selectedGradient, if (captionText.isNotBlank()) captionText else null, selectedColorPair.first, selectedStyle, storyDate)
+                    },
+                    modifier = Modifier
+                        .align(Alignment.BottomEnd)
+                        .navigationBarsPadding()
+                        .padding(end = 16.dp, bottom = dimens.bottomBarExtraPad + dimens.bottomButtonGap)
+                        .size(dimens.publishBtnSize + 22.dp)
+                        .clip(CircleShape)
+                        .background(Color.White)
+                        .testTag("story_share_submit_fab")
+                ) {
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Filled.ArrowForward,
+                        contentDescription = stringResource(R.string.btn_publish),
+                        tint = Color.Black,
+                        modifier = Modifier.size(28.dp)
+                    )
+                }
                 Column(
                     modifier = Modifier
                         .align(Alignment.BottomEnd)
                         .navigationBarsPadding()
-                        .padding(end = 16.dp, bottom = dimens.bottomBarExtraPad + dimens.bottomButtonGap),
+                        .padding(end = 20.dp, bottom = dimens.bottomBarExtraPad + dimens.bottomButtonGap + 82.dp),
                     horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.spacedBy(14.dp)
+                    verticalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
-                    
-                    
-                    
-                    
-                    
-                    IconButton(
-                        onClick = {
-                            onPublish(selectedGradient, if (captionText.isNotBlank()) captionText else null, selectedColorPair.first, selectedStyle, storyDate)
-                        },
-                        modifier = Modifier
-                            .size(dimens.publishBtnSize + 20.dp)
-                            .clip(CircleShape)
-                            .background(Color.White)
-                            .testTag("story_share_submit_fab")
-                    ) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowForward, stringResource(R.string.btn_publish), tint = Color.Black)
-                    }
-
                     IconButton(
                         onClick = {
                             if (cameraPermissionState.status.isGranted) {
@@ -700,29 +660,41 @@ private fun StoryCreatorContent(
                             }
                         },
                         modifier = Modifier
-                            .size(dimens.galleryButtonSize)
+                            .size(dimens.galleryButtonSize + 4.dp)
                             .clip(CircleShape)
-                            .background(Color.White.copy(alpha = 0.2f))
-                            .border(1.dp, Color.White, CircleShape)
+                            .background(Color.Black.copy(alpha = 0.5f))
+                            .border(1.dp, Color.White.copy(alpha = 0.5f), CircleShape)
                     ) {
-                        Icon(Icons.Default.PhotoCamera, stringResource(R.string.item_camera), tint = Color.White, modifier = Modifier.size(dimens.iconSize))
+                        Icon(
+                            imageVector = Icons.Default.PhotoCamera,
+                            contentDescription = stringResource(R.string.item_camera),
+                            tint = Color.White,
+                            modifier = Modifier.size(dimens.iconSize)
+                        )
                     }
-
                     val isPhotoSelected = !selectedGradient.startsWith("gradient_")
                     IconButton(
                         onClick = {
                             galleryLauncher.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
                         },
-                        modifier = Modifier.size(dimens.galleryButtonSize + 12.dp).clip(CircleShape).background(Color.White.copy(alpha = 0.2f)).border(if (isPhotoSelected) 2.dp else 1.dp, Color.White, CircleShape)
+                        modifier = Modifier
+                            .size(dimens.galleryButtonSize + 14.dp)
+                            .clip(CircleShape)
+                            .background(Color.Black.copy(alpha = 0.5f))
+                            .border(if (isPhotoSelected) 2.dp else 1.dp, if (isPhotoSelected) Color.White else Color.White.copy(alpha = 0.5f), CircleShape)
                     ) {
                         if (isPhotoSelected) {
                             MediaView(path = selectedGradient, modifier = Modifier.fillMaxSize().clip(CircleShape))
                         } else {
-                            Icon(Icons.Default.Image, stringResource(R.string.item_gallery), tint = Color.White, modifier = Modifier.size(dimens.iconSize))
+                            Icon(
+                                imageVector = Icons.Default.Image,
+                                contentDescription = stringResource(R.string.item_gallery),
+                                tint = Color.White,
+                                modifier = Modifier.size(dimens.iconSize)
+                            )
                         }
                     }
                 }
-
                 Box(
                     modifier = Modifier
                         .align(Alignment.BottomStart)
@@ -732,7 +704,7 @@ private fun StoryCreatorContent(
                 ) {
                     LazyRow(
                         horizontalArrangement = Arrangement.spacedBy(10.dp),
-                        contentPadding = PaddingValues(end = 100.dp)
+                        contentPadding = PaddingValues(end = 120.dp)
                     ) {
                         items(quickPickGradients) { gradientId ->
                             val isSelected = selectedGradient == gradientId
@@ -753,16 +725,13 @@ private fun StoryCreatorContent(
                     }
                 }
             }
-
             if (isEditingText) {
                 val textFieldFocusRequester = remember { FocusRequester() }
                 val keyboardController = LocalSoftwareKeyboardController.current
-
                 LaunchedEffect(Unit) {
                     textFieldFocusRequester.requestFocus()
                     keyboardController?.show()
                 }
-
                 Dialog(
                     onDismissRequest = { onIsEditingTextChange(false) },
                     properties = DialogProperties(usePlatformDefaultWidth = false)
@@ -800,14 +769,12 @@ private fun StoryCreatorContent(
                                     contentDescription = stringResource(R.string.label_align_text), tint = Color.White, modifier = Modifier.size(dimens.iconSize)
                                 )
                             }
-
                             IconButton(
                                 onClick = { onTextBgModeChange((textBgMode + 1) % 3) },
                                 modifier = Modifier.size(dimens.iconButtonSize).clip(RoundedCornerShape(10.dp)).background(if (textBgMode > 0) Color.White else Color.White.copy(alpha = 0.2f))
                             ) {
                                 Text("A", color = if (textBgMode > 0) Color.Black else Color.White, fontWeight = FontWeight.Black, fontSize = 18.sp)
                             }
-
                             Button(
                                 onClick = { onIsEditingTextChange(false) },
                                 colors = ButtonDefaults.buttonColors(containerColor = Color.White),
@@ -817,7 +784,6 @@ private fun StoryCreatorContent(
                                 Text(stringResource(R.string.btn_done), color = Color.Black, fontWeight = FontWeight.Bold, fontSize = 13.sp)
                             }
                         }
-
                         Box(
                             modifier = Modifier.fillMaxWidth().align(Alignment.Center).padding(horizontal = 16.dp),
                             contentAlignment = Alignment.Center
@@ -827,11 +793,9 @@ private fun StoryCreatorContent(
                                 2 -> Modifier.background(Color.Black.copy(alpha = 0.75f), RoundedCornerShape(10.dp)).border(1.dp, Color.White.copy(alpha = 0.4f), RoundedCornerShape(10.dp)).padding(horizontal = 16.dp, vertical = 10.dp)
                                 else -> Modifier.padding(12.dp)
                             }
-
                             val editTextColor = if (textBgMode == 1) {
                                 if (selectedColorPair.first == "#FFFFFFFF" || selectedColorPair.first == "#FFFFEB3B") Color.Black else Color.White
                             } else parsedColor
-
                             BasicTextField(
                                 value = captionText,
                                 onValueChange = onCaptionTextChange,
@@ -850,12 +814,10 @@ private fun StoryCreatorContent(
                                     .focusRequester(textFieldFocusRequester),
                                 cursorBrush = androidx.compose.ui.graphics.SolidColor(editTextColor)
                             )
-
                             if (captionText.isEmpty()) {
                                 Text(stringResource(R.string.placeholder_type_text), color = Color.White.copy(alpha = 0.5f), fontSize = dimens.captionFontSize, fontWeight = FontWeight.Bold, textAlign = textAlignState, modifier = Modifier.fillMaxWidth())
                             }
                         }
-
                         Column(
                             modifier = Modifier.fillMaxWidth().align(Alignment.BottomCenter).padding(bottom = 12.dp),
                             verticalArrangement = Arrangement.spacedBy(14.dp)
@@ -880,7 +842,6 @@ private fun StoryCreatorContent(
                                     }
                                 }
                             }
-
                             LazyRow(horizontalArrangement = Arrangement.spacedBy(10.dp), modifier = Modifier.fillMaxWidth(), contentPadding = PaddingValues(horizontal = 8.dp)) {
                                 items(textColors) { colorPair ->
                                     val isSelected = selectedColorPair.first == colorPair.first

@@ -42,7 +42,6 @@ fun StoriesTray(
 ) {
     val context = LocalContext.current
     
-    
     val randomStory = remember(allStories) {
         allStories.filter { it.isWatched }.randomOrNull()
             ?: allStories.randomOrNull()
@@ -156,9 +155,15 @@ fun StoriesTray(
             key = { _, story -> story.id }
         ) { index, story ->
             val ringBrush = if (story.isWatched) {
-                Brush.linearGradient(listOf(Color.LightGray, Color.Gray))
+                Brush.linearGradient(listOf(Color.LightGray.copy(alpha = 0.6f), Color.LightGray.copy(alpha = 0.4f)))
             } else {
-                Brush.linearGradient(listOf(Color(0xFFE1306C), Color(0xFFC13584), Color(0xFFF77737)))
+                Brush.linearGradient(
+                    listOf(
+                        Color(0xFF833AB4),
+                        Color(0xFFFD1D1D),
+                        Color(0xFFFCB045)
+                    )
+                )
             }
 
             Column(
@@ -167,8 +172,11 @@ fun StoriesTray(
             ) {
                 Box(
                     modifier = Modifier
-                        .size(64.dp)
-                        .border(BorderStroke(2.5.dp, ringBrush), CircleShape)
+                        .size(66.dp)
+                        .border(
+                            BorderStroke(if (story.isWatched) 1.5.dp else 2.5.dp, ringBrush), 
+                            CircleShape
+                        )
                         .padding(4.dp)
                 ) {
                     Box(

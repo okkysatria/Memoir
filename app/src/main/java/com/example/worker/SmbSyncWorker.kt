@@ -23,7 +23,6 @@ class SmbSyncWorker(
     private val context: Context,
     workerParams: WorkerParameters
 ) : CoroutineWorker(context, workerParams) {
-
     companion object {
         const val CHANNEL_ID = "memoir_sync_channel"
         const val NOTIFICATION_ID = 1001
@@ -34,31 +33,25 @@ class SmbSyncWorker(
         return withContext(Dispatchers.IO) {
             try {
                 createNotificationChannel()
-
                 val db = MemoirDatabase.getDatabase(context)
                 val repo = MemoirRepository(db.memoirDao())
                 val prefsRepo = UserPreferencesRepository(context)
 
-                
                 val connections = repo.allConnections.first()
                 if (connections.isEmpty()) return@withContext Result.success()
 
                 var newFilesCount = 0
-
                 for (conn in connections) {
                     if (conn.type != "SMB") continue
                     
                     val host = conn.host
-                    
                     val credParts = conn.credentials.split(":")
                     val username = credParts.getOrNull(0) ?: ""
                     val password = credParts.getOrNull(1) ?: ""
-
                     val pathParts = conn.folderPath.split("/")
                     val shareName = pathParts.firstOrNull() ?: continue
                     val subfolder = pathParts.drop(1).joinToString("/")
 
-                    
                     val filesRes = try {
                         SmbHelper.listMediaFiles(
                             host = host,
@@ -73,7 +66,6 @@ class SmbSyncWorker(
 
                     val files = filesRes.getOrNull() ?: continue
 
-                    
                     val currentPosts = repo.allPosts.first()
                     for (smbFile in files) {
                         val existsAlready = currentPosts.any { post ->
@@ -92,11 +84,9 @@ class SmbSyncWorker(
                         if (downloadedRes.isSuccess) newFilesCount++
                     }
                 }
-
                 if (newFilesCount > 0) {
                     showSyncNotification(newFilesCount)
                 }
-
                 Result.success()
             } catch (e: Exception) {
                 Result.retry()

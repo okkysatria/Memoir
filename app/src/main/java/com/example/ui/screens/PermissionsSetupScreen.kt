@@ -54,7 +54,6 @@ private fun buildPermissionItems(): List<PermissionItem> {
     } else {
         listOf(android.Manifest.permission.READ_EXTERNAL_STORAGE)
     }
-
     return listOf(
         PermissionItem(
             icon = Icons.Default.PhotoLibrary,
@@ -76,29 +75,23 @@ fun PermissionsSetupScreen(onFinish: () -> Unit) {
     val context = LocalContext.current
     val permissionItems = buildPermissionItems()
     val allPermissions = remember(permissionItems) { permissionItems.flatMap { it.permissions }.distinct().toTypedArray() }
-
     fun isItemGranted(item: PermissionItem): Boolean =
         item.permissions.any { perm ->
             ContextCompat.checkSelfPermission(context, perm) == android.content.pm.PackageManager.PERMISSION_GRANTED
         }
-
     var grantedMap by remember {
         mutableStateOf(permissionItems.associateWith { isItemGranted(it) })
     }
-
     val allGranted by remember(grantedMap) {
         derivedStateOf { grantedMap.values.all { it } }
     }
-
     val permissionLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestMultiplePermissions()
     ) { _ ->
         grantedMap = permissionItems.associateWith { isItemGranted(it) }
     }
-
     var showContent by remember { mutableStateOf(false) }
     LaunchedEffect(Unit) { showContent = true }
-
     Surface(
         modifier = Modifier.fillMaxSize(),
         color = MaterialTheme.colorScheme.background
@@ -112,7 +105,6 @@ fun PermissionsSetupScreen(onFinish: () -> Unit) {
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Spacer(Modifier.height(40.dp))
-
             AnimatedVisibility(visible = showContent, enter = fadeIn() + slideInVertically { -it / 2 }) {
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     Box(
@@ -149,9 +141,7 @@ fun PermissionsSetupScreen(onFinish: () -> Unit) {
                     )
                 }
             }
-
             Spacer(Modifier.height(32.dp))
-
             AnimatedVisibility(visible = showContent, enter = fadeIn() + slideInVertically { it / 2 }) {
                 Column(verticalArrangement = Arrangement.spacedBy(14.dp)) {
                     permissionItems.forEach { item ->
@@ -226,9 +216,7 @@ fun PermissionsSetupScreen(onFinish: () -> Unit) {
                     }
                 }
             }
-
             Spacer(Modifier.weight(1f))
-
             AnimatedVisibility(visible = showContent, enter = fadeIn() + slideInVertically { it }) {
                 Column(modifier = Modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(10.dp)) {
                     if (!allGranted) {
@@ -252,7 +240,6 @@ fun PermissionsSetupScreen(onFinish: () -> Unit) {
                             Text(stringResource(R.string.btn_continue_memoir), fontSize = 15.sp, fontWeight = FontWeight.Bold)
                         }
                     }
-
                     TextButton(onClick = onFinish, modifier = Modifier.fillMaxWidth()) {
                         Text(stringResource(R.string.btn_skip_later), fontSize = 13.sp, color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f))
                     }

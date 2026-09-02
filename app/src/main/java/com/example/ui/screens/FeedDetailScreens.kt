@@ -31,17 +31,14 @@ fun ExploreFeedScreen(
     viewModel: MemoirViewModel
 ) {
     val posts by viewModel.posts.collectAsStateWithLifecycle()
-    
     val displayPosts = remember(posts, postIds) {
         val postsMap = posts.associateBy { it.id }
         postIds.mapNotNull { postsMap[it] }
     }
-
     val listState = rememberLazyListState(
         initialFirstVisibleItemIndex = initialIndex.coerceIn(0, (displayPosts.size - 1).coerceAtLeast(0))
     )
     var selectedPostForComments by remember { mutableStateOf<com.example.data.database.PostEntity?>(null) }
-
     Column(modifier = Modifier.fillMaxSize()) {
         Row(
             modifier = Modifier
@@ -56,7 +53,6 @@ fun ExploreFeedScreen(
             ) {
                 Icon(imageVector = Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.back_to_explore))
             }
-
             Column(modifier = Modifier.weight(1f).padding(start = 8.dp)) {
                 Text(
                     text = stringResource(R.string.label_exploration),
@@ -72,9 +68,7 @@ fun ExploreFeedScreen(
                 )
             }
         }
-
         HorizontalDivider(color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.08f))
-
         if (displayPosts.isEmpty()) {
             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                 Text(
@@ -101,7 +95,6 @@ fun ExploreFeedScreen(
             }
         }
     }
-
     selectedPostForComments?.let { post ->
         CommentsBottomSheet(
             post = post,
@@ -119,16 +112,13 @@ fun ProfileFeedScreen(
 ) {
     val posts by viewModel.posts.collectAsStateWithLifecycle()
     val username by viewModel.username.collectAsStateWithLifecycle()
-
     val displayPosts = remember(posts, isSavedTab) {
         if (isSavedTab) posts.filter { it.isLiked } else posts
     }
-
     val listState = rememberLazyListState(
         initialFirstVisibleItemIndex = initialIndex.coerceIn(0, (displayPosts.size - 1).coerceAtLeast(0))
     )
     var selectedPostForComments by remember { mutableStateOf<com.example.data.database.PostEntity?>(null) }
-
     Column(modifier = Modifier.fillMaxSize()) {
         Row(
             modifier = Modifier
@@ -143,7 +133,6 @@ fun ProfileFeedScreen(
             ) {
                 Icon(imageVector = Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.back_to_profile))
             }
-
             Column(modifier = Modifier.weight(1f).padding(start = 8.dp)) {
                 Text(
                     text = username.uppercase(),
@@ -159,9 +148,7 @@ fun ProfileFeedScreen(
                 )
             }
         }
-
         HorizontalDivider(color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.08f))
-
         if (displayPosts.isEmpty()) {
             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                 Text(
@@ -188,7 +175,6 @@ fun ProfileFeedScreen(
             }
         }
     }
-
     selectedPostForComments?.let { post ->
         CommentsBottomSheet(
             post = post,

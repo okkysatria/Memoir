@@ -19,9 +19,6 @@ data class MemoirBackupPayload(
     val comments: List<CommentEntity> = emptyList(),
     val connections: List<SourceConnectionEntity> = emptyList()
 ) {
-    
-
-
     fun toJson(): String {
         val root = JSONObject()
         root.put("version", version)
@@ -31,7 +28,6 @@ data class MemoirBackupPayload(
         root.put("username", username)
         root.put("profileBio", profileBio)
 
-        
         val postsArr = JSONArray()
         posts.forEach { post ->
             val obj = JSONObject()
@@ -53,7 +49,6 @@ data class MemoirBackupPayload(
         }
         root.put("posts", postsArr)
 
-        
         val storiesArr = JSONArray()
         stories.forEach { story ->
             val obj = JSONObject()
@@ -70,7 +65,6 @@ data class MemoirBackupPayload(
         }
         root.put("stories", storiesArr)
 
-        
         val albumsArr = JSONArray()
         albums.forEach { album ->
             val obj = JSONObject()
@@ -84,7 +78,6 @@ data class MemoirBackupPayload(
         }
         root.put("albums", albumsArr)
 
-        
         val highlightsArr = JSONArray()
         highlights.forEach { h ->
             val obj = JSONObject()
@@ -99,9 +92,6 @@ data class MemoirBackupPayload(
     }
 
     companion object {
-        
-
-
         fun fromJson(json: String): MemoirBackupPayload? {
             return try {
                 val root = JSONObject(json)
@@ -109,7 +99,6 @@ data class MemoirBackupPayload(
                 val username = if (root.has("username")) root.getString("username") else ""
                 val profileBio = if (root.has("profileBio")) root.getString("profileBio") else ""
 
-                
                 val posts = mutableListOf<PostEntity>()
                 if (root.has("posts")) {
                     val arr = root.getJSONArray("posts")
@@ -138,7 +127,6 @@ data class MemoirBackupPayload(
                     }
                 }
 
-                
                 val stories = mutableListOf<StoryEntity>()
                 if (root.has("stories")) {
                     val arr = root.getJSONArray("stories")
@@ -157,7 +145,6 @@ data class MemoirBackupPayload(
                     }
                 }
 
-                
                 val albums = mutableListOf<AlbumEntity>()
                 if (root.has("albums")) {
                     val arr = root.getJSONArray("albums")
@@ -173,7 +160,6 @@ data class MemoirBackupPayload(
                     }
                 }
 
-                
                 val highlights = mutableListOf<StoryHighlightEntity>()
                 if (root.has("highlights")) {
                     val arr = root.getJSONArray("highlights")

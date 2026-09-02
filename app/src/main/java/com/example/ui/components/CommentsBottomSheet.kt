@@ -20,7 +20,6 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.R
@@ -56,7 +55,6 @@ fun CommentsBottomSheet(
                 .fillMaxWidth()
                 .padding(bottom = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding())
         ) {
-            
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -80,7 +78,6 @@ fun CommentsBottomSheet(
 
             HorizontalDivider(color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.08f))
 
-            
             Box(
                 modifier = Modifier
                     .weight(1f)
@@ -93,7 +90,6 @@ fun CommentsBottomSheet(
                     contentPadding = PaddingValues(vertical = 12.dp),
                     verticalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
-                    
                     if (post.caption.isNotBlank()) {
                         item {
                             CommentItem(
@@ -151,7 +147,6 @@ fun CommentsBottomSheet(
 
             HorizontalDivider(color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.08f))
 
-            
             Row(
                 modifier = Modifier
                     .fillMaxWidth()

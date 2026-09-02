@@ -4,9 +4,10 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CameraAlt
@@ -51,12 +52,16 @@ fun HomeScreen(viewModel: MemoirViewModel, onAddStoryClick: () -> Unit) {
     val posts by viewModel.homePosts.collectAsStateWithLifecycle()
     val stories by viewModel.homeStories.collectAsStateWithLifecycle()
     var selectedPostForComments by remember { mutableStateOf<com.example.data.database.PostEntity?>(null) }
-
     var isRefreshing by remember { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
-
     val orderedPosts = posts
-
+    val listState = rememberLazyListState()
+    val scrollToTopTrigger by viewModel.scrollToTopTrigger.collectAsStateWithLifecycle()
+    LaunchedEffect(scrollToTopTrigger) {
+        if (scrollToTopTrigger > 0) {
+            listState.scrollToItem(0)
+        }
+    }
     val todayMemories = remember(posts, stories) {
         val list = mutableListOf<MemoryItem>()
         val todayCal = Calendar.getInstance()
@@ -65,7 +70,6 @@ fun HomeScreen(viewModel: MemoirViewModel, onAddStoryClick: () -> Unit) {
         val todayDay = todayCal.get(Calendar.DAY_OF_MONTH)
         val currentLocale = context.resources.configuration.locales[0]
         val sdf = SimpleDateFormat("d MMM yyyy", currentLocale)
-
         fun badge(createdAt: Long): String? {
             val cal = Calendar.getInstance().apply { timeInMillis = createdAt }
             val monthDiff = (todayYear * 12 + todayMonth) - (cal.get(Calendar.YEAR) * 12 + cal.get(Calendar.MONTH))
@@ -76,7 +80,6 @@ fun HomeScreen(viewModel: MemoirViewModel, onAddStoryClick: () -> Unit) {
                 else -> null
             }
         }
-
         val storyKenanganLabel = context.getString(R.string.cat_story).replace("✨ ", "")
         stories.forEach { story ->
             val b = badge(story.createdAt)
@@ -88,7 +91,6 @@ fun HomeScreen(viewModel: MemoirViewModel, onAddStoryClick: () -> Unit) {
         }
         list
     }
-
     PullToRefreshBox(
         isRefreshing = isRefreshing,
         onRefresh = {
@@ -126,19 +128,7 @@ fun HomeScreen(viewModel: MemoirViewModel, onAddStoryClick: () -> Unit) {
                             letterSpacing = (-0.5).sp
                         )
                     }
-
                     Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                        IconButton(
-                            onClick = { viewModel.navigateTo(Screen.Notifications) },
-                            modifier = Modifier.size(38.dp)
-                        ) {
-                            Icon(
-                                imageVector = Icons.Default.FavoriteBorder,
-                                contentDescription = null,
-                                tint = MaterialTheme.colorScheme.onSurface,
-                                modifier = Modifier.size(22.dp)
-                            )
-                        }
                         IconButton(
                             onClick = { viewModel.navigateTo(Screen.Settings) },
                             modifier = Modifier.size(38.dp)
@@ -153,9 +143,9 @@ fun HomeScreen(viewModel: MemoirViewModel, onAddStoryClick: () -> Unit) {
                     }
                 }
             }
-
             LazyColumn(
-                modifier = Modifier.fillMaxSize()
+                modifier = Modifier.fillMaxSize(),
+                state = listState
             ) {
                 item {
                     StoriesTray(
@@ -174,7 +164,6 @@ fun HomeScreen(viewModel: MemoirViewModel, onAddStoryClick: () -> Unit) {
                     )
                     HorizontalDivider(color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.05f))
                 }
-
                 if (todayMemories.isNotEmpty()) {
                     item {
                         OnThisDayHomeBanner(
@@ -189,7 +178,6 @@ fun HomeScreen(viewModel: MemoirViewModel, onAddStoryClick: () -> Unit) {
                         HorizontalDivider(color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.05f))
                     }
                 }
-
                 if (orderedPosts.isEmpty()) {
                     item {
                         EmptyHomeState(onAddClick = { viewModel.setAddSheetOpen(true) })
@@ -209,7 +197,6 @@ fun HomeScreen(viewModel: MemoirViewModel, onAddStoryClick: () -> Unit) {
             }
         }
     }
-
     selectedPostForComments?.let { post ->
         CommentsBottomSheet(
             post = post,
@@ -250,9 +237,7 @@ fun OnThisDayHomeBanner(
                 )
             }
         }
-
         Spacer(modifier = Modifier.height(10.dp))
-
         LazyRow(
             contentPadding = PaddingValues(horizontal = 16.dp),
             horizontalArrangement = Arrangement.spacedBy(10.dp)
@@ -284,13 +269,10 @@ fun MemoryCard(memory: MemoryItem, onClick: () -> Unit) {
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
         Box(modifier = Modifier.fillMaxSize()) {
-
             MediaView(
                 path = memory.mediaPath,
                 modifier = Modifier.fillMaxSize()
             )
-
-
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -302,8 +284,6 @@ fun MemoryCard(memory: MemoryItem, onClick: () -> Unit) {
                         )
                     )
             )
-
-
             Surface(
                 modifier = Modifier
                     .align(Alignment.TopStart)
@@ -319,8 +299,6 @@ fun MemoryCard(memory: MemoryItem, onClick: () -> Unit) {
                     modifier = Modifier.padding(horizontal = 6.dp, vertical = 3.dp)
                 )
             }
-
-
             Column(
                 modifier = Modifier
                     .align(Alignment.BottomStart)

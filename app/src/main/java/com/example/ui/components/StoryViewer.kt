@@ -47,21 +47,17 @@ fun StoryViewer(
     modifier: Modifier = Modifier
 ) {
     if (stories.isEmpty() || currentIndex >= stories.size || currentIndex < 0) return
-
     val currentStory = stories[currentIndex]
     val parentHighlight = remember(currentStory.highlightId, highlights) {
         highlights.find { it.id == currentStory.highlightId }
     }
     var progress by remember { mutableStateOf(0f) }
     var isPaused by remember { mutableStateOf(false) }
-
-    
     var showHighlightsPopup by remember { mutableStateOf(false) }
     var showDeleteConfirmation by remember { mutableStateOf(false) }
     var showNewHighlightDialog by remember { mutableStateOf(false) }
     var newHighlightName by remember { mutableStateOf("") }
     val context = LocalContext.current
-
     androidx.activity.compose.BackHandler {
         if (showNewHighlightDialog) {
             showNewHighlightDialog = false
@@ -73,16 +69,11 @@ fun StoryViewer(
             onClose()
         }
     }
-
-    
     LaunchedEffect(currentIndex) {
         progress = 0f
     }
-
     val anyOverlayOpen = showHighlightsPopup || showDeleteConfirmation || showNewHighlightDialog
     val activePaused = isPaused || anyOverlayOpen
-
-    
     LaunchedEffect(currentIndex, activePaused) {
         if (activePaused) return@LaunchedEffect
         val step = 0.01f
@@ -93,7 +84,6 @@ fun StoryViewer(
         }
         onNext()
     }
-
     Box(
         modifier = modifier
             .fillMaxSize()
@@ -119,13 +109,10 @@ fun StoryViewer(
                 )
             }
     ) {
-        
         MediaView(
             path = currentStory.mediaPath,
             modifier = Modifier.fillMaxSize()
         )
-
-        
         Box(
             modifier = Modifier
                 .fillMaxWidth()
@@ -136,8 +123,6 @@ fun StoryViewer(
                     )
                 )
         )
-
-        
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -156,7 +141,6 @@ fun StoryViewer(
                         index > currentIndex -> 0f
                         else -> progress
                     }
-
                     Box(
                         modifier = Modifier
                             .weight(1f)
@@ -173,8 +157,6 @@ fun StoryViewer(
                     }
                 }
             }
-
-            
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically,
@@ -202,7 +184,6 @@ fun StoryViewer(
                             fontWeight = FontWeight.Bold
                         )
                     }
-
                     Column {
                         Text(
                             text = parentHighlight?.name ?: stringResource(R.string.my_memoir),
@@ -227,7 +208,6 @@ fun StoryViewer(
                         )
                     }
                 }
-
                 IconButton(
                     onClick = onClose,
                     colors = IconButtonDefaults.iconButtonColors(contentColor = Color.White)
@@ -239,8 +219,6 @@ fun StoryViewer(
                 }
             }
         }
-
-        
         if (!currentStory.caption.isNullOrBlank()) {
             Box(
                 modifier = Modifier
@@ -255,7 +233,6 @@ fun StoryViewer(
                         Color.White
                     }
                 }
-
                 val textStyleModifier = when (currentStory.textStyle) {
                     "Neon" -> Modifier
                         .background(Color(0xFFE1306C).copy(alpha = 0.85f), RoundedCornerShape(8.dp))
@@ -268,13 +245,11 @@ fun StoryViewer(
                         .padding(horizontal = 16.dp, vertical = 10.dp)
                     else -> Modifier.padding(16.dp)
                 }
-
                 val fontFamily = when (currentStory.textStyle) {
                     "Serif" -> androidx.compose.ui.text.font.FontFamily.Serif
                     "Typewriter" -> androidx.compose.ui.text.font.FontFamily.Monospace
                     else -> androidx.compose.ui.text.font.FontFamily.Default
                 }
-
                 val textShadow = if (currentStory.textStyle != "Typewriter" && currentStory.textStyle != "Neon") {
                     androidx.compose.ui.graphics.Shadow(
                         color = Color.Black.copy(alpha = 0.8f),
@@ -282,7 +257,6 @@ fun StoryViewer(
                         blurRadius = 4f
                     )
                 } else null
-
                 Text(
                     text = currentStory.caption,
                     color = parsedColor,
@@ -295,8 +269,6 @@ fun StoryViewer(
                 )
             }
         }
-
-        
         Box(
             modifier = Modifier
                 .align(Alignment.BottomCenter)
@@ -308,8 +280,6 @@ fun StoryViewer(
                     )
                 )
         )
-
-        
         Row(
             modifier = Modifier
                 .align(Alignment.BottomCenter)
@@ -323,7 +293,6 @@ fun StoryViewer(
             horizontalArrangement = Arrangement.SpaceEvenly,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier
@@ -345,8 +314,6 @@ fun StoryViewer(
                     fontWeight = FontWeight.Bold
                 )
             }
-
-            
             if (onDeleteStory != null) {
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
@@ -371,8 +338,6 @@ fun StoryViewer(
                 }
             }
         }
-
-        
         if (showHighlightsPopup) {
             Box(
                 modifier = Modifier
@@ -406,15 +371,12 @@ fun StoryViewer(
                                 Icon(Icons.Default.Close, contentDescription = stringResource(R.string.btn_done))
                             }
                         }
-
                         Spacer(modifier = Modifier.height(12.dp))
-
                         LazyRow(
                             horizontalArrangement = Arrangement.spacedBy(12.dp),
                             verticalAlignment = Alignment.CenterVertically,
                             modifier = Modifier.fillMaxWidth()
                         ) {
-                            
                             item {
                                 Column(
                                     horizontalAlignment = Alignment.CenterHorizontally,
@@ -443,8 +405,6 @@ fun StoryViewer(
                                     )
                                 }
                             }
-
-                            
                             items(highlights) { highlight ->
                                 val isSelected = currentStory.highlightId == highlight.id
                                 Column(
@@ -482,8 +442,6 @@ fun StoryViewer(
                 }
             }
         }
-
-        
         if (showNewHighlightDialog) {
             AlertDialog(
                 onDismissRequest = { showNewHighlightDialog = false },
@@ -518,8 +476,6 @@ fun StoryViewer(
                 }
             )
         }
-
-        
         if (showDeleteConfirmation) {
             AlertDialog(
                 onDismissRequest = { showDeleteConfirmation = false },

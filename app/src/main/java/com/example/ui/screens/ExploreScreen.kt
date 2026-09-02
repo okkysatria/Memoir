@@ -11,6 +11,7 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
@@ -68,11 +69,17 @@ fun ExploreScreen(viewModel: MemoirViewModel) {
     val activeDateFilter by viewModel.exploreDateFilter.collectAsStateWithLifecycle()
     val activeMonth by viewModel.exploreSelectedMonth.collectAsStateWithLifecycle()
     val activeYear by viewModel.exploreSelectedYear.collectAsStateWithLifecycle()
-
     var selectedCategoryTab by remember { mutableStateOf("ALL") }
     var showFilterMenu by remember { mutableStateOf(false) }
     var isTimeSelectionExpanded by remember { mutableStateOf(false) }
-
+    val gridState = rememberLazyGridState()
+    val scrollToTopTrigger by viewModel.scrollToTopTrigger.collectAsStateWithLifecycle()
+    LaunchedEffect(scrollToTopTrigger) {
+        if (scrollToTopTrigger > 0) {
+            gridState.scrollToItem(0)
+        }
+    }
+    val randomSeed = remember { mutableLongStateOf(System.currentTimeMillis()) }
     val categoryOptions = listOf(
         "ALL" to R.string.cat_all,
         "PHOTO" to R.string.cat_photo,
@@ -80,10 +87,8 @@ fun ExploreScreen(viewModel: MemoirViewModel) {
         "STORY" to R.string.cat_story,
         "ALBUM" to R.string.cat_album
     )
-
-    val allMedia = remember(posts, stories, albums, searchQuery, selectedCategoryTab, activeSortOrder, activeDateFilter, activeMonth, activeYear) {
+    val allMedia = remember(posts, stories, albums, searchQuery, selectedCategoryTab, activeSortOrder, activeDateFilter, activeMonth, activeYear, randomSeed.longValue) {
         val list = mutableListOf<ExploreMediaItem>()
-
         posts.forEach { post ->
             val firstMedia = post.mediaPaths.firstOrNull()
             if (!firstMedia.isNullOrBlank()) {
@@ -92,21 +97,17 @@ fun ExploreScreen(viewModel: MemoirViewModel) {
                 list.add(ExploreMediaItem(firstMedia, if (isVideo && !hasMultiple) "REEL" else "POST", post.caption, post.location, post.createdAt, post.id, hasMultiple, postEntity = post))
             }
         }
-
         stories.forEach { story ->
             val storyLabel = context.getString(R.string.cat_story).replace("✨ ", "")
             list.add(ExploreMediaItem(story.mediaPath, "STORY", story.caption ?: storyLabel, "", story.createdAt, story.id, false, storyEntity = story))
         }
-
         albums.forEach { album ->
             if (album.coverPath.isNotBlank()) {
                 list.add(ExploreMediaItem(album.coverPath, "ALBUM", album.name, album.sourceType, album.createdAt, album.id, true, albumEntity = album))
             }
         }
-
         val now = System.currentTimeMillis()
         val calendar = Calendar.getInstance()
-
         val filtered = list.filter { item ->
             val matchChip = when (selectedCategoryTab) {
                 "PHOTO" -> item.type == "POST"
@@ -115,12 +116,10 @@ fun ExploreScreen(viewModel: MemoirViewModel) {
                 "ALBUM" -> item.type == "ALBUM"
                 else -> true
             }
-
             val matchSearch = if (searchQuery.isNotBlank()) {
                 val q = searchQuery.lowercase().trim()
                 item.title.lowercase().contains(q) || item.location.lowercase().contains(q)
             } else true
-
             val matchDate = when (activeDateFilter) {
                 "THIS_WEEK" -> item.date > now - 7L * 24 * 60 * 60 * 1000
                 "THIS_MONTH" -> item.date > now - 30L * 24 * 60 * 60 * 1000
@@ -139,10 +138,12 @@ fun ExploreScreen(viewModel: MemoirViewModel) {
             }
             matchChip && matchSearch && matchDate
         }
-
-        if (activeSortOrder == "OLDEST") filtered.sortedBy { it.date } else filtered.sortedByDescending { it.date }
+        when (activeSortOrder) {
+            "OLDEST" -> filtered.sortedBy { it.date }
+            "RANDOM" -> filtered.shuffled(java.util.Random(randomSeed.longValue))
+            else -> filtered.sortedByDescending { it.date }
+        }
     }
-
     Column(modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background)) {
         Surface(color = MaterialTheme.colorScheme.surface, shadowElevation = 0.5.dp) {
             Row(modifier = Modifier.fillMaxWidth().padding(horizontal = 14.dp, vertical = 10.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(10.dp)) {
@@ -157,7 +158,6 @@ fun ExploreScreen(viewModel: MemoirViewModel) {
                     shape = RoundedCornerShape(14.dp),
                     singleLine = true
                 )
-
                 Box {
                     IconButton(onClick = { showFilterMenu = true }, modifier = Modifier.size(44.dp).clip(RoundedCornerShape(14.dp)).background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.6f))) {
                         Icon(Icons.Default.FilterList, stringResource(R.string.nav_explore), tint = MaterialTheme.colorScheme.onSurface, modifier = Modifier.size(20.dp))
@@ -166,19 +166,18 @@ fun ExploreScreen(viewModel: MemoirViewModel) {
                         Text(stringResource(R.string.filter_sort), style = MaterialTheme.typography.labelSmall, modifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp))
                         DropdownMenuItem(text = { Text(stringResource(R.string.filter_latest)) }, onClick = { viewModel.setExploreSortOrder("LATEST"); showFilterMenu = false }, leadingIcon = { if (activeSortOrder == "LATEST") Icon(Icons.Default.Check, null) })
                         DropdownMenuItem(text = { Text(stringResource(R.string.filter_oldest)) }, onClick = { viewModel.setExploreSortOrder("OLDEST"); showFilterMenu = false }, leadingIcon = { if (activeSortOrder == "OLDEST") Icon(Icons.Default.Check, null) })
+                        DropdownMenuItem(text = { Text(stringResource(R.string.filter_random)) }, onClick = { viewModel.setExploreSortOrder("RANDOM"); showFilterMenu = false }, leadingIcon = { if (activeSortOrder == "RANDOM") Icon(Icons.Default.Check, null) })
                         HorizontalDivider()
                         Text(stringResource(R.string.filter_quick_time), style = MaterialTheme.typography.labelSmall, modifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp))
                         DropdownMenuItem(text = { Text(stringResource(R.string.filter_this_week)) }, onClick = { viewModel.setExploreDateFilter("THIS_WEEK"); showFilterMenu = false }, leadingIcon = { if (activeDateFilter == "THIS_WEEK") Icon(Icons.Default.Check, null) })
                         DropdownMenuItem(text = { Text(stringResource(R.string.filter_this_month)) }, onClick = { viewModel.setExploreDateFilter("THIS_MONTH"); showFilterMenu = false }, leadingIcon = { if (activeDateFilter == "THIS_MONTH") Icon(Icons.Default.Check, null) })
                         DropdownMenuItem(text = { Text(stringResource(R.string.filter_this_year)) }, onClick = { viewModel.setExploreDateFilter("THIS_YEAR"); showFilterMenu = false }, leadingIcon = { if (activeDateFilter == "THIS_YEAR") Icon(Icons.Default.Check, null) })
-                        
                         DropdownMenuItem(
                             text = { Text(stringResource(R.string.filter_custom_time)) }, 
                             onClick = { isTimeSelectionExpanded = !isTimeSelectionExpanded }, 
                             trailingIcon = { Icon(if (isTimeSelectionExpanded) Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown, null) },
                             leadingIcon = { if (activeDateFilter == "CUSTOM") Icon(Icons.Default.DateRange, null, tint = MaterialTheme.colorScheme.primary) }
                         )
-
                         if (isTimeSelectionExpanded) {
                             Text(stringResource(R.string.filter_month), style = MaterialTheme.typography.labelSmall, modifier = Modifier.padding(start = 16.dp, top = 4.dp, bottom = 4.dp))
                             val currentLocale = LocalContext.current.resources.configuration.locales[0]
@@ -217,14 +216,12 @@ fun ExploreScreen(viewModel: MemoirViewModel) {
                                 }
                             }
                         }
-
                         HorizontalDivider()
                         DropdownMenuItem(text = { Text(stringResource(R.string.filter_reset_time)) }, onClick = { viewModel.setExploreDateFilter("ALL_TIME"); isTimeSelectionExpanded = false; showFilterMenu = false }, leadingIcon = { Icon(Icons.Default.Refresh, null) })
                     }
                 }
             }
         }
-
         LazyRow(modifier = Modifier.fillMaxWidth().padding(vertical = 10.dp), contentPadding = PaddingValues(horizontal = 14.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             items(categoryOptions) { (key, resId) ->
                 val isSelected = selectedCategoryTab == key
@@ -233,7 +230,6 @@ fun ExploreScreen(viewModel: MemoirViewModel) {
                 }
             }
         }
-
         if (allMedia.isEmpty()) {
             Column(modifier = Modifier.weight(1f).fillMaxWidth().padding(32.dp), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
                 Icon(Icons.Default.SearchOff, null, tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.4f), modifier = Modifier.size(56.dp))
@@ -245,9 +241,18 @@ fun ExploreScreen(viewModel: MemoirViewModel) {
                 }
             }
         } else {
-            LazyVerticalGrid(columns = GridCells.Fixed(3), modifier = Modifier.weight(1f).fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(2.dp), horizontalArrangement = Arrangement.spacedBy(2.dp)) {
+            LazyVerticalGrid(
+                columns = GridCells.Fixed(3), 
+                modifier = Modifier.weight(1f).fillMaxWidth(), 
+                state = gridState,
+                verticalArrangement = Arrangement.spacedBy(2.dp), 
+                horizontalArrangement = Arrangement.spacedBy(2.dp)
+            ) {
                 items(allMedia) { item ->
-                    Box(modifier = Modifier.aspectRatio(1f).clickable {
+                    Box(modifier = Modifier
+                        .aspectRatio(1f)
+                        .clip(RoundedCornerShape(1.dp))
+                        .clickable {
                         when (item.type) {
                             "ALBUM" -> viewModel.navigateTo(Screen.AlbumDetail(item.associatedId))
                             "STORY" -> {
@@ -262,7 +267,12 @@ fun ExploreScreen(viewModel: MemoirViewModel) {
                             }
                         }
                     }) {
-                        MediaView(path = item.path, modifier = Modifier.fillMaxSize())
+                        MediaView(
+                            path = item.path, 
+                            autoPlay = false,
+                            allowManualPlay = false,
+                            modifier = Modifier.fillMaxSize()
+                        )
                         if (item.type == "REEL") {
                             Box(modifier = Modifier.align(Alignment.TopEnd).padding(5.dp).background(Color.Black.copy(alpha = 0.6f), CircleShape).padding(4.dp)) { Icon(Icons.Default.PlayArrow, null, tint = Color.White, modifier = Modifier.size(13.dp)) }
                         } else if (item.type == "STORY") {

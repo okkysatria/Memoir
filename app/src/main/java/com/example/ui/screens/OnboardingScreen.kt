@@ -44,7 +44,6 @@ data class OnboardingPage(
 fun OnboardingScreen(onFinishOnboarding: () -> Unit) {
     val primary = MaterialTheme.colorScheme.primary
     val secondary = MaterialTheme.colorScheme.secondary
-
     val pages = listOf(
         OnboardingPage(
             title = stringResource(R.string.ob_title_1),
@@ -65,10 +64,8 @@ fun OnboardingScreen(onFinishOnboarding: () -> Unit) {
             gradient = listOf(Color(0xFF059669), Color(0xFF34D399))
         )
     )
-
     val pagerState = rememberPagerState(pageCount = { pages.size })
     val scope = rememberCoroutineScope()
-
     Surface(
         modifier = Modifier.fillMaxSize(),
         color = MaterialTheme.colorScheme.background
@@ -81,7 +78,6 @@ fun OnboardingScreen(onFinishOnboarding: () -> Unit) {
                 .navigationBarsPadding(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.End
@@ -99,10 +95,7 @@ fun OnboardingScreen(onFinishOnboarding: () -> Unit) {
                     Spacer(modifier = Modifier.height(48.dp))
                 }
             }
-
             Spacer(modifier = Modifier.weight(0.15f))
-
-            
             HorizontalPager(
                 state = pagerState,
                 modifier = Modifier.weight(1f)
@@ -115,7 +108,6 @@ fun OnboardingScreen(onFinishOnboarding: () -> Unit) {
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Center
                 ) {
-                    
                     Box(
                         modifier = Modifier
                             .size(120.dp)
@@ -130,9 +122,7 @@ fun OnboardingScreen(onFinishOnboarding: () -> Unit) {
                             modifier = Modifier.size(56.dp)
                         )
                     }
-
                     Spacer(modifier = Modifier.height(32.dp))
-
                     Text(
                         text = page.title,
                         fontSize = 24.sp,
@@ -140,9 +130,7 @@ fun OnboardingScreen(onFinishOnboarding: () -> Unit) {
                         textAlign = TextAlign.Center,
                         color = MaterialTheme.colorScheme.onBackground
                     )
-
                     Spacer(modifier = Modifier.height(12.dp))
-
                     Text(
                         text = page.description,
                         fontSize = 14.sp,
@@ -152,8 +140,6 @@ fun OnboardingScreen(onFinishOnboarding: () -> Unit) {
                     )
                 }
             }
-
-            
             Row(
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
                 verticalAlignment = Alignment.CenterVertically
@@ -172,10 +158,7 @@ fun OnboardingScreen(onFinishOnboarding: () -> Unit) {
                     )
                 }
             }
-
             Spacer(modifier = Modifier.height(32.dp))
-
-            
             Button(
                 onClick = {
                     if (pagerState.currentPage < pages.size - 1) {
@@ -209,7 +192,6 @@ fun OnboardingScreen(onFinishOnboarding: () -> Unit) {
                     )
                 }
             }
-
             Spacer(modifier = Modifier.height(16.dp))
         }
     }

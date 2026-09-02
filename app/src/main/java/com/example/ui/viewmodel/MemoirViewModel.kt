@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import androidx.core.net.toUri
+import androidx.glance.appwidget.updateAll
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
@@ -29,7 +30,6 @@ sealed class Screen {
     data class AlbumDetail(val albumId: Long) : Screen()
     data object Settings : Screen()
     data object ManageConnections : Screen()
-    data object Notifications : Screen()
     data object AddPost : Screen()
     data class EditPost(val post: PostEntity) : Screen()
     data object Backup : Screen()
@@ -84,6 +84,13 @@ class MemoirViewModel(application: Application) : AndroidViewModel(application) 
     private val _currentTab = MutableStateFlow("home")
     val currentTab: StateFlow<String> = _currentTab.asStateFlow()
 
+    private val _scrollToTopTrigger = MutableStateFlow(0L)
+    val scrollToTopTrigger: StateFlow<Long> = _scrollToTopTrigger.asStateFlow()
+
+    fun triggerScrollToTop() {
+        _scrollToTopTrigger.value = System.currentTimeMillis()
+    }
+
     private val _addSheetOpen = MutableStateFlow(false)
     val addSheetOpen: StateFlow<Boolean> = _addSheetOpen.asStateFlow()
 
@@ -99,7 +106,7 @@ class MemoirViewModel(application: Application) : AndroidViewModel(application) 
     private val _searchQuery = MutableStateFlow("")
     val searchQuery: StateFlow<String> = _searchQuery.asStateFlow()
 
-    private val _exploreSortOrder = MutableStateFlow("LATEST")
+    private val _exploreSortOrder = MutableStateFlow("RANDOM")
     val exploreSortOrder = _exploreSortOrder.asStateFlow()
 
     private val _exploreDateFilter = MutableStateFlow("ALL_TIME")
@@ -144,9 +151,6 @@ class MemoirViewModel(application: Application) : AndroidViewModel(application) 
     private val _isBiometricEnabled = MutableStateFlow(false)
     val isBiometricEnabled: StateFlow<Boolean> = _isBiometricEnabled.asStateFlow()
 
-    private val _isLocationHidden = MutableStateFlow(false)
-    val isLocationHidden: StateFlow<Boolean> = _isLocationHidden.asStateFlow()
-
     private val _isDarkMode = MutableStateFlow(false)
     val isDarkMode: StateFlow<Boolean> = _isDarkMode.asStateFlow()
 
@@ -164,13 +168,7 @@ class MemoirViewModel(application: Application) : AndroidViewModel(application) 
         repository = MemoirRepository(database.memoirDao())
         userPrefsRepository = UserPreferencesRepository(application)
 
-        viewModelScope.launch(Dispatchers.IO) {
-            try {
-                repository.deleteExpiredStories()
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
-        }
+        refreshCacheSize()
 
         viewModelScope.launch(Dispatchers.IO) {
             userPrefsRepository.userPrefsFlow.collect { prefs ->
@@ -183,7 +181,6 @@ class MemoirViewModel(application: Application) : AndroidViewModel(application) 
                 _isDarkMode.value = prefs.isDarkMode
                 _selectedColorTheme.value = prefs.colorTheme
                 _isBiometricEnabled.value = prefs.isBiometricEnabled
-                _isLocationHidden.value = prefs.isLocationHidden
                 _hasSeenOnboarding.value = prefs.hasSeenOnboarding
                 _hasGrantedPermissions.value = prefs.hasGrantedPermissions
                 _language.value = prefs.language
@@ -204,12 +201,21 @@ class MemoirViewModel(application: Application) : AndroidViewModel(application) 
 
         viewModelScope.launch {
             posts.collect { list ->
-                _homePosts.value = list.shuffled()
+                if (_homePosts.value.isEmpty() || _homePosts.value.size != list.size) {
+                    _homePosts.value = list.shuffled()
+                } else {
+                    val currentIds = _homePosts.value.map { it.id }
+                    val newList = list.filter { it.id in currentIds }
+                        .sortedBy { currentIds.indexOf(it.id) }
+                    _homePosts.value = newList
+                }
             }
         }
         viewModelScope.launch {
             stories.collect { list ->
-                _homeStories.value = list.filter { it.expiresAt > System.currentTimeMillis() }.shuffled()
+                val sorted = list.filter { it.expiresAt > System.currentTimeMillis() }
+                    .sortedWith(compareBy<StoryEntity> { it.isWatched }.thenByDescending { it.createdAt })
+                _homeStories.value = sorted
             }
         }
 
@@ -327,8 +333,12 @@ class MemoirViewModel(application: Application) : AndroidViewModel(application) 
 
     fun resetDatabaseAndReSeed() {
         viewModelScope.launch(Dispatchers.IO) {
+            FileUtils.deleteAllMemoirData(getApplication())
+            FileUtils.clearAppCache(getApplication())
             repository.clearAllDatabase()
             seedDatabase()
+            refreshCacheSize()
+            updateWidget()
         }
     }
 
@@ -452,6 +462,7 @@ class MemoirViewModel(application: Application) : AndroidViewModel(application) 
     fun deletePost(post: PostEntity) {
         viewModelScope.launch(Dispatchers.IO) {
             repository.deletePost(post)
+            updateWidget()
         }
     }
 
@@ -520,12 +531,54 @@ class MemoirViewModel(application: Application) : AndroidViewModel(application) 
                     isLocked = isLocked
                 )
             )
+            updateWidget()
         }
     }
 
     fun reshuffle() {
         _homePosts.value = posts.value.shuffled()
         _homeStories.value = stories.value.filter { it.expiresAt > System.currentTimeMillis() }.shuffled()
+    }
+
+    private fun updateWidget() {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                com.example.glance.MemoirWidget().updateAll(getApplication())
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+    }
+
+    fun exportMemoirDataToSmb(
+        host: String,
+        shareName: String,
+        remoteFolder: String = "",
+        username: String = "",
+        password: String = "",
+        onProgress: (String) -> Unit,
+        onResult: (Boolean, String) -> Unit
+    ) {
+        viewModelScope.launch {
+            val app = getApplication<Application>()
+            onProgress(app.getString(R.string.msg_export_starting_folder, remoteFolder))
+            val res = com.example.utils.SmbHelper.syncMemoirFolderToSmb(
+                context = app, host = host, shareName = shareName, remoteBaseFolder = remoteFolder,
+                username = username, password = password
+            )
+            res.fold(
+                onSuccess = { count ->
+                    val msg = app.getString(R.string.msg_export_success_files, count, remoteFolder)
+                    onProgress(msg)
+                    onResult(true, msg)
+                },
+                onFailure = { err ->
+                    val msg = "❌ " + app.getString(R.string.msg_export_folder_failed, err.localizedMessage)
+                    onProgress(msg)
+                    onResult(false, msg)
+                }
+            )
+        }
     }
 
     fun exportMemoirDataToSmbWithUserFolder(
@@ -537,28 +590,19 @@ class MemoirViewModel(application: Application) : AndroidViewModel(application) 
         onProgress: (String) -> Unit,
         onResult: (Boolean, String) -> Unit
     ) {
-        viewModelScope.launch {
-            val app = getApplication<Application>()
-            val userFolderName = app.getString(R.string.label_memoir_user, _username.value)
-            val fullRemotePath = if (remoteParentFolder.isBlank()) userFolderName else "$remoteParentFolder/$userFolderName"
-            onProgress(app.getString(R.string.msg_export_starting_folder, fullRemotePath))
-            val res = com.example.utils.SmbHelper.syncMemoirFolderToSmb(
-                context = app, host = host, shareName = shareName, remoteBaseFolder = fullRemotePath,
-                username = username, password = password
-            )
-            res.fold(
-                onSuccess = { count ->
-                    val msg = app.getString(R.string.msg_export_success_files, count, fullRemotePath)
-                    onProgress(msg)
-                    onResult(true, msg)
-                },
-                onFailure = { err ->
-                    val msg = "❌ " + app.getString(R.string.msg_export_folder_failed, err.localizedMessage)
-                    onProgress(msg)
-                    onResult(false, msg)
-                }
-            )
-        }
+        val app = getApplication<Application>()
+        val userFolderName = app.getString(R.string.label_memoir_user, _username.value)
+        val fullRemotePath = if (remoteParentFolder.isBlank()) userFolderName else "$remoteParentFolder/$userFolderName"
+        
+        exportMemoirDataToSmb(
+            host = host,
+            shareName = shareName,
+            remoteFolder = fullRemotePath,
+            username = username,
+            password = password,
+            onProgress = onProgress,
+            onResult = onResult
+        )
     }
 
     fun importMemoirDataFromSmbUserFolder(
@@ -622,6 +666,7 @@ class MemoirViewModel(application: Application) : AndroidViewModel(application) 
                 repository.insertAlbumItems(items)
             }
             repository.insertPost(PostEntity(caption = caption, location = location, mediaPaths = mediaPaths, linkedAlbumId = albumId, createdAt = createdAt, aspectRatio = aspectRatio, mediaTransformsJson = mediaTransformsJson, isPinned = isPinned, isLocked = isLocked))
+            updateWidget()
         }
     }
 
@@ -653,10 +698,11 @@ class MemoirViewModel(application: Application) : AndroidViewModel(application) 
                 } catch (e: Exception) {
                     e.printStackTrace()
                 }
-                val expiresAt = createdAt + 7 * 24 * 60 * 60 * 1000L
+                val expiresAt = createdAt + 24 * 60 * 60 * 1000L
                 FileUtils.writeStoryMetadata(storyFolder = storyFolder, storyId = 0, caption = caption, textColor = textColor, textStyle = textStyle, createdAt = createdAt, expiresAt = expiresAt, mediaFileName = "media$ext")
             }
-            repository.insertStory(StoryEntity(mediaPath = finalStoryMediaPath, caption = caption, textColor = textColor, textStyle = textStyle, createdAt = createdAt, expiresAt = createdAt + 7 * 24 * 60 * 60 * 1000L))
+            repository.insertStory(StoryEntity(mediaPath = finalStoryMediaPath, caption = caption, textColor = textColor, textStyle = textStyle, createdAt = createdAt, expiresAt = createdAt + 24 * 60 * 60 * 1000L))
+            updateWidget()
         }
     }
 
@@ -817,6 +863,7 @@ class MemoirViewModel(application: Application) : AndroidViewModel(application) 
     fun deleteStory(story: StoryEntity) {
         viewModelScope.launch(Dispatchers.IO) {
             repository.deleteStory(story)
+            updateWidget()
         }
     }
 
@@ -831,11 +878,6 @@ class MemoirViewModel(application: Application) : AndroidViewModel(application) 
         viewModelScope.launch(Dispatchers.IO) { userPrefsRepository.saveBiometric(_isBiometricEnabled.value) }
     }
 
-    fun toggleLocationHidden() {
-        _isLocationHidden.value = !_isLocationHidden.value
-        viewModelScope.launch(Dispatchers.IO) { userPrefsRepository.saveLocationHidden(_isLocationHidden.value) }
-    }
-
     fun toggleDarkMode() {
         _isDarkMode.value = !_isDarkMode.value
         viewModelScope.launch(Dispatchers.IO) { userPrefsRepository.saveDarkMode(_isDarkMode.value) }
@@ -847,7 +889,16 @@ class MemoirViewModel(application: Application) : AndroidViewModel(application) 
     }
 
     fun clearCache() {
-        _cacheSizeMb.value = 0.0f
+        viewModelScope.launch(Dispatchers.IO) {
+            FileUtils.clearAppCache(getApplication())
+            refreshCacheSize()
+        }
+    }
+
+    private fun refreshCacheSize() {
+        viewModelScope.launch(Dispatchers.IO) {
+            _cacheSizeMb.value = FileUtils.getCacheSize(getApplication())
+        }
     }
 
     fun changeLanguage(langCode: String) {

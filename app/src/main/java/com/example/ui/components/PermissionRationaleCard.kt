@@ -40,7 +40,6 @@ fun PermissionRationaleCard(
     modifier: Modifier = Modifier
 ) {
     val context = LocalContext.current
-
     val (icon, title, description, buttonText) = when (permissionType) {
         PermissionType.GALLERY -> Quadruple(
             Icons.Default.PhotoLibrary,

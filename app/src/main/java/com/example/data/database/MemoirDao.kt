@@ -11,9 +11,11 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface MemoirDao {
-    
     @Query("SELECT * FROM posts ORDER BY isPinned DESC, createdAt DESC")
     fun getAllPosts(): Flow<List<PostEntity>>
+
+    @Query("SELECT * FROM posts")
+    suspend fun getAllPostsList(): List<PostEntity>
 
     @Query("SELECT * FROM posts ORDER BY isPinned DESC, createdAt DESC")
     fun getPagedPosts(): PagingSource<Int, PostEntity>
@@ -33,9 +35,11 @@ interface MemoirDao {
     @Delete
     suspend fun deletePost(post: PostEntity)
 
-    
     @Query("SELECT * FROM stories ORDER BY createdAt DESC")
     fun getAllStories(): Flow<List<StoryEntity>>
+
+    @Query("SELECT * FROM stories")
+    suspend fun getAllStoriesList(): List<StoryEntity>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertStory(story: StoryEntity): Long
@@ -52,7 +56,6 @@ interface MemoirDao {
     @Query("SELECT * FROM stories WHERE highlightId = :highlightId")
     fun getStoriesForHighlight(highlightId: Long): Flow<List<StoryEntity>>
 
-    
     @Query("SELECT * FROM albums ORDER BY createdAt DESC")
     fun getAllAlbums(): Flow<List<AlbumEntity>>
 
@@ -68,7 +71,6 @@ interface MemoirDao {
     @Delete
     suspend fun deleteAlbum(album: AlbumEntity)
 
-    
     @Query("SELECT * FROM album_items WHERE albumId = :albumId")
     fun getItemsForAlbum(albumId: Long): Flow<List<AlbumItemEntity>>
 
@@ -84,7 +86,6 @@ interface MemoirDao {
     @Query("DELETE FROM album_items WHERE albumId = :albumId")
     suspend fun deleteItemsForAlbum(albumId: Long)
 
-    
     @Query("SELECT * FROM source_connections ORDER BY id DESC")
     fun getAllConnections(): Flow<List<SourceConnectionEntity>>
 
@@ -97,7 +98,6 @@ interface MemoirDao {
     @Delete
     suspend fun deleteConnection(connection: SourceConnectionEntity)
 
-    
     @Query("SELECT * FROM comments WHERE postId = :postId ORDER BY createdAt ASC")
     fun getCommentsForPost(postId: Long): Flow<List<CommentEntity>>
 
@@ -107,7 +107,6 @@ interface MemoirDao {
     @Delete
     suspend fun deleteComment(comment: CommentEntity)
 
-    
     @Query("SELECT * FROM story_highlights ORDER BY id DESC")
     fun getAllHighlights(): Flow<List<StoryHighlightEntity>>
 
@@ -117,7 +116,6 @@ interface MemoirDao {
     @Delete
     suspend fun deleteHighlight(highlight: StoryHighlightEntity)
 
-    
     @Query("DELETE FROM posts")
     suspend fun clearPosts()
 
@@ -139,7 +137,6 @@ interface MemoirDao {
     @Query("DELETE FROM story_highlights")
     suspend fun clearHighlights()
 
-    
     @Query("SELECT * FROM post_tags WHERE postId = :postId ORDER BY taggedAt ASC")
     fun getTagsForPost(postId: Long): Flow<List<PostTagEntity>>
 
@@ -152,4 +149,3 @@ interface MemoirDao {
     @Query("DELETE FROM post_tags WHERE postId = :postId")
     suspend fun deleteTagsForPost(postId: Long)
 }
-

@@ -131,11 +131,30 @@ fun FeedPostCard(
 ) {
     var expandedMenu by remember { mutableStateOf(false) }
     var showDeleteConfirmation by remember { mutableStateOf(false) }
-    var scaleHeart by remember { mutableStateOf(1f) }
+    var isLiked by remember { mutableStateOf(false) }
+    val scaleHeart = remember { Animatable(0f) }
     var showBigHeart by remember { mutableStateOf(false) }
+    var userTriggeredPlay by remember { mutableStateOf(false) }
     val coroutineScope = rememberCoroutineScope()
     val context = LocalContext.current
     val profileImagePath by viewModel.profileImagePath.collectAsStateWithLifecycle()
+
+    fun triggerLikeAnim() {
+        isLiked = true
+        coroutineScope.launch {
+            showBigHeart = true
+            scaleHeart.snapTo(0f)
+            scaleHeart.animateTo(
+                targetValue = 1f,
+                animationSpec = spring(
+                    dampingRatio = 0.5f,
+                    stiffness = Spring.StiffnessMediumLow
+                )
+            )
+            delay(500)
+            showBigHeart = false
+        }
+    }
 
     Card(
         modifier = modifier
@@ -262,20 +281,6 @@ fun FeedPostCard(
                 }
             }
 
-            val baseRatio = remember(post.aspectRatio) {
-                when {
-                    post.aspectRatio.startsWith("Asli") -> {
-                        val parts = post.aspectRatio.split(":")
-                        if (parts.size >= 2) parts[1].toFloatOrNull() ?: 1f else 1f
-                    }
-                    post.aspectRatio == "4:5" -> 4f / 5f
-                    post.aspectRatio == "5:4" -> 5f / 4f
-                    post.aspectRatio == "16:9" -> 16f / 9f
-                    post.aspectRatio == "9:16" -> 9f / 16f
-                    else -> 1f
-                }
-            }
-
             data class CardTransform(
                 val scale: Float = 1f,
                 val rotation: Float = 0f,
@@ -305,18 +310,42 @@ fun FeedPostCard(
             val isCarousel = post.mediaPaths.size > 1
             val pagerState = if (isCarousel) rememberPagerState(pageCount = { post.mediaPaths.size }) else null
 
-            val activePage = pagerState?.currentPage ?: 0
-            val activePath = post.mediaPaths.getOrNull(activePage) ?: ""
-
-            val activePhotoRatio = remember(activePath) {
-                if (activePath.isNotBlank()) FileUtils.getImageAspectRatio(context, activePath)
-                else baseRatio
+            val baseRatio = remember(post.aspectRatio) {
+                when (post.aspectRatio.uppercase()) {
+                    "4:5" -> 4f / 5f
+                    "5:4" -> 5f / 4f
+                    "16:9" -> 16f / 9f
+                    "9:16" -> 9f / 16f
+                    "1:1", "SQUARE" -> 1f
+                    else -> 1f
+                }
             }
 
-            val targetRatio = if (post.aspectRatio.startsWith("Asli") || post.aspectRatio == "Asli" || post.aspectRatio.startsWith("Original") || post.aspectRatio == "Original") activePhotoRatio else baseRatio
+            val mediaRatios = remember(post.mediaPaths) {
+                post.mediaPaths.map { path ->
+                    val ratio = FileUtils.getImageAspectRatio(context, path)
+                    ratio.coerceIn(0.4f, 2.5f)
+                }
+            }
+
+            val interpolatedRatio = if (isCarousel && pagerState != null) {
+                val activePage = pagerState.currentPage
+                val offset = pagerState.currentPageOffsetFraction
+                val currentR = mediaRatios.getOrNull(activePage) ?: 1f
+                val targetPage = if (offset > 0) activePage + 1 else if (offset < 0) activePage - 1 else activePage
+                val targetR = mediaRatios.getOrNull(targetPage) ?: currentR
+                currentR + (targetR - currentR) * kotlin.math.abs(offset)
+            } else {
+                mediaRatios.firstOrNull() ?: baseRatio
+            }
+
+            val isOriginal = post.aspectRatio.uppercase().let { 
+                it == "ORIGINAL" || it == "ASLI" || it.startsWith("ASLI") || it.startsWith("ORIGINAL") 
+            }
+            val targetRatio = if (isOriginal) interpolatedRatio else baseRatio
             val animatedRatio by animateFloatAsState(
-                targetValue = targetRatio.coerceIn(0.4f, 2.5f),
-                animationSpec = tween(durationMillis = 250),
+                targetValue = targetRatio,
+                animationSpec = spring(stiffness = Spring.StiffnessLow),
                 label = "cardRatioAnim"
             )
 
@@ -333,6 +362,8 @@ fun FeedPostCard(
                     ) { page ->
                         val transform = parsedTransforms.getOrNull(page) ?: CardTransform()
                         val itemPath = post.mediaPaths[page]
+                        val isVideo = com.example.utils.FileUtils.isVideoPath(itemPath)
+                        val isCurrentPage = page == pagerState.currentPage
                         val itemRatio = remember(itemPath) { FileUtils.getImageAspectRatio(context, itemPath) }
                         val isRatioDifferent = Math.abs(itemRatio - animatedRatio) > 0.05f
                         val isDefaultTransform = transform.scale == 1.0f && transform.rotation == 0.0f && transform.offsetX == 0.0f && transform.offsetY == 0.0f
@@ -341,30 +372,26 @@ fun FeedPostCard(
                         ZoomableBox(
                             modifier = Modifier.fillMaxSize(),
                             onDoubleClick = {
-                                if (!post.isLiked) {
-                                    viewModel.toggleLike(post)
-                                }
-                                coroutineScope.launch {
-                                    showBigHeart = true
-                                    scaleHeart = 1.6f
-                                    delay(300)
-                                    scaleHeart = 1.0f
-                                    delay(100)
-                                    showBigHeart = false
+                                if (!isLiked) {
+                                    triggerLikeAnim()
                                 }
                             }
                         ) {
                             MediaView(
                                 path = itemPath,
                                 contentScale = contentScaleToUse,
+                                autoPlay = isCurrentPage,
+                                allowManualPlay = true,
                                 modifier = Modifier
                                     .fillMaxSize()
                                     .graphicsLayer {
-                                        scaleX = transform.scale
-                                        scaleY = transform.scale
-                                        rotationZ = transform.rotation
-                                        translationX = transform.offsetX
-                                        translationY = transform.offsetY
+                                        if (isVideo && isCurrentPage) {
+                                            scaleX = transform.scale
+                                            scaleY = transform.scale
+                                            rotationZ = transform.rotation
+                                            translationX = transform.offsetX
+                                            translationY = transform.offsetY
+                                        }
                                     }
                             )
                         }
@@ -373,19 +400,28 @@ fun FeedPostCard(
                     Row(
                         modifier = Modifier
                             .align(Alignment.BottomCenter)
-                            .padding(bottom = 12.dp)
-                            .background(Color.Black.copy(alpha = 0.4f), shape = RoundedCornerShape(100.dp))
-                            .padding(horizontal = 8.dp, vertical = 4.dp),
-                        horizontalArrangement = Arrangement.spacedBy(4.dp),
+                            .padding(bottom = 16.dp)
+                            .background(Color.Black.copy(alpha = 0.45f), shape = RoundedCornerShape(100.dp))
+                            .padding(horizontal = 10.dp, vertical = 5.dp),
+                        horizontalArrangement = Arrangement.spacedBy(6.dp),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         for (i in 0 until post.mediaPaths.size) {
                             val active = i == pagerState.currentPage
+                            val dotScale by animateFloatAsState(
+                                targetValue = if (active) 1.2f else 1f,
+                                animationSpec = spring(dampingRatio = Spring.DampingRatioMediumBouncy),
+                                label = "dotScale"
+                            )
                             Box(
                                 modifier = Modifier
-                                    .size(if (active) 6.dp else 4.dp)
+                                    .size(6.dp)
+                                    .graphicsLayer {
+                                        scaleX = dotScale
+                                        scaleY = dotScale
+                                    }
                                     .clip(CircleShape)
-                                    .background(if (active) Color.White else Color.White.copy(alpha = 0.5f))
+                                    .background(if (active) Color.White else Color.White.copy(alpha = 0.4f))
                             )
                         }
                     }
@@ -405,33 +441,32 @@ fun FeedPostCard(
                         )
                     }
                 } else {
+                    val itemPath = post.mediaPaths.firstOrNull() ?: "gradient_slate"
+                    val isVideo = com.example.utils.FileUtils.isVideoPath(itemPath)
                     val transform = parsedTransforms.firstOrNull() ?: CardTransform()
+                    
                     ZoomableBox(
                         modifier = Modifier.fillMaxSize(),
                         onDoubleClick = {
-                            if (!post.isLiked) {
-                                viewModel.toggleLike(post)
-                            }
-                            coroutineScope.launch {
-                                showBigHeart = true
-                                scaleHeart = 1.6f
-                                delay(300)
-                                scaleHeart = 1.0f
-                                delay(100)
-                                showBigHeart = false
+                            if (!isLiked) {
+                                triggerLikeAnim()
                             }
                         }
                     ) {
                         MediaView(
-                            path = post.mediaPaths.firstOrNull() ?: "gradient_slate",
+                            path = itemPath,
+                            autoPlay = true,
+                            allowManualPlay = true,
                             modifier = Modifier
                                 .fillMaxSize()
                                 .graphicsLayer {
-                                    scaleX = transform.scale
-                                    scaleY = transform.scale
-                                    rotationZ = transform.rotation
-                                    translationX = transform.offsetX
-                                    translationY = transform.offsetY
+                                    if (isVideo) {
+                                        scaleX = transform.scale
+                                        scaleY = transform.scale
+                                        rotationZ = transform.rotation
+                                        translationX = transform.offsetX
+                                        translationY = transform.offsetY
+                                    }
                                 }
                         )
                     }
@@ -439,18 +474,35 @@ fun FeedPostCard(
 
                 androidx.compose.animation.AnimatedVisibility(
                     visible = showBigHeart,
-                    enter = scaleIn() + fadeIn(),
-                    exit = scaleOut() + fadeOut(),
+                    enter = fadeIn(animationSpec = tween(150)),
+                    exit = fadeOut(animationSpec = tween(200)) + scaleOut(targetScale = 1.5f),
                     modifier = Modifier.align(Alignment.Center)
                 ) {
-                    Icon(
-                        imageVector = Icons.Default.Favorite,
-                        contentDescription = null,
-                        tint = Color.White,
-                        modifier = Modifier
-                            .size(100.dp)
-                            .scale(scaleHeart)
-                    )
+                    Box(contentAlignment = Alignment.Center) {
+                        Icon(
+                            imageVector = Icons.Default.Favorite,
+                            contentDescription = null,
+                            tint = Color.Black.copy(alpha = 0.2f),
+                            modifier = Modifier
+                                .size(116.dp)
+                                .offset(y = 2.dp)
+                                .graphicsLayer {
+                                    scaleX = scaleHeart.value
+                                    scaleY = scaleHeart.value
+                                }
+                        )
+                        Icon(
+                            imageVector = Icons.Default.Favorite,
+                            contentDescription = null,
+                            tint = Color.White.copy(alpha = 0.95f),
+                            modifier = Modifier
+                                .size(110.dp)
+                                .graphicsLayer {
+                                    scaleX = scaleHeart.value
+                                    scaleY = scaleHeart.value
+                                }
+                        )
+                    }
                 }
             }
 
@@ -467,14 +519,18 @@ fun FeedPostCard(
                     IconButton(
                         onClick = {
                             haptic.performHapticFeedback(androidx.compose.ui.hapticfeedback.HapticFeedbackType.LongPress)
-                            viewModel.toggleLike(post)
+                            if (!isLiked) {
+                                triggerLikeAnim()
+                            } else {
+                                isLiked = false
+                            }
                         },
                         modifier = Modifier.size(24.dp)
                     ) {
                         Icon(
-                            imageVector = if (post.isLiked) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
+                            imageVector = if (isLiked) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
                             contentDescription = stringResource(R.string.desc_like),
-                            tint = if (post.isLiked) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface
+                            tint = if (isLiked) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface
                         )
                     }
 
@@ -506,23 +562,6 @@ fun FeedPostCard(
                         Icon(
                             imageVector = Icons.Default.Share,
                             contentDescription = stringResource(R.string.title_share)
-                        )
-                    }
-                }
-
-                Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    val haptic = androidx.compose.ui.platform.LocalHapticFeedback.current
-                    IconButton(
-                        onClick = {
-                            haptic.performHapticFeedback(androidx.compose.ui.hapticfeedback.HapticFeedbackType.LongPress)
-                            viewModel.toggleSave(post)
-                        },
-                        modifier = Modifier.size(24.dp)
-                    ) {
-                        Icon(
-                            imageVector = if (post.isSaved) Icons.Default.Bookmark else Icons.Default.BookmarkBorder,
-                            contentDescription = stringResource(R.string.saved),
-                            tint = if (post.isSaved) MaterialTheme.colorScheme.secondary else MaterialTheme.colorScheme.onSurface
                         )
                     }
                 }
@@ -561,7 +600,7 @@ fun FeedPostCard(
                     .padding(bottom = 12.dp)
             ) {
                 Text(
-                    text = if (post.isLiked) stringResource(R.string.label_liked) else stringResource(R.string.label_add_favorite),
+                    text = if (isLiked) stringResource(R.string.label_liked) else stringResource(R.string.label_add_favorite),
                     fontSize = 12.sp,
                     fontWeight = FontWeight.Bold
                 )

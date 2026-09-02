@@ -49,18 +49,50 @@ import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
 
+data class UCropOptions(
+    val sourceUri: Uri,
+    val destinationUri: Uri,
+    val primaryColor: Int,
+    val onPrimaryColor: Int,
+    val isDark: Boolean,
+    val isPostMode: Boolean = false,
+    val ratioW: Float = 0f,
+    val ratioH: Float = 0f
+)
 
-
-
-class UCropContract : ActivityResultContract<Pair<Uri, Uri>, Uri?>() {
-    override fun createIntent(context: android.content.Context, input: Pair<Uri, Uri>): android.content.Intent {
-        val (sourceUri, destinationUri) = input
-        return UCrop.of(sourceUri, destinationUri)
-            .withAspectRatio(1f, 1f) 
-            .withMaxResultSize(1000, 1000)
-            .getIntent(context)
+class UCropContract : ActivityResultContract<UCropOptions, Uri?>() {
+    override fun createIntent(context: android.content.Context, input: UCropOptions): android.content.Intent {
+        val options = UCrop.Options().apply {
+            setCompressionFormat(android.graphics.Bitmap.CompressFormat.JPEG)
+            setCompressionQuality(if (input.isPostMode) 90 else 85)
+            setHideBottomControls(false)
+            setFreeStyleCropEnabled(false)
+            setToolbarTitle(if (input.isPostMode) context.getString(R.string.step_adjust_media) else context.getString(R.string.edit_profile))
+            setToolbarColor(input.primaryColor)
+            setToolbarWidgetColor(input.onPrimaryColor)
+            setActiveControlsWidgetColor(input.primaryColor)
+            if (input.isPostMode) {
+                setShowCropGrid(true)
+                setCircleDimmedLayer(false)
+                setShowCropFrame(true)
+            } else {
+                setShowCropGrid(true)
+                setCircleDimmedLayer(true)
+                setShowCropFrame(false)
+            }
+        }
+        val builder = UCrop.of(input.sourceUri, input.destinationUri)
+        if (input.isPostMode) {
+            if (input.ratioW > 0f && input.ratioH > 0f) {
+                builder.withAspectRatio(input.ratioW, input.ratioH)
+            }
+            builder.withMaxResultSize(1440, 1440)
+        } else {
+            builder.withAspectRatio(1f, 1f)
+            builder.withMaxResultSize(1000, 1000)
+        }
+        return builder.withOptions(options).getIntent(context)
     }
-
     override fun parseResult(resultCode: Int, intent: android.content.Intent?): Uri? {
         return if (resultCode == android.app.Activity.RESULT_OK && intent != null) {
             UCrop.getOutput(intent)
@@ -83,9 +115,18 @@ fun EditProfileDialog(
     var uname by remember { mutableStateOf(currentUsername) }
     var bio by remember { mutableStateOf(currentBio) }
     var imagePath by remember { mutableStateOf(currentImagePath) }
-
+    var nameError by remember { mutableStateOf(false) }
+    var bioError by remember { mutableStateOf(false) }
     val context = LocalContext.current
-    
+    val primaryColor = MaterialTheme.colorScheme.primary
+    val onPrimaryColor = MaterialTheme.colorScheme.onPrimary
+    val isDark = isSystemInDarkTheme()
+    fun Color.toArgbInt(): Int {
+        return (this.alpha * 255.0f + 0.5f).toInt() shl 24 or
+                ((this.red * 255.0f + 0.5f).toInt() shl 16) or
+                ((this.green * 255.0f + 0.5f).toInt() shl 8) or
+                (this.blue * 255.0f + 0.5f).toInt()
+    }
     val cropLauncher = rememberLauncherForActivityResult(
         contract = UCropContract()
     ) { uri ->
@@ -93,7 +134,6 @@ fun EditProfileDialog(
             val file = File(uri.path!!)
             val profileDir = FileUtils.getProfileDir(context)
             val destFile = File(profileDir, "profile_${System.currentTimeMillis()}.jpg")
-            
             try {
                 file.copyTo(destFile, overwrite = true)
                 imagePath = "profile/${destFile.name}"
@@ -103,39 +143,47 @@ fun EditProfileDialog(
             }
         }
     }
-
     val photoPickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.PickVisualMedia()
     ) { uri ->
         if (uri != null) {
             val destinationUri = Uri.fromFile(File(context.cacheDir, "temp_profile_crop.jpg"))
-            cropLauncher.launch(Pair(uri, destinationUri))
+            cropLauncher.launch(
+                UCropOptions(
+                    sourceUri = uri,
+                    destinationUri = destinationUri,
+                    primaryColor = primaryColor.toArgbInt(),
+                    onPrimaryColor = onPrimaryColor.toArgbInt(),
+                    isDark = isDark
+                )
+            )
         }
     }
-
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text(stringResource(R.string.edit_profile)) },
+        title = { 
+            Text(
+                text = stringResource(R.string.edit_profile),
+                style = MaterialTheme.typography.titleLarge,
+                fontWeight = FontWeight.Bold
+            ) 
+        },
         text = {
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
                     .verticalScroll(rememberScrollState()),
                 horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(12.dp)
+                verticalArrangement = Arrangement.spacedBy(20.dp)
             ) {
                 Box(
                     modifier = Modifier
-                        .size(86.dp)
+                        .size(110.dp)
                         .clip(CircleShape)
+                        .background(MaterialTheme.colorScheme.surfaceVariant)
                         .border(
                             2.dp,
-                            Brush.linearGradient(
-                                listOf(
-                                    MaterialTheme.colorScheme.primary,
-                                    MaterialTheme.colorScheme.secondary
-                                )
-                            ),
+                            MaterialTheme.colorScheme.primary.copy(alpha = 0.5f),
                             CircleShape
                         )
                         .clickable {
@@ -151,115 +199,108 @@ fun EditProfileDialog(
                             modifier = Modifier.fillMaxSize()
                         )
                     } else {
-                        Box(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .background(
-                                    Brush.linearGradient(
-                                        listOf(
-                                            MaterialTheme.colorScheme.primary,
-                                            MaterialTheme.colorScheme.secondary
-                                        )
-                                    )
-                                ),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Text(stringResource(R.string.label_me), color = Color.White, fontWeight = FontWeight.Bold, fontSize = 22.sp)
-                        }
+                        Icon(
+                            imageVector = Icons.Default.Person,
+                            contentDescription = null,
+                            modifier = Modifier.size(56.dp),
+                            tint = MaterialTheme.colorScheme.primary.copy(alpha = 0.6f)
+                        )
                     }
-
                     Box(
                         modifier = Modifier
                             .fillMaxSize()
-                            .background(Color.Black.copy(alpha = 0.35f)),
+                            .background(Color.Black.copy(alpha = 0.25f)),
                         contentAlignment = Alignment.Center
                     ) {
                         Icon(
                             imageVector = Icons.Default.CameraAlt,
                             contentDescription = stringResource(R.string.label_change_photo),
                             tint = Color.White,
-                            modifier = Modifier.size(26.dp)
+                            modifier = Modifier.size(24.dp)
                         )
                     }
                 }
-
-                TextButton(
-                    onClick = {
-                        photoPickerLauncher.launch(
-                            PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
-                        )
-                    },
-                    modifier = Modifier.testTag("change_profile_picture_button")
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(16.dp),
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Icon(
-                        imageVector = Icons.Default.PhotoCamera,
-                        contentDescription = null,
-                        modifier = Modifier.size(16.dp)
-                    )
-                    Spacer(modifier = Modifier.width(6.dp))
-                    Text(stringResource(R.string.btn_pick_gallery), fontSize = 13.sp, fontWeight = FontWeight.Bold)
-                }
-
-                Column(modifier = Modifier.fillMaxWidth()) {
-                    Text(
-                        text = stringResource(R.string.label_or_preset),
-                        fontSize = 11.sp,
-                        fontWeight = FontWeight.Medium,
-                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
-                    )
-                    Spacer(modifier = Modifier.height(6.dp))
-
-                    Row(
-                        horizontalArrangement = Arrangement.spacedBy(8.dp),
-                        modifier = Modifier.horizontalScroll(rememberScrollState())
+                    TextButton(
+                        onClick = {
+                            photoPickerLauncher.launch(
+                                PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
+                            )
+                        }
                     ) {
-                        val presets = listOf("gradient_sunset", "gradient_blue", "gradient_orange", "gradient_nature", "gradient_purple", "gradient_slate")
-                        presets.forEach { preset ->
-                            Box(
-                                modifier = Modifier
-                                    .size(42.dp)
-                                    .clip(CircleShape)
-                                    .border(
-                                        width = if (imagePath == preset) 2.5.dp else 0.dp,
-                                        color = if (imagePath == preset) MaterialTheme.colorScheme.primary else Color.Transparent,
-                                        shape = CircleShape
-                                    )
-                                    .clickable { imagePath = preset }
-                            ) {
-                                MediaView(path = preset, modifier = Modifier.fillMaxSize())
-                            }
+                        Text(stringResource(R.string.btn_change_photo), fontWeight = FontWeight.Bold)
+                    }
+                    if (!imagePath.isNullOrEmpty()) {
+                        TextButton(
+                            onClick = { imagePath = null },
+                            colors = ButtonDefaults.textButtonColors(contentColor = MaterialTheme.colorScheme.error)
+                        ) {
+                            Text(stringResource(R.string.btn_delete), fontWeight = FontWeight.Bold)
                         }
                     }
                 }
-
-                Spacer(modifier = Modifier.height(2.dp))
-
-                OutlinedTextField(
-                    value = name,
-                    onValueChange = { name = it },
-                    label = { Text(stringResource(R.string.label_name)) },
-                    singleLine = true,
-                    modifier = Modifier.fillMaxWidth().testTag("edit_name_input")
-                )
-                OutlinedTextField(
-                    value = uname,
-                    onValueChange = { uname = it },
-                    label = { Text(stringResource(R.string.label_username)) },
-                    singleLine = true,
-                    modifier = Modifier.fillMaxWidth().testTag("edit_username_input")
-                )
-                OutlinedTextField(
-                    value = bio,
-                    onValueChange = { bio = it },
-                    label = { Text(stringResource(R.string.label_bio)) },
-                    maxLines = 3,
-                    modifier = Modifier.fillMaxWidth().testTag("edit_bio_input")
-                )
+                Column(modifier = Modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                    OutlinedTextField(
+                        value = name,
+                        onValueChange = { 
+                            name = it
+                            nameError = it.isBlank()
+                        },
+                        label = { Text(stringResource(R.string.label_name)) },
+                        singleLine = true,
+                        isError = nameError,
+                        shape = RoundedCornerShape(12.dp),
+                        supportingText = {
+                            if (nameError) Text(stringResource(R.string.msg_name_required))
+                        },
+                        modifier = Modifier.fillMaxWidth().testTag("edit_name_input")
+                    )
+                    OutlinedTextField(
+                        value = uname,
+                        onValueChange = { uname = it },
+                        label = { Text(stringResource(R.string.label_username)) },
+                        singleLine = true,
+                        shape = RoundedCornerShape(12.dp),
+                        prefix = { Text("@", color = MaterialTheme.colorScheme.onSurfaceVariant) },
+                        modifier = Modifier.fillMaxWidth().testTag("edit_username_input")
+                    )
+                    OutlinedTextField(
+                        value = bio,
+                        onValueChange = { 
+                            if (it.length <= 150) {
+                                bio = it
+                                bioError = false
+                            } else {
+                                bioError = true
+                            }
+                        },
+                        label = { Text(stringResource(R.string.label_bio)) },
+                        minLines = 3,
+                        maxLines = 5,
+                        shape = RoundedCornerShape(12.dp),
+                        isError = bioError,
+                        supportingText = {
+                            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
+                                Text("${bio.length}/150", style = MaterialTheme.typography.labelSmall)
+                            }
+                        },
+                        modifier = Modifier.fillMaxWidth().testTag("edit_bio_input")
+                    )
+                }
             }
         },
         confirmButton = {
             Button(
-                onClick = { onSave(name, uname, bio, imagePath) },
+                onClick = { 
+                    if (name.isNotBlank() && !bioError) {
+                        onSave(name.trim(), uname.trim(), bio.trim(), imagePath)
+                    } else {
+                        nameError = name.isBlank()
+                    }
+                },
                 modifier = Modifier.testTag("save_profile_button")
             ) {
                 Text(stringResource(R.string.btn_save))
@@ -286,7 +327,6 @@ fun AddHighlightDialog(
     var selectedTab by remember { mutableIntStateOf(0) }
     var showCoverPickerSheet by remember { mutableStateOf(false) }
     val context = LocalContext.current
-
     val galleryPickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.PickVisualMedia()
     ) { uri ->
@@ -297,7 +337,6 @@ fun AddHighlightDialog(
             }
         }
     }
-
     val displayStories = remember(stories) {
         if (stories.isNotEmpty()) stories else listOf(
             com.example.data.database.StoryEntity(id = 101, mediaPath = "gradient_sunset", caption = "Liburan Sanur", createdAt = System.currentTimeMillis() - 86400000L),
@@ -308,7 +347,6 @@ fun AddHighlightDialog(
             com.example.data.database.StoryEntity(id = 106, mediaPath = "gradient_purple", caption = "Night Vibes", createdAt = System.currentTimeMillis() - 518400000L)
         )
     }
-
     Dialog(
         onDismissRequest = onDismiss,
         properties = DialogProperties(usePlatformDefaultWidth = false)
@@ -334,14 +372,12 @@ fun AddHighlightDialog(
                     TextButton(onClick = onDismiss) {
                         Text(stringResource(R.string.btn_cancel), color = Color.White, fontSize = 15.sp)
                     }
-
                     Text(
                         text = stringResource(R.string.new_highlight),
                         color = Color.White,
                         fontWeight = FontWeight.Bold,
                         fontSize = 16.sp
                     )
-
                     TextButton(
                         onClick = {
                             val finalName = if (highlightName.isNotBlank()) highlightName else context.getString(R.string.label_highlight)
@@ -356,9 +392,7 @@ fun AddHighlightDialog(
                         )
                     }
                 }
-
                 HorizontalDivider(color = Color.White.copy(alpha = 0.12f))
-
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -378,9 +412,7 @@ fun AddHighlightDialog(
                             modifier = Modifier.fillMaxSize()
                         )
                     }
-
                     Spacer(modifier = Modifier.height(6.dp))
-
                     Text(
                         text = stringResource(R.string.label_edit_cover),
                         color = Color(0xFF0095F6),
@@ -388,9 +420,7 @@ fun AddHighlightDialog(
                         fontWeight = FontWeight.SemiBold,
                         modifier = Modifier.clickable { showCoverPickerSheet = true }
                     )
-
                     Spacer(modifier = Modifier.height(16.dp))
-
                     OutlinedTextField(
                         value = highlightName,
                         onValueChange = { highlightName = it },
@@ -418,9 +448,7 @@ fun AddHighlightDialog(
                             .testTag("add_highlight_name_input")
                     )
                 }
-
                 HorizontalDivider(color = Color.White.copy(alpha = 0.12f))
-
                  TabRow(
                     selectedTabIndex = selectedTab,
                     containerColor = Color(0xFF121212),
@@ -457,13 +485,11 @@ fun AddHighlightDialog(
                         }
                     )
                 }
-
                 val storiesForCurrentTab = if (selectedTab == 0) {
                     displayStories
                 } else {
                     displayStories.filter { selectedStoryIds.contains(it.id) }
                 }
-
                 if (storiesForCurrentTab.isEmpty()) {
                     Box(
                         modifier = Modifier
@@ -488,7 +514,6 @@ fun AddHighlightDialog(
                     ) {
                         items(storiesForCurrentTab) { story ->
                             val isSelected = selectedStoryIds.contains(story.id)
-
                             Box(
                                 modifier = Modifier
                                     .aspectRatio(0.68f)
@@ -507,7 +532,6 @@ fun AddHighlightDialog(
                                     path = story.mediaPath,
                                     modifier = Modifier.fillMaxSize()
                                 )
-
                                 if (isSelected) {
                                     Box(
                                         modifier = Modifier
@@ -515,7 +539,6 @@ fun AddHighlightDialog(
                                             .background(Color.Black.copy(alpha = 0.25f))
                                     )
                                 }
-
                                 val currentLocale = context.resources.configuration.locales[0]
                                 val dateStr = SimpleDateFormat("dd MMM", currentLocale).format(Date(story.createdAt))
                                 Text(
@@ -529,7 +552,6 @@ fun AddHighlightDialog(
                                         .background(Color.Black.copy(alpha = 0.5f), RoundedCornerShape(4.dp))
                                         .padding(horizontal = 4.dp, vertical = 2.dp)
                                 )
-
                                 Box(
                                     modifier = Modifier
                                         .align(Alignment.TopEnd)
@@ -562,7 +584,6 @@ fun AddHighlightDialog(
             }
         }
     }
-
     if (showCoverPickerSheet) {
         AlertDialog(
             onDismissRequest = { showCoverPickerSheet = false },
@@ -586,9 +607,7 @@ fun AddHighlightDialog(
                         Spacer(Modifier.width(8.dp))
                         Text(stringResource(R.string.btn_pick_gallery))
                     }
-
                     Text(stringResource(R.string.label_choose_story_preset), fontSize = 12.sp, color = Color.Gray)
-
                     LazyRow(
                         horizontalArrangement = Arrangement.spacedBy(10.dp),
                         modifier = Modifier.padding(vertical = 4.dp)
@@ -636,11 +655,9 @@ fun EditHighlightDialog(
     var selectedCover by remember { mutableStateOf(highlight.coverPath) }
     val stories by viewModel.stories.collectAsStateWithLifecycle()
     val context = LocalContext.current
-
     var selectedTab by remember { mutableIntStateOf(0) }
     var showCoverPickerSheet by remember { mutableStateOf(false) }
     var showDeleteConfirmDialog by remember { mutableStateOf(false) }
-
     val galleryPickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.PickVisualMedia()
     ) { uri ->
@@ -651,7 +668,6 @@ fun EditHighlightDialog(
             }
         }
     }
-
     val allStories = remember(stories) {
         if (stories.isNotEmpty()) stories else listOf(
             com.example.data.database.StoryEntity(id = 201, highlightId = highlight.id, mediaPath = highlight.coverPath, caption = "Moment 1", createdAt = System.currentTimeMillis() - 86400000L),
@@ -660,10 +676,8 @@ fun EditHighlightDialog(
             com.example.data.database.StoryEntity(id = 204, highlightId = null, mediaPath = "gradient_nature", caption = "Moment 4", createdAt = System.currentTimeMillis() - 345600000L)
         )
     }
-
     val currentHighlightStories = allStories.filter { it.highlightId == highlight.id }
     val otherStories = allStories.filter { it.highlightId != highlight.id }
-
     Dialog(
         onDismissRequest = onDismiss,
         properties = DialogProperties(usePlatformDefaultWidth = false)
@@ -689,14 +703,12 @@ fun EditHighlightDialog(
                     TextButton(onClick = onDismiss) {
                         Text(stringResource(R.string.btn_cancel), color = Color.White, fontSize = 15.sp)
                     }
-
                     Text(
                         text = stringResource(R.string.btn_edit_highlight),
                         color = Color.White,
                         fontWeight = FontWeight.Bold,
                         fontSize = 16.sp
                     )
-
                     TextButton(
                         onClick = {
                             if (highlightName.isNotBlank()) {
@@ -713,9 +725,7 @@ fun EditHighlightDialog(
                         )
                     }
                 }
-
                 HorizontalDivider(color = Color.White.copy(alpha = 0.12f))
-
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -735,9 +745,7 @@ fun EditHighlightDialog(
                             modifier = Modifier.fillMaxSize()
                         )
                     }
-
                     Spacer(modifier = Modifier.height(6.dp))
-
                     Text(
                         text = stringResource(R.string.label_edit_cover),
                         color = Color(0xFF0095F6),
@@ -745,9 +753,7 @@ fun EditHighlightDialog(
                         fontWeight = FontWeight.SemiBold,
                         modifier = Modifier.clickable { showCoverPickerSheet = true }
                     )
-
                     Spacer(modifier = Modifier.height(16.dp))
-
                     OutlinedTextField(
                         value = highlightName,
                         onValueChange = { highlightName = it },
@@ -775,9 +781,7 @@ fun EditHighlightDialog(
                             .testTag("edit_highlight_name_input")
                     )
                 }
-
                 HorizontalDivider(color = Color.White.copy(alpha = 0.12f))
-
                 TabRow(
                     selectedTabIndex = selectedTab,
                     containerColor = Color(0xFF121212),
@@ -814,9 +818,7 @@ fun EditHighlightDialog(
                         }
                     )
                 }
-
                 val activeStoriesTab = if (selectedTab == 0) currentHighlightStories else otherStories
-
                 if (activeStoriesTab.isEmpty()) {
                     Box(
                         modifier = Modifier
@@ -841,7 +843,6 @@ fun EditHighlightDialog(
                     ) {
                         items(activeStoriesTab) { story ->
                             val isInHighlight = story.highlightId == highlight.id
-
                             Box(
                                 modifier = Modifier
                                     .aspectRatio(0.68f)
@@ -861,7 +862,6 @@ fun EditHighlightDialog(
                                     path = story.mediaPath,
                                     modifier = Modifier.fillMaxSize()
                                 )
-
                                 if (isInHighlight) {
                                     Box(
                                         modifier = Modifier
@@ -869,7 +869,6 @@ fun EditHighlightDialog(
                                             .background(Color.Black.copy(alpha = 0.25f))
                                     )
                                 }
-
                                 val currentLocale = context.resources.configuration.locales[0]
                                 val dateStr = SimpleDateFormat("dd MMM", currentLocale).format(Date(story.createdAt))
                                 Text(
@@ -883,7 +882,6 @@ fun EditHighlightDialog(
                                         .background(Color.Black.copy(alpha = 0.5f), RoundedCornerShape(4.dp))
                                         .padding(horizontal = 4.dp, vertical = 2.dp)
                                 )
-
                                 Box(
                                     modifier = Modifier
                                         .align(Alignment.TopEnd)
@@ -913,7 +911,6 @@ fun EditHighlightDialog(
                         }
                     }
                 }
-
                 HorizontalDivider(color = Color.White.copy(alpha = 0.12f))
                 Row(
                     modifier = Modifier
@@ -940,7 +937,6 @@ fun EditHighlightDialog(
             }
         }
     }
-
     if (showCoverPickerSheet) {
         AlertDialog(
             onDismissRequest = { showCoverPickerSheet = false },
@@ -964,9 +960,7 @@ fun EditHighlightDialog(
                         Spacer(Modifier.width(8.dp))
                         Text(stringResource(R.string.btn_pick_gallery))
                     }
-
                     Text(stringResource(R.string.label_choose_story_preset), fontSize = 12.sp, color = Color.Gray)
-
                     LazyRow(
                         horizontalArrangement = Arrangement.spacedBy(10.dp),
                         modifier = Modifier.padding(vertical = 4.dp)
@@ -1000,7 +994,6 @@ fun EditHighlightDialog(
             }
         )
     }
-
     if (showDeleteConfirmDialog) {
         AlertDialog(
             onDismissRequest = { showDeleteConfirmDialog = false },

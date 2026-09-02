@@ -5,10 +5,6 @@ import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
 
-
-
-
-
 @Entity(
     tableName = "post_tags",
     foreignKeys = [
@@ -24,6 +20,6 @@ import androidx.room.PrimaryKey
 data class PostTagEntity(
     @PrimaryKey(autoGenerate = true) val id: Long = 0,
     val postId: Long,
-    val tagName: String,         
+    val tagName: String,
     val taggedAt: Long = System.currentTimeMillis()
 )

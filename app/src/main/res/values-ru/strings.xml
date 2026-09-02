@@ -1,13 +1,9 @@
 <resources>
     <string name="app_name">Memoir</string>
-
-    <!-- Навигация -->
     <string name="nav_home">Главная</string>
     <string name="nav_explore">Обзор</string>
     <string name="nav_albums">Альбомы</string>
     <string name="nav_profile">Профиль</string>
-
-    <!-- Главная -->
     <string name="home_title">Memoir</string>
     <string name="on_this_day">В этот день</string>
     <string name="memories_found">%d воспоминаний</string>
@@ -19,18 +15,13 @@
     <string name="one_month_ago">1 месяц назад</string>
     <string name="six_months_ago">6 месяцев назад</string>
     <string name="years_ago">%d лет назад</string>
-
     <string name="one_month">1 месяц</string>
     <string name="six_months">6 месяцев</string>
     <string name="years">%d лет</string>
-
-    <!-- Профиль -->
     <string name="edit_profile">Изменить</string>
     <string name="posts">Посты</string>
     <string name="saved">Сохранено</string>
     <string name="bio_placeholder">Ваша история...</string>
-
-    <!-- Настройки -->
     <string name="settings_title">Настройки</string>
     <string name="settings_subtitle">Конфиденциальность</string>
     <string name="sec_profile">Профиль</string>
@@ -38,7 +29,6 @@
     <string name="sec_security">Защита</string>
     <string name="sec_storage">Хранилище</string>
     <string name="sec_others">Прочее</string>
-
     <string name="pref_language">Язык</string>
     <string name="pref_dark_mode">Тёмная тема</string>
     <string name="pref_theme_color">Цвет акцента</string>
@@ -52,8 +42,6 @@
     <string name="pref_manage_smb">Подключения</string>
     <string name="pref_manual_backup">Резервная копия</string>
     <string name="pref_reset_app">Сброс приложения</string>
-
-    <!-- Кнопки -->
     <string name="btn_save">Сохранить</string>
     <string name="btn_back">Назад</string>
     <string name="btn_cancel">Отмена</string>
@@ -66,17 +54,15 @@
     <string name="confirm_reset_desc">Все данные будут удалены навсегда.</string>
     <string name="msg_understand">Понятно</string>
     <string name="operation_result">Результат</string>
-
-    <!-- Обзор -->
     <string name="cat_all">Все</string>
     <string name="cat_photo">Фото</string>
     <string name="cat_video">Видео</string>
     <string name="cat_story">Сториз</string>
     <string name="cat_album">Альбом</string>
-
     <string name="filter_sort">Сортировка</string>
     <string name="filter_latest">Новые</string>
     <string name="filter_oldest">Старые</string>
+    <string name="filter_random">Случайно</string>
     <string name="filter_quick_time">Время</string>
     <string name="filter_this_week">Неделя</string>
     <string name="filter_this_month">Месяц</string>
@@ -85,16 +71,12 @@
     <string name="filter_month">Месяц</string>
     <string name="filter_year">Год</string>
     <string name="filter_reset_time">Сброс даты</string>
-
     <string name="search_placeholder">Поиск...</string>
     <string name="no_search_results">Нет результатов</string>
     <string name="no_media_yet">Пусто</string>
     <string name="btn_reset_filter">Сбросить</string>
-
     <string name="status_online">Онлайн</string>
     <string name="status_connected">Подключено</string>
-
-    <!-- Альбомы -->
     <string name="album_archive">Архив</string>
     <string name="btn_create_album">Создать</string>
     <string name="new_album_title">Новый альбом</string>
@@ -108,7 +90,6 @@
     <string name="msg_no_album_yet">Альбомов нет</string>
     <string name="media_count">%d объектов</string>
     <string name="status_offline">Оффлайн</string>
-
     <string name="label_conn_source">Источник: %s</string>
     <string name="title_album_empty">Альбом пуст</string>
     <string name="desc_album_empty">Добавьте фото или сториз.</string>
@@ -121,8 +102,6 @@
     <string name="desc_tap_to_add">Нажмите, чтобы добавить.</string>
     <string name="btn_delete_album">Удалить альбом</string>
     <string name="btn_delete_item">Удалить объект</string>
-
-    <!-- Профиль -->
     <string name="btn_change">Сменить</string>
     <string name="new_highlight">Новое</string>
     <string name="msg_no_post">Постов нет.</string>
@@ -139,8 +118,6 @@
     <string name="btn_edit_highlight">Править</string>
     <string name="btn_delete_highlight">Удалить</string>
     <string name="msg_back_exit">Ещё раз назад для выхода</string>
-
-    <!-- Код-пароль -->
     <string name="lock_title">Заблокировано</string>
     <string name="lock_desc">Под защитой</string>
     <string name="label_enter_pin">Введите PIN</string>
@@ -152,8 +129,6 @@
     <string name="msg_highlight_created">Создано</string>
     <string name="msg_highlight_created_only">Создано</string>
     <string name="msg_story_published">Опубликовано</string>
-
-    <!-- Редактор сториз -->
     <string name="label_tap_text">Введите текст</string>
     <string name="label_date">Дата</string>
     <string name="label_reset">Сброс</string>
@@ -163,7 +138,6 @@
     <string name="btn_publish">Пост</string>
     <string name="label_align_text">Выравнивание</string>
     <string name="placeholder_type_text">Текст...</string>
-
     <string name="style_modern">MODERN</string>
     <string name="style_classic">CLASSIC</string>
     <string name="style_neon">NEON</string>
@@ -171,7 +145,6 @@
     <string name="style_serif">SERIF</string>
     <string name="style_strong">STRONG</string>
     <string name="style_elegant">ELEGANT</string>
-
     <string name="color_white">Белый</string>
     <string name="color_black">Черный</string>
     <string name="color_yellow">Желтый</string>
@@ -182,7 +155,6 @@
     <string name="color_orange">Оранж</string>
     <string name="color_red">Красный</string>
     <string name="color_blue">Синий</string>
-
     <string name="filter_normal">Оригинал</string>
     <string name="filter_warm">Теплый</string>
     <string name="filter_cool">Холодный</string>
@@ -190,8 +162,6 @@
     <string name="filter_bw">Ч/Б</string>
     <string name="filter_dramatic">Драма</string>
     <string name="msg_filter_applied">Фильтр: %s</string>
-
-    <!-- Пост -->
     <string name="step_select_media">Выбор</string>
     <string name="step_adjust_media">Правка</string>
     <string name="step_edit_memory">Правка</string>
@@ -242,8 +212,6 @@
     <string name="msg_back_confirm">Назад еще раз</string>
     <string name="msg_cancel_confirm">Отмена еще раз</string>
     <string name="msg_cancel_story">Удалить черновик?</string>
-
-    <!-- Лента -->
     <string name="my_memoir">Мой Memoir</string>
     <string name="item_unpin">Открепить</string>
     <string name="item_pin">Закрепить</string>
@@ -258,8 +226,6 @@
     <string name="title_delete_memory">Удалить воспоминание?</string>
     <string name="msg_delete_memory">Удалить навсегда?</string>
     <string name="msg_memory_deleted">Удалено</string>
-
-    <!-- Заметки -->
     <string name="title_notes">Заметки</string>
     <string name="btn_close_notes">Закрыть</string>
     <string name="msg_no_notes">Заметок нет.</string>
@@ -269,10 +235,7 @@
     <string name="label_caption">Описание</string>
     <string name="label_my_note">Моя заметка</string>
     <string name="btn_delete_note">Удалить</string>
-
     <string name="msg_story_random_hint">Нажмите для просмотра</string>
-
-    <!-- Сториз -->
     <string name="msg_just_now">Только что</string>
     <string name="msg_minutes_ago">%d мин. назад</string>
     <string name="msg_hours_ago">%d ч. назад</string>
@@ -287,8 +250,6 @@
     <string name="btn_create_add">Создать</string>
     <string name="title_delete_story">Удалить сториз?</string>
     <string name="msg_delete_story">Удалить этот объект?</string>
-
-    <!-- Диалоги профиля -->
     <string name="msg_save_profile_failed">Ошибка сохранения</string>
     <string name="label_change_photo">Фото профиля</string>
     <string name="btn_pick_gallery">Галерея</string>
@@ -312,8 +273,6 @@
     <string name="msg_story_added_highlight">Добавлено</string>
     <string name="title_delete_highlight">Удалить актуальное?</string>
     <string name="msg_delete_highlight">Удалить этот набор?</string>
-
-    <!-- Подключения -->
     <string name="title_manage_conn">Подключения</string>
     <string name="label_server_name">Имя</string>
     <string name="label_ip_host">IP / Хост</string>
@@ -324,18 +283,12 @@
     <string name="placeholder_target">Backup</string>
     <string name="title_delete_conn">Удалить подключение?</string>
     <string name="msg_delete_conn">Удалить \"%1$s\" (%2$s)?</string>
-
-    <!-- Бэкап -->
     <string name="msg_processing_folder">Обработка...</string>
     <string name="title_import_folder">Импорт папки</string>
     <string name="msg_scanning_folder">Поиск...</string>
     <string name="btn_rescan_folder">Пересканировать</string>
-
-    <!-- Разное -->
     <string name="msg_success_export">✅ Экспорт %d файлов</string>
     <string name="msg_failed_export">❌ Ошибка: %s</string>
-
-    <!-- NAS -->
     <string name="title_manage_nas">Хранилище SMB</string>
     <string name="label_auto_discovery">Автопоиск</string>
     <string name="msg_no_smb_found">Серверы не найдены.</string>
@@ -362,8 +315,20 @@
     <string name="msg_folder_selected">Выбрано: %s</string>
     <string name="msg_conn_deleted">Удалено</string>
     <string name="btn_use_pin">Использовать PIN</string>
-
-    <!-- Онбординг -->
+    <string name="title_add_new_nas">Добавить новое NAS подключение</string>
+    <string name="label_friendly_name">Имя подключения (напр. Домашний NAS)</string>
+    <string name="label_ip_hostname">IP адрес / Хост</string>
+    <string name="label_guest_access">Гостевой доступ</string>
+    <string name="label_user">Пользователь</string>
+    <string name="label_pass">Пароль</string>
+    <string name="label_domain">Домен</string>
+    <string name="label_share_hint">Имя ресурса (напр. Photos)</string>
+    <string name="label_path_prefix">Путь: %s</string>
+    <string name="btn_finalize_save">Завершить и сохранить</string>
+    <string name="btn_connect_explore">Подключиться и выбрать папку</string>
+    <string name="title_explore_folders">Обзор папок</string>
+    <string name="label_in_share">В ресурсе: %s</string>
+    <string name="msg_no_folders">Подпапки не найдены.</string>
     <string name="ob_title_1">Добро пожаловать</string>
     <string name="ob_desc_1">Приватная галерея оффлайн.</string>
     <string name="ob_title_2">Синхронизация NAS</string>
@@ -373,8 +338,6 @@
     <string name="btn_skip">Пропустить</string>
     <string name="btn_start_memoir">Начать</string>
     <string name="btn_continue">Далее</string>
-
-    <!-- Права -->
     <string name="perm_title">Доступ</string>
     <string name="perm_desc">Нужен доступ к медиа.</string>
     <string name="perm_media_title">Медиатека</string>
@@ -386,8 +349,6 @@
     <string name="btn_grant_media">Дать доступ</string>
     <string name="btn_continue_memoir">Далее</string>
     <string name="btn_skip_later">Позже</string>
-
-    <!-- Уведомления -->
     <string name="title_notifications">События</string>
     <string name="msg_no_activity">Нет новых событий.</string>
     <string name="title_mem_added">Добавлено</string>
@@ -401,8 +362,6 @@
     <string name="desc_local_sec">100% приватность.</string>
     <string name="label_mem_flashback">🗓️ %s</string>
     <string name="desc_mem_date">Пост от %s</string>
-
-    <!-- SMB -->
     <string name="title_smb_explorer">SMB Проводник</string>
     <string name="msg_no_smb_saved">Нет подключений.</string>
     <string name="label_select_server">Сервер</string>
@@ -413,11 +372,8 @@
     <string name="label_memoir_archive">Архив</string>
     <string name="btn_import">Импорт</string>
     <string name="msg_smb_load_failed">Ошибка загрузки</string>
-
     <string name="msg_smb_sync_title">NAS Синхронизирован</string>
     <string name="msg_smb_sync_desc">%d новых файлов.</string>
-
-    <!-- Сообщения -->
     <string name="msg_album_deleted">Альбом удален</string>
     <string name="msg_item_removed_album">Объект удален</string>
     <string name="msg_photo_added_album">Фото добавлено</string>
@@ -429,16 +385,18 @@
     <string name="msg_import_folder_failed">❌ Ошибка: %s</string>
     <string name="msg_rescan_success">✅ Готово: %d новых</string>
     <string name="msg_no_story_highlight_edit">Пустое актуальное</string>
-
-    <!-- Языки -->
+    <string name="sec_maintenance">Обслуживание</string>
+    <string name="label_verify_pin_reset">Подтвердите PIN для сброса</string>
+    <string name="msg_total_wipe_desc">Это безвозвратно удалит ВСЕ фотографии, истории и настройки с этого устройства.</string>
+    <string name="btn_total_reset">Удалить всё</string>
+    <string name="msg_reset_success">Приложение было сброшено до заводских настроек.</string>
+    <string name="msg_set_pin_first">Сначала установите PIN-код, чтобы включить биометрию</string>
     <string name="lang_en">English</string>
     <string name="lang_id">Indonesia</string>
     <string name="lang_zh">中文</string>
     <string name="lang_ja">日本語</string>
     <string name="lang_ru">Русский</string>
     <string name="lang_ar">العربية</string>
-
-    <!-- Настройки -->
     <string name="status_active">Активно</string>
     <string name="status_inactive">Неактивно</string>
     <string name="btn_remove_pin">Удалить PIN</string>
@@ -447,19 +405,15 @@
     <string name="btn_clean">Очистить</string>
     <string name="desc_manage_smb">Настройка NAS</string>
     <string name="desc_manual_backup">Экспорт данных</string>
-
     <string name="label_memoir_user">Memoir (%s)</string>
     <string name="channel_sync_name">NAS Синхрон</string>
     <string name="channel_sync_desc">Синхронизация с сервером</string>
-
     <string name="label_video">Видео</string>
     <string name="label_multi_photo">Несколько</string>
-
     <string name="back_to_explore">Назад</string>
     <string name="back_to_profile">Назад</string>
     <string name="label_exploration">ОБЗОР</string>
     <string name="msg_no_saved_post">Нет сохранений</string>
-
     <string name="title_backup_slideshow">Резерв</string>
     <string name="tab_backup_folder">Папка</string>
     <string name="tab_slideshow">Слайды</string>
@@ -472,7 +426,6 @@
     <string name="desc_slideshow_generator">Выберите фото</string>
     <string name="msg_no_slideshow_post">Фото нет</string>
     <string name="label_select_photo_count">Выбрано (%d)</string>
-
     <string name="label_me">Я</string>
     <string name="theme_signature">Подпись</string>
     <string name="theme_navy">Морской</string>
@@ -482,7 +435,6 @@
     <string name="theme_emerald">Изумруд</string>
     <string name="theme_sunset">Закат</string>
     <string name="theme_violet">Фиалка</string>
-
     <string name="desc_pinned">Закреплено</string>
     <string name="desc_menu">Меню</string>
     <string name="desc_like">Нравится</string>
@@ -493,11 +445,9 @@
     <string name="desc_switch_camera">Сменить камеру</string>
     <string name="desc_selected">Выбрано</string>
     <string name="desc_in_highlight">В актуальном</string>
-
     <string name="err_invalid_share">Ресурс \'%s\' не является допустимым дисковым каталогом.</string>
     <string name="err_folder_not_found_smb">Папка \'%s\' не найдена на SMB-сервере.</string>
     <string name="label_nas_server_default">NAS-сервер (%s)</string>
-
     <string name="msg_test_conn_success">Подключение к SMB/NAS успешно!</string>
     <string name="msg_test_conn_failed">Не удалось подключиться к SMB</string>
     <string name="msg_sync_searching">Поиск медиафайлов в %s...</string>
@@ -517,7 +467,6 @@
     <string name="msg_export_success_files">✅ Экспортировано %d файлов в папку \'%s\'!</string>
     <string name="msg_importing_from">Импорт данных из \'%s\'...</string>
     <string name="msg_import_success_from">✅ Импортировано %1$d новых воспоминаний из \'%2$s\'!</string>
-
     <string name="preset_blue">Пляж Меласти 🌊</string>
     <string name="preset_sunset">Закат на Бали 🌅</string>
     <string name="preset_temple">Храм Лухур 🛕</string>
@@ -526,12 +475,10 @@
     <string name="preset_slate">Уголок города 🌆</string>
     <string name="preset_purple">Дзен-память 🧘</string>
     <string name="preset_default">Фото Memoir</string>
-
     <string name="widget_title_memory">📅 В этот день</string>
     <string name="widget_title_welcome">✨ Добро пожаловать</string>
     <string name="widget_desc_years_ago">%1$d лет назад • %2$s</string>
     <string name="widget_desc_empty">Добавьте пост, чтобы начать</string>
-
     <string name="about_memoir">Об авторе</string>
     <string name="memoir_version">v1.2.0 • Личная галерея</string>
 </resources>

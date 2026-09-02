@@ -10,7 +10,6 @@ import java.io.File
 import java.io.FileOutputStream
 
 object FileUtils {
-
     fun getMemoirDataDir(context: Context): File {
         val dir = File(context.filesDir, "memoir_data")
         if (!dir.exists()) dir.mkdirs()
@@ -154,7 +153,8 @@ object FileUtils {
         offsetX: Float = 0f,
         offsetY: Float = 0f,
         vw: Float = 0f,
-        vh: Float = 0f
+        vh: Float = 0f,
+        isContentFit: Boolean = false
     ): Pair<String, org.json.JSONObject> {
         val isVideo = isVideoPath(pathOrUri)
         val ext = if (isVideo) ".mp4" else ".jpg"
@@ -164,12 +164,20 @@ object FileUtils {
         val metadataObj = org.json.JSONObject().apply {
             put("fileName", fileName)
             put("isVideo", isVideo)
-            put("scale", scale)
-            put("rotation", rotation)
-            put("offsetX", offsetX)
-            put("offsetY", offsetY)
+            if (isVideo) {
+                put("scale", scale)
+                put("rotation", rotation)
+                put("offsetX", offsetX)
+                put("offsetY", offsetY)
+            } else {
+                put("scale", 1.0f)
+                put("rotation", 0.0f)
+                put("offsetX", 0.0f)
+                put("offsetY", 0.0f)
+            }
             put("viewportWidth", vw)
             put("viewportHeight", vh)
+            put("isContentFit", isContentFit)
             put("filterName", "Normal")
         }
 
@@ -187,6 +195,71 @@ object FileUtils {
                         srcFile.copyTo(destFile, overwrite = true)
                     }
                 }
+
+                val retriever = MediaMetadataRetriever()
+                try {
+                    if (pathOrUri.startsWith("content://")) {
+                        retriever.setDataSource(context, Uri.parse(pathOrUri))
+                    } else {
+                        val srcFile = getLocalFile(context, pathOrUri)
+                        retriever.setDataSource(srcFile.absolutePath)
+                    }
+                    val frame = retriever.getFrameAtTime(1000000, MediaMetadataRetriever.OPTION_CLOSEST_SYNC)
+                    if (frame != null) {
+                        val thumbFile = File(targetFolder, "$fileName.thumb.jpg")
+                        val outWidth: Int
+                        val outHeight: Int
+                        
+                        val srcW = frame.width.toFloat()
+                        val srcH = frame.height.toFloat()
+                        val targetRatio = when {
+                            targetRatioStr == "1:1" -> 1.0f
+                            targetRatioStr == "4:5" -> 0.8f
+                            targetRatioStr == "16:9" -> 16f / 9f
+                            targetRatioStr == "9:16" -> 9f / 16f
+                            else -> srcW / srcH
+                        }
+
+                        if (targetRatio > 1f) {
+                            outWidth = 720
+                            outHeight = (720 / targetRatio).toInt()
+                        } else {
+                            outHeight = 720
+                            outWidth = (720 * targetRatio).toInt()
+                        }
+
+                        val thumbBitmap = android.graphics.Bitmap.createBitmap(outWidth, outHeight, android.graphics.Bitmap.Config.ARGB_8888)
+                        val canvas = android.graphics.Canvas(thumbBitmap)
+                        val matrix = android.graphics.Matrix()
+                        
+                        matrix.postTranslate(-srcW / 2f, -srcH / 2f)
+                        matrix.postRotate(rotation)
+                        
+                        val imageRatio = srcW / srcH
+                        val baseScale = if (isContentFit) {
+                            if (imageRatio > targetRatio) outWidth.toFloat() / srcW else outHeight.toFloat() / srcH
+                        } else {
+                            if (imageRatio > targetRatio) outHeight.toFloat() / srcH else outWidth.toFloat() / srcW
+                        }
+                        val finalScale = baseScale * scale
+                        matrix.postScale(finalScale, finalScale)
+                        
+                        val uiViewportWidth = if (vw > 0) vw else 400f
+                        val offsetScaleFactor = outWidth.toFloat() / uiViewportWidth
+                        matrix.postTranslate(outWidth / 2f + (offsetX * offsetScaleFactor), outHeight / 2f + (offsetY * offsetScaleFactor))
+                        
+                        canvas.drawBitmap(frame, matrix, android.graphics.Paint(android.graphics.Paint.ANTI_ALIAS_FLAG or android.graphics.Paint.FILTER_BITMAP_FLAG))
+                        
+                        FileOutputStream(thumbFile).use { out ->
+                            thumbBitmap.compress(android.graphics.Bitmap.CompressFormat.JPEG, 80, out)
+                        }
+                        thumbBitmap.recycle()
+                    }
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                } finally {
+                    try { retriever.release() } catch (e: Exception) {}
+                }
             } catch (e: Exception) {
                 e.printStackTrace()
             }
@@ -203,7 +276,7 @@ object FileUtils {
             targetRatioStr == "4:5" -> 0.8f
             targetRatioStr == "16:9" -> 16f / 9f
             targetRatioStr == "9:16" -> 9f / 16f
-            targetRatioStr == "Asli" || targetRatioStr.startsWith("Asli") -> srcWidth / srcHeight
+            targetRatioStr == "Asli" || targetRatioStr == "Original" || targetRatioStr == "ORIGINAL" || targetRatioStr.startsWith("Asli") || targetRatioStr.startsWith("Original") -> srcWidth / srcHeight
             targetRatioStr.contains(":") -> {
                 val parts = targetRatioStr.split(":")
                 val w = parts.getOrNull(0)?.toFloatOrNull() ?: 1f
@@ -231,10 +304,10 @@ object FileUtils {
         matrix.postRotate(rotation)
 
         val imageRatio = srcWidth / srcHeight
-        val baseScale = if (imageRatio > targetRatio) {
-            outHeight.toFloat() / srcHeight
+        val baseScale = if (isContentFit) {
+            if (imageRatio > targetRatio) outWidth.toFloat() / srcWidth else outHeight.toFloat() / srcHeight
         } else {
-            outWidth.toFloat() / srcWidth
+            if (imageRatio > targetRatio) outHeight.toFloat() / srcHeight else outWidth.toFloat() / srcWidth
         }
         val finalScale = baseScale * scale
         matrix.postScale(finalScale, finalScale)
@@ -576,5 +649,67 @@ object FileUtils {
         } catch (e: Exception) {
             1.0f
         }
+    }
+
+    fun getCacheSize(context: Context): Float {
+        val cacheDir = context.cacheDir
+        val sizeBytes = getDirectorySize(cacheDir)
+        return sizeBytes / (1024f * 1024f)
+    }
+
+    private fun getDirectorySize(dir: File): Long {
+        var size: Long = 0
+        val files = dir.listFiles()
+        if (files != null) {
+            for (file in files) {
+                size += if (file.isDirectory) {
+                    getDirectorySize(file)
+                } else {
+                    file.length()
+                }
+            }
+        }
+        return size
+    }
+
+    fun clearAppCache(context: Context) {
+        val cacheDir = context.cacheDir
+        val files = cacheDir.listFiles()
+        if (files != null) {
+            for (file in files) {
+                deleteRecursive(file)
+            }
+        }
+    }
+
+    fun deleteAllMemoirData(context: Context) {
+        val dataDir = getMemoirDataDir(context)
+        if (dataDir.exists()) {
+            val files = dataDir.listFiles()
+            if (files != null) {
+                for (file in files) {
+                    deleteRecursive(file)
+                }
+            }
+        }
+        val mediaDir = File(context.filesDir, "media")
+        if (mediaDir.exists()) {
+            deleteRecursive(mediaDir)
+        }
+        getPostsDir(context)
+        getStoriesDir(context)
+        getProfileDir(context)
+    }
+
+    private fun deleteRecursive(fileOrDirectory: File) {
+        if (fileOrDirectory.isDirectory) {
+            val children = fileOrDirectory.listFiles()
+            if (children != null) {
+                for (child in children) {
+                    deleteRecursive(child)
+                }
+            }
+        }
+        fileOrDirectory.delete()
     }
 }

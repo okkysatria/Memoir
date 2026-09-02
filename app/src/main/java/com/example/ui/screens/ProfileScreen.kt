@@ -13,6 +13,7 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -32,7 +33,6 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.R
@@ -78,8 +78,22 @@ fun ProfileScreen(viewModel: MemoirViewModel, onAddStoryClick: () -> Unit) {
     var showAddHighlightDialog by remember { mutableStateOf(false) }
     var editingHighlight by remember { mutableStateOf<StoryHighlightEntity?>(null) }
 
-    val context = LocalContext.current
+    val gridState = rememberLazyGridState()
+    val albumGridState = rememberLazyGridState()
+    val storyGridState = rememberLazyGridState()
+    val scrollToTopTrigger by viewModel.scrollToTopTrigger.collectAsStateWithLifecycle()
 
+    LaunchedEffect(scrollToTopTrigger) {
+        if (scrollToTopTrigger > 0) {
+            when (activeProfileSubTab) {
+                "grid" -> gridState.scrollToItem(0)
+                "album" -> albumGridState.scrollToItem(0)
+                "stories" -> storyGridState.scrollToItem(0)
+            }
+        }
+    }
+
+    val context = LocalContext.current
     val todayCal = remember { Calendar.getInstance() }
     val todayYear = todayCal.get(Calendar.YEAR)
     val todayMonth = todayCal.get(Calendar.MONTH)
@@ -101,27 +115,19 @@ fun ProfileScreen(viewModel: MemoirViewModel, onAddStoryClick: () -> Unit) {
             val monthDiff = (todayYear * 12 + todayMonth) - (itemYear * 12 + itemMonth)
             val yearDiff = todayYear - itemYear
 
-
             if (monthDiff == 1 || daysDiff in 25..40) {
                 return Pair(context.getString(R.string.one_month_ago), context.getString(R.string.one_month))
             }
-
-
             if (monthDiff == 6 || daysDiff in 165..200) {
                 return Pair(context.getString(R.string.six_months_ago), context.getString(R.string.six_months))
             }
-
-
             if (yearDiff == 1 || daysDiff in 345..395) {
                 return Pair(context.getString(R.string.years_ago, 1), context.getString(R.string.years, 1))
             }
-
-
             if (yearDiff >= 2 || daysDiff >= 700) {
                 val calculatedYears = if (yearDiff >= 2) yearDiff else (daysDiff / 365).toInt().coerceAtLeast(2)
                 return Pair(context.getString(R.string.years_ago, calculatedYears), context.getString(R.string.years, calculatedYears))
             }
-
             return null
         }
 
@@ -202,17 +208,6 @@ fun ProfileScreen(viewModel: MemoirViewModel, onAddStoryClick: () -> Unit) {
 
                 Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
                     IconButton(
-                        onClick = { showEditProfileDialog = true },
-                        modifier = Modifier.size(38.dp).testTag("edit_profile_button")
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.Edit,
-                            contentDescription = stringResource(R.string.edit_profile),
-                            tint = MaterialTheme.colorScheme.onSurface,
-                            modifier = Modifier.size(22.dp)
-                        )
-                    }
-                    IconButton(
                         onClick = { viewModel.navigateTo(Screen.Settings) },
                         modifier = Modifier.size(38.dp).testTag("profile_settings_button")
                     ) {
@@ -227,103 +222,103 @@ fun ProfileScreen(viewModel: MemoirViewModel, onAddStoryClick: () -> Unit) {
             }
         }
 
-    val meLabel = stringResource(R.string.label_me)
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(16.dp)
-    ) {
-        Box(
+        Row(
             modifier = Modifier
-                .size(82.dp)
-                .border(
-                    BorderStroke(
-                        2.5.dp,
-                        Brush.linearGradient(
-                            listOf(
-                                MaterialTheme.colorScheme.primary,
-                                MaterialTheme.colorScheme.secondary
-                            )
-                        )
-                    ),
-                    CircleShape
-                )
-                .padding(4.dp)
-                .clip(CircleShape)
-                .background(
-                    Brush.linearGradient(
-                        listOf(
-                            MaterialTheme.colorScheme.primary,
-                            MaterialTheme.colorScheme.secondary
-                        )
-                    )
-                )
-                .clickable {
-                    val activeUserStories = stories.filter { it.expiresAt > System.currentTimeMillis() }
-                    if (activeUserStories.isNotEmpty()) {
-                        viewModel.openStoryViewer(activeUserStories, 0)
-                    } else {
-                        onAddStoryClick()
-                    }
-                },
-            contentAlignment = Alignment.Center
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp)
+                .padding(top = 16.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(20.dp)
         ) {
-            if (!profileImagePath.isNullOrEmpty()) {
-                MediaView(
-                    path = profileImagePath!!,
-                    modifier = Modifier.fillMaxSize()
+            Box(
+                modifier = Modifier
+                    .size(86.dp)
+                    .border(
+                        BorderStroke(
+                            2.dp,
+                            Brush.linearGradient(
+                                listOf(
+                                    MaterialTheme.colorScheme.primary,
+                                    MaterialTheme.colorScheme.secondary
+                                )
+                            )
+                        ),
+                        CircleShape
+                    )
+                    .padding(4.dp)
+                    .clip(CircleShape)
+                    .background(MaterialTheme.colorScheme.surfaceVariant)
+                    .clickable {
+                        val activeUserStories = stories.filter { it.expiresAt > System.currentTimeMillis() }
+                        if (activeUserStories.isNotEmpty()) {
+                            viewModel.openStoryViewer(activeUserStories, 0)
+                        } else {
+                            onAddStoryClick()
+                        }
+                    },
+                contentAlignment = Alignment.Center
+            ) {
+                if (!profileImagePath.isNullOrEmpty()) {
+                    MediaView(
+                        path = profileImagePath!!,
+                        modifier = Modifier.fillMaxSize()
+                    )
+                } else {
+                    Icon(
+                        imageVector = Icons.Default.Person,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.primary.copy(alpha = 0.6f),
+                        modifier = Modifier.size(48.dp)
+                    )
+                }
+            }
+
+            Row(
+                modifier = Modifier.weight(1f),
+                horizontalArrangement = Arrangement.SpaceAround
+            ) {
+                ProfileStat(
+                    count = posts.size,
+                    label = stringResource(R.string.posts),
+                    onClick = { activeProfileSubTab = "grid" }
                 )
-            } else {
-                Text(
-                    text = meLabel,
-                    color = Color.White,
-                    fontSize = 22.sp,
-                    fontWeight = FontWeight.Bold
+                ProfileStat(
+                    count = albums.size,
+                    label = stringResource(R.string.nav_albums),
+                    onClick = { activeProfileSubTab = "album" }
+                )
+                ProfileStat(
+                    count = stories.size,
+                    label = stringResource(R.string.cat_story).replace("✨ ", ""),
+                    onClick = {
+                        if (stories.isNotEmpty()) {
+                            viewModel.openStoryViewer(stories, 0)
+                        }
+                    }
                 )
             }
         }
 
-        Row(
-            modifier = Modifier.weight(1f),
-            horizontalArrangement = Arrangement.SpaceAround
-        ) {
-            ProfileStat(
-                count = posts.size,
-                label = stringResource(R.string.posts),
-                onClick = { activeProfileSubTab = "grid" }
-            )
-            ProfileStat(
-                count = albums.size,
-                label = stringResource(R.string.nav_albums),
-                onClick = { activeProfileSubTab = "album" }
-            )
-            ProfileStat(
-                count = stories.size,
-                label = stringResource(R.string.cat_story).replace("✨ ", ""),
-                onClick = {
-                    if (stories.isNotEmpty()) {
-                        viewModel.openStoryViewer(stories, 0)
-                    }
-                }
-            )
-        }
-    }
-
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 16.dp, vertical = 10.dp)
+                .padding(horizontal = 20.dp, vertical = 12.dp)
         ) {
-            Text(text = profileName, fontWeight = FontWeight.Bold, fontSize = 14.sp)
-            Spacer(modifier = Modifier.height(2.dp))
             Text(
-                text = profileBio,
-                fontSize = 12.sp,
-                color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.85f),
-                lineHeight = 16.sp
+                text = profileName,
+                fontWeight = FontWeight.ExtraBold,
+                fontSize = 16.sp,
+                color = MaterialTheme.colorScheme.onSurface
             )
+            if (profileBio.isNotBlank()) {
+                Spacer(modifier = Modifier.height(4.dp))
+                Text(
+                    text = profileBio,
+                    fontSize = 13.sp,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    lineHeight = 18.sp
+                )
+            }
         }
 
         LazyRow(
@@ -490,6 +485,7 @@ fun ProfileScreen(viewModel: MemoirViewModel, onAddStoryClick: () -> Unit) {
                             LazyVerticalGrid(
                                 columns = GridCells.Fixed(3),
                                 modifier = Modifier.fillMaxSize(),
+                                state = gridState,
                                 verticalArrangement = Arrangement.spacedBy(2.dp),
                                 horizontalArrangement = Arrangement.spacedBy(2.dp)
                             ) {
@@ -498,6 +494,7 @@ fun ProfileScreen(viewModel: MemoirViewModel, onAddStoryClick: () -> Unit) {
                                     Box(
                                         modifier = Modifier
                                             .aspectRatio(1f)
+                                            .clip(RoundedCornerShape(1.dp))
                                             .clickable {
                                                 viewModel.navigateTo(
                                                     Screen.ProfileFeed(
@@ -509,6 +506,8 @@ fun ProfileScreen(viewModel: MemoirViewModel, onAddStoryClick: () -> Unit) {
                                     ) {
                                         MediaView(
                                             path = post.mediaPaths.firstOrNull() ?: "gradient_slate",
+                                            autoPlay = false,
+                                            allowManualPlay = false,
                                             modifier = Modifier.fillMaxSize()
                                         )
                                         if (post.isPinned) {
@@ -524,7 +523,21 @@ fun ProfileScreen(viewModel: MemoirViewModel, onAddStoryClick: () -> Unit) {
                                                     .padding(2.dp)
                                             )
                                         }
-                                        if (post.mediaPaths.size > 1) {
+
+                                        val firstMedia = post.mediaPaths.firstOrNull() ?: ""
+                                        if (FileUtils.isVideoPath(firstMedia)) {
+                                            Icon(
+                                                imageVector = Icons.Default.PlayArrow,
+                                                contentDescription = stringResource(R.string.label_video),
+                                                tint = Color.White,
+                                                modifier = Modifier
+                                                    .align(Alignment.TopEnd)
+                                                    .padding(6.dp)
+                                                    .size(16.dp)
+                                                    .background(Color.Black.copy(alpha = 0.3f), CircleShape)
+                                                    .padding(2.dp)
+                                            )
+                                        } else if (post.mediaPaths.size > 1) {
                                             Icon(
                                                 imageVector = Icons.Default.Collections,
                                                 contentDescription = null,
@@ -551,6 +564,7 @@ fun ProfileScreen(viewModel: MemoirViewModel, onAddStoryClick: () -> Unit) {
                                 modifier = Modifier
                                     .fillMaxSize()
                                     .padding(8.dp),
+                                state = albumGridState,
                                 verticalArrangement = Arrangement.spacedBy(8.dp),
                                 horizontalArrangement = Arrangement.spacedBy(8.dp)
                             ) {
@@ -578,7 +592,6 @@ fun ProfileScreen(viewModel: MemoirViewModel, onAddStoryClick: () -> Unit) {
                         }
 
                         Column(modifier = Modifier.fillMaxSize()) {
-
                             if (onThisDayMemories.isNotEmpty()) {
                                 LazyRow(
                                     modifier = Modifier
@@ -645,6 +658,7 @@ fun ProfileScreen(viewModel: MemoirViewModel, onAddStoryClick: () -> Unit) {
                                 LazyVerticalGrid(
                                     columns = GridCells.Fixed(3),
                                     modifier = Modifier.fillMaxSize(),
+                                    state = storyGridState,
                                     verticalArrangement = Arrangement.spacedBy(2.dp),
                                     horizontalArrangement = Arrangement.spacedBy(2.dp)
                                 ) {
@@ -652,6 +666,7 @@ fun ProfileScreen(viewModel: MemoirViewModel, onAddStoryClick: () -> Unit) {
                                         Box(
                                             modifier = Modifier
                                                 .aspectRatio(1f)
+                                                .clip(RoundedCornerShape(1.dp))
                                                 .clickable {
                                                     if (memory.storyEntity != null) {
                                                         val storyList = stories.ifEmpty { listOf(memory.storyEntity) }
@@ -667,9 +682,10 @@ fun ProfileScreen(viewModel: MemoirViewModel, onAddStoryClick: () -> Unit) {
                                         ) {
                                             MediaView(
                                                 path = memory.mediaPath,
+                                                autoPlay = false,
+                                                allowManualPlay = false,
                                                 modifier = Modifier.fillMaxSize()
                                             )
-
 
                                             Box(
                                                 modifier = Modifier
@@ -681,7 +697,6 @@ fun ProfileScreen(viewModel: MemoirViewModel, onAddStoryClick: () -> Unit) {
                                                         )
                                                     )
                                             )
-
 
                                             Box(
                                                 modifier = Modifier
@@ -702,7 +717,6 @@ fun ProfileScreen(viewModel: MemoirViewModel, onAddStoryClick: () -> Unit) {
                                                     fontWeight = FontWeight.Bold
                                                 )
                                             }
-
 
                                             if (memory.isVideo) {
                                                 Box(
@@ -735,7 +749,6 @@ fun ProfileScreen(viewModel: MemoirViewModel, onAddStoryClick: () -> Unit) {
                                                     )
                                                 }
                                             }
-
 
                                             Text(
                                                 text = memory.dateString,

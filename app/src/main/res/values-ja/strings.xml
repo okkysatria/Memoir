@@ -1,13 +1,9 @@
 <resources>
     <string name="app_name">Memoir</string>
-
-    <!-- ナビゲーション -->
     <string name="nav_home">ホーム</string>
     <string name="nav_explore">発見</string>
     <string name="nav_albums">アルバム</string>
     <string name="nav_profile">プロフィール</string>
-
-    <!-- ホーム -->
     <string name="home_title">Memoir</string>
     <string name="on_this_day">あの日</string>
     <string name="memories_found">%d 件の思い出</string>
@@ -19,18 +15,13 @@
     <string name="one_month_ago">1ヶ月前</string>
     <string name="six_months_ago">6ヶ月前</string>
     <string name="years_ago">%d 年前</string>
-
     <string name="one_month">1ヶ月</string>
     <string name="six_months">6ヶ月</string>
     <string name="years">%d 年</string>
-
-    <!-- プロフィール -->
     <string name="edit_profile">編集</string>
     <string name="posts">投稿</string>
     <string name="saved">保存済み</string>
     <string name="bio_placeholder">ストーリーを書きましょう...</string>
-
-    <!-- 設定 -->
     <string name="settings_title">設定</string>
     <string name="settings_subtitle">設定とセキュリティ</string>
     <string name="sec_profile">プロフィール</string>
@@ -38,7 +29,6 @@
     <string name="sec_security">セキュリティ</string>
     <string name="sec_storage">保存と同期</string>
     <string name="sec_others">その他</string>
-
     <string name="pref_language">言語</string>
     <string name="pref_dark_mode">ダークモード</string>
     <string name="pref_theme_color">アクセントカラー</string>
@@ -52,8 +42,6 @@
     <string name="pref_manage_smb">接続</string>
     <string name="pref_manual_backup">ローカルバックアップ</string>
     <string name="pref_reset_app">アプリをリセット</string>
-
-    <!-- ダイアログとボタン -->
     <string name="btn_save">保存</string>
     <string name="btn_back">戻る</string>
     <string name="btn_cancel">キャンセル</string>
@@ -66,17 +54,15 @@
     <string name="confirm_reset_desc">すべてのコンテンツが完全に削除されます。</string>
     <string name="msg_understand">了解</string>
     <string name="operation_result">結果</string>
-
-    <!-- 発見 -->
     <string name="cat_all">すべて</string>
     <string name="cat_photo">写真</string>
     <string name="cat_video">動画</string>
     <string name="cat_story">ストーリーズ</string>
     <string name="cat_album">アルバム</string>
-
     <string name="filter_sort">並べ替え</string>
     <string name="filter_latest">最新</string>
     <string name="filter_oldest">古い順</string>
+    <string name="filter_random">ランダム</string>
     <string name="filter_quick_time">期間</string>
     <string name="filter_this_week">今週</string>
     <string name="filter_this_month">今月</string>
@@ -85,16 +71,12 @@
     <string name="filter_month">月</string>
     <string name="filter_year">年</string>
     <string name="filter_reset_time">リセット</string>
-
     <string name="search_placeholder">検索...</string>
     <string name="no_search_results">結果なし</string>
     <string name="no_media_yet">メディアなし</string>
     <string name="btn_reset_filter">フィルターをリセット</string>
-
     <string name="status_online">オンライン</string>
     <string name="status_connected">接続済み</string>
-
-    <!-- アルバム -->
     <string name="album_archive">アーカイブ</string>
     <string name="btn_create_album">新規アルバム</string>
     <string name="new_album_title">アルバム作成</string>
@@ -108,7 +90,6 @@
     <string name="msg_no_album_yet">アルバムなし</string>
     <string name="media_count">%d 件</string>
     <string name="status_offline">オフライン</string>
-
     <string name="label_conn_source">ソース: %s</string>
     <string name="title_album_empty">空のアルバム</string>
     <string name="desc_album_empty">写真やストーリーを追加してください。</string>
@@ -121,8 +102,6 @@
     <string name="desc_tap_to_add">タップして追加。</string>
     <string name="btn_delete_album">削除</string>
     <string name="btn_delete_item">アイテム削除</string>
-
-    <!-- プロフィール固有 -->
     <string name="btn_change">変更</string>
     <string name="new_highlight">新規</string>
     <string name="msg_no_post">投稿なし。</string>
@@ -139,8 +118,6 @@
     <string name="btn_edit_highlight">編集</string>
     <string name="btn_delete_highlight">削除</string>
     <string name="msg_back_exit">もう一度戻るで終了</string>
-
-    <!-- ロック画面 -->
     <string name="lock_title">ロック中</string>
     <string name="lock_desc">セキュリティで保護</string>
     <string name="label_enter_pin">PIN を入力</string>
@@ -152,8 +129,6 @@
     <string name="msg_highlight_created">作成完了</string>
     <string name="msg_highlight_created_only">作成完了</string>
     <string name="msg_story_published">投稿完了</string>
-
-    <!-- ストーリーズ編集 -->
     <string name="label_tap_text">タップして入力</string>
     <string name="label_date">日付</string>
     <string name="label_reset">リセット</string>
@@ -163,7 +138,6 @@
     <string name="btn_publish">投稿</string>
     <string name="label_align_text">配置</string>
     <string name="placeholder_type_text">入力...</string>
-
     <string name="style_modern">モダン</string>
     <string name="style_classic">クラシック</string>
     <string name="style_neon">ネオン</string>
@@ -171,7 +145,6 @@
     <string name="style_serif">明朝</string>
     <string name="style_strong">太字</string>
     <string name="style_elegant">優雅</string>
-
     <string name="color_white">白</string>
     <string name="color_black">黒</string>
     <string name="color_yellow">黄</string>
@@ -182,7 +155,6 @@
     <string name="color_orange">橙</string>
     <string name="color_red">赤</string>
     <string name="color_blue">青</string>
-
     <string name="filter_normal">通常</string>
     <string name="filter_warm">暖色</string>
     <string name="filter_cool">寒色</string>
@@ -190,8 +162,6 @@
     <string name="filter_bw">モノクロ</string>
     <string name="filter_dramatic">ドラマチック</string>
     <string name="msg_filter_applied">フィルター: %s</string>
-
-    <!-- 投稿追加 -->
     <string name="step_select_media">メディア選択</string>
     <string name="step_adjust_media">編集</string>
     <string name="step_edit_memory">編集</string>
@@ -242,8 +212,6 @@
     <string name="msg_back_confirm">もう一度戻る</string>
     <string name="msg_cancel_confirm">もう一度キャンセル</string>
     <string name="msg_cancel_story">破棄しますか？</string>
-
-    <!-- フィード -->
     <string name="my_memoir">マイ・メモワール</string>
     <string name="item_unpin">固定解除</string>
     <string name="item_pin">固定</string>
@@ -258,8 +226,6 @@
     <string name="title_delete_memory">思い出を削除？</string>
     <string name="msg_delete_memory">完全に削除しますか？</string>
     <string name="msg_memory_deleted">削除完了</string>
-
-    <!-- ノート -->
     <string name="title_notes">ノート</string>
     <string name="btn_close_notes">閉じる</string>
     <string name="msg_no_notes">ノートなし。</string>
@@ -269,10 +235,7 @@
     <string name="label_caption">キャプション</string>
     <string name="label_my_note">マイノート</string>
     <string name="btn_delete_note">削除</string>
-
     <string name="msg_story_random_hint">タップして再生</string>
-
-    <!-- ハイライト -->
     <string name="msg_just_now">今</string>
     <string name="msg_minutes_ago">%d 分前</string>
     <string name="msg_hours_ago">%d 時間前</string>
@@ -287,8 +250,6 @@
     <string name="btn_create_add">作成</string>
     <string name="title_delete_story">削除？</string>
     <string name="msg_delete_story">このストーリーを削除しますか？</string>
-
-    <!-- プロフィールダイアログ -->
     <string name="msg_save_profile_failed">保存失敗</string>
     <string name="label_change_photo">写真を変更</string>
     <string name="btn_pick_gallery">ギャラリー</string>
@@ -312,8 +273,6 @@
     <string name="msg_story_added_highlight">追加完了</string>
     <string name="title_delete_highlight">ハイライト削除？</string>
     <string name="msg_delete_highlight">このハイライトを削除しますか？</string>
-
-    <!-- 接続管理 -->
     <string name="title_manage_conn">接続</string>
     <string name="label_server_name">名前</string>
     <string name="label_ip_host">IP / ホスト</string>
@@ -324,18 +283,12 @@
     <string name="placeholder_target">Backup</string>
     <string name="title_delete_conn">接続解除？</string>
     <string name="msg_delete_conn">\"%1$s\" (%2$s) を解除しますか？</string>
-
-    <!-- バックアップ -->
     <string name="msg_processing_folder">処理中...</string>
     <string name="title_import_folder">フォルダ読み込み</string>
     <string name="msg_scanning_folder">スキャン中...</string>
     <string name="btn_rescan_folder">再スキャン</string>
-
-    <!-- その他 -->
     <string name="msg_success_export">✅ %d 件エクスポート完了</string>
     <string name="msg_failed_export">❌ 失敗: %s</string>
-
-    <!-- NAS 管理 -->
     <string name="title_manage_nas">SMB ストレージ</string>
     <string name="label_auto_discovery">自動検出</string>
     <string name="msg_no_smb_found">見つかりません。</string>
@@ -362,8 +315,20 @@
     <string name="msg_folder_selected">選択中: %s</string>
     <string name="msg_conn_deleted">解除完了</string>
     <string name="btn_use_pin">PIN を使う</string>
-
-    <!-- 導入 -->
+    <string name="title_add_new_nas">新規 NAS 接続を追加</string>
+    <string name="label_friendly_name">接続名 (例: 自宅 NAS)</string>
+    <string name="label_ip_hostname">IP アドレス / ホスト名</string>
+    <string name="label_guest_access">ゲスト / 匿名アクセス</string>
+    <string name="label_user">ユーザー名</string>
+    <string name="label_pass">パスワード</string>
+    <string name="label_domain">ドメイン</string>
+    <string name="label_share_hint">共有名 (例: Photos, Public)</string>
+    <string name="label_path_prefix">パス: %s</string>
+    <string name="btn_finalize_save">完了して保存</string>
+    <string name="btn_connect_explore">接続してフォルダを選択</string>
+    <string name="title_explore_folders">フォルダを探索</string>
+    <string name="label_in_share">共有内: %s</string>
+    <string name="msg_no_folders">ここにサブフォルダは見つかりませんでした。</string>
     <string name="ob_title_1">ようこそ</string>
     <string name="ob_desc_1">完全オフラインのフォトギャラリー。</string>
     <string name="ob_title_2">NAS 同期</string>
@@ -373,8 +338,6 @@
     <string name="btn_skip">スキップ</string>
     <string name="btn_start_memoir">はじめる</string>
     <string name="btn_continue">次へ</string>
-
-    <!-- 権限 -->
     <string name="perm_title">権限設定</string>
     <string name="perm_desc">メディアへのアクセスが必要です。</string>
     <string name="perm_media_title">メディア権限</string>
@@ -386,8 +349,6 @@
     <string name="btn_grant_media">許可を与える</string>
     <string name="btn_continue_memoir">次へ</string>
     <string name="btn_skip_later">あとで</string>
-
-    <!-- 通知 -->
     <string name="title_notifications">アクティビティ</string>
     <string name="msg_no_activity">履歴なし。</string>
     <string name="title_mem_added">保存完了</string>
@@ -401,8 +362,6 @@
     <string name="desc_local_sec">100% プライベート。</string>
     <string name="label_mem_flashback">🗓️ %s</string>
     <string name="desc_mem_date">%s の投稿</string>
-
-    <!-- SMB -->
     <string name="title_smb_explorer">SMBエクスプローラー</string>
     <string name="msg_no_smb_saved">接続なし。</string>
     <string name="label_select_server">サーバー</string>
@@ -413,11 +372,8 @@
     <string name="label_memoir_archive">アーカイブ</string>
     <string name="btn_import">読み込み</string>
     <string name="msg_smb_load_failed">読み込み失敗</string>
-
     <string name="msg_smb_sync_title">NAS 同期完了</string>
     <string name="msg_smb_sync_desc">%d 件のファイルを同期。</string>
-
-    <!-- メッセージ -->
     <string name="msg_album_deleted">削除完了</string>
     <string name="msg_item_removed_album">削除完了</string>
     <string name="msg_photo_added_album">写真を追加</string>
@@ -429,16 +385,12 @@
     <string name="msg_import_folder_failed">❌ 失敗: %s</string>
     <string name="msg_rescan_success">✅ 完了: %d 件新規</string>
     <string name="msg_no_story_highlight_edit">ハイライトなし</string>
-
-    <!-- 言語 -->
     <string name="lang_en">English</string>
     <string name="lang_id">Indonesia</string>
     <string name="lang_zh">中文</string>
     <string name="lang_ja">日本語</string>
     <string name="lang_ru">Русский</string>
     <string name="lang_ar">العربية</string>
-
-    <!-- 設定 -->
     <string name="status_active">有効</string>
     <string name="status_inactive">無効</string>
     <string name="btn_remove_pin">PIN 削除</string>
@@ -447,19 +399,15 @@
     <string name="btn_clean">クリーン</string>
     <string name="desc_manage_smb">NAS 設定</string>
     <string name="desc_manual_backup">データの書き出し</string>
-
     <string name="label_memoir_user">Memoir (%s)</string>
     <string name="channel_sync_name">NAS 同期</string>
     <string name="channel_sync_desc">NAS 同期設定</string>
-
     <string name="label_video">動画</string>
     <string name="label_multi_photo">マルチ</string>
-
     <string name="back_to_explore">戻る</string>
     <string name="back_to_profile">戻る</string>
     <string name="label_exploration">発見</string>
     <string name="msg_no_saved_post">保存なし</string>
-
     <string name="title_backup_slideshow">バックアップ</string>
     <string name="tab_backup_folder">フォルダ</string>
     <string name="tab_slideshow">スライド</string>
@@ -472,7 +420,6 @@
     <string name="desc_slideshow_generator">写真を選択</string>
     <string name="msg_no_slideshow_post">写真なし</string>
     <string name="label_select_photo_count">選択中 (%d)</string>
-
     <string name="label_me">自分</string>
     <string name="theme_signature">シグネチャ</string>
     <string name="theme_navy">ネイビー</string>
@@ -482,7 +429,6 @@
     <string name="theme_emerald">エメラルド</string>
     <string name="theme_sunset">サンセット</string>
     <string name="theme_violet">バイオレット</string>
-
     <string name="desc_pinned">固定済み</string>
     <string name="desc_menu">メニュー</string>
     <string name="desc_like">いいね</string>
@@ -493,11 +439,9 @@
     <string name="desc_switch_camera">カメラ切替</string>
     <string name="desc_selected">選択済み</string>
     <string name="desc_in_highlight">ハイライト</string>
-
     <string name="err_invalid_share">共有 \'%s\' は有効なディスクディレクトリではありません。</string>
     <string name="err_folder_not_found_smb">SMB サーバー上にフォルダ \'%s\' が見つかりません。</string>
     <string name="label_nas_server_default">NAS サーバー (%s)</string>
-
     <string name="msg_test_conn_success">SMB/NAS 接続に成功しました！</string>
     <string name="msg_test_conn_failed">SMB への接続に失敗しました</string>
     <string name="msg_sync_searching">%s でメディアファイルを検索中...</string>
@@ -517,7 +461,6 @@
     <string name="msg_export_success_files">✅ %d 件のファイルを \'%s\' フォルダにエクスポートしました！</string>
     <string name="msg_importing_from">\'%s\' からデータをインポート中...</string>
     <string name="msg_import_success_from">✅ \'%2$s\' から %1$d 件の新しい思い出をインポートしました！</string>
-
     <string name="preset_blue">メラスティ・ビーチ 🌊</string>
     <string name="preset_sunset">バリ島の夕日 🌅</string>
     <string name="preset_temple">ルフル寺院 🛕</string>
@@ -526,12 +469,10 @@
     <string name="preset_slate">街の片隅 🌆</string>
     <string name="preset_purple">禅の思い出 🧘</string>
     <string name="preset_default">思い出の写真</string>
-
     <string name="widget_title_memory">📅 あの日の思い出</string>
     <string name="widget_title_welcome">✨ Memoirへようこそ</string>
     <string name="widget_desc_years_ago">%1$d 年前 • %2$s</string>
     <string name="widget_desc_empty">投稿を追加してはじめましょう</string>
-
     <string name="about_memoir">情報</string>
     <string name="memoir_version">v1.2.0 • オフラインギャラリー</string>
 </resources>

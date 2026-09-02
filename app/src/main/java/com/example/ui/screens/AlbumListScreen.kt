@@ -10,6 +10,7 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.rememberScrollState
@@ -45,24 +46,27 @@ fun AlbumListScreen(viewModel: MemoirViewModel) {
     val activeSourceFilter by viewModel.albumSourceFilter.collectAsStateWithLifecycle()
     val activeMonth by viewModel.albumSelectedMonth.collectAsStateWithLifecycle()
     val activeYear by viewModel.albumSelectedYear.collectAsStateWithLifecycle()
-
     var searchQuery by remember { mutableStateOf("") }
     var showFilterMenu by remember { mutableStateOf(false) }
     var isTimeSelectionExpanded by remember { mutableStateOf(false) }
     var showCreateDialog by remember { mutableStateOf(false) }
     var newAlbumName by remember { mutableStateOf("") }
+    val gridState = rememberLazyGridState()
+    val scrollToTopTrigger by viewModel.scrollToTopTrigger.collectAsStateWithLifecycle()
+    LaunchedEffect(scrollToTopTrigger) {
+        if (scrollToTopTrigger > 0) {
+            gridState.scrollToItem(0)
+        }
+    }
     var selectedSource by remember { mutableStateOf("LOCAL") }
     var customSourcePath by remember { mutableStateOf("/sdcard/DCIM/Memoirs") }
     var selectedCover by remember { mutableStateOf("gradient_sunset") }
-
     val presetCovers = listOf("gradient_sunset", "gradient_blue", "gradient_orange", "gradient_nature", "gradient_temple", "gradient_purple", "gradient_slate")
-
     val calendar = Calendar.getInstance()
     val filteredAlbums = remember(albums, searchQuery, activeSortOrder, activeSourceFilter, activeMonth, activeYear) {
         val filtered = albums.filter {
             val matchSearch = it.name.contains(searchQuery, ignoreCase = true)
             val matchSource = activeSourceFilter == "ALL" || it.sourceType == activeSourceFilter
-            
             var m = true
             var y = true
             if (activeMonth != null || activeYear != null) {
@@ -72,7 +76,6 @@ fun AlbumListScreen(viewModel: MemoirViewModel) {
             }
             matchSearch && matchSource && m && y
         }
-
         when (activeSortOrder) {
             "OLDEST" -> filtered.sortedBy { it.createdAt }
             "NAME_AZ" -> filtered.sortedBy { it.name }
@@ -80,7 +83,6 @@ fun AlbumListScreen(viewModel: MemoirViewModel) {
             else -> filtered.sortedByDescending { it.createdAt }
         }
     }
-
     Scaffold(
         floatingActionButton = {
             FloatingActionButton(onClick = { newAlbumName = ""; selectedSource = "LOCAL"; customSourcePath = "/sdcard/DCIM/Memoirs"; selectedCover = "gradient_sunset"; showCreateDialog = true }, containerColor = MaterialTheme.colorScheme.primary, contentColor = MaterialTheme.colorScheme.onPrimary, modifier = Modifier.testTag("add_album_fab")) {
@@ -111,14 +113,12 @@ fun AlbumListScreen(viewModel: MemoirViewModel) {
                                 DropdownMenuItem(text = { Text(if (src == "ALL") stringResource(R.string.cat_all) else src) }, onClick = { viewModel.setAlbumSourceFilter(src); showFilterMenu = false }, leadingIcon = { if (activeSourceFilter == src) Icon(Icons.Default.Check, null) })
                             }
                             HorizontalDivider()
-                            
                             DropdownMenuItem(
                                 text = { Text(stringResource(R.string.filter_custom_time)) }, 
                                 onClick = { isTimeSelectionExpanded = !isTimeSelectionExpanded }, 
                                 trailingIcon = { Icon(if (isTimeSelectionExpanded) Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown, null) },
                                 leadingIcon = { if (activeMonth != null || activeYear != null) Icon(Icons.Default.DateRange, null, tint = MaterialTheme.colorScheme.primary) }
                             )
-
                             if (isTimeSelectionExpanded) {
                                 Text(stringResource(R.string.filter_month), style = MaterialTheme.typography.labelSmall, modifier = Modifier.padding(start = 16.dp, top = 4.dp, bottom = 4.dp))
                                 val currentLocale = LocalContext.current.resources.configuration.locales[0]
@@ -167,10 +167,8 @@ fun AlbumListScreen(viewModel: MemoirViewModel) {
                     }
                 }
             }
-
             Spacer(modifier = Modifier.height(10.dp))
             OutlinedTextField(value = searchQuery, onValueChange = { searchQuery = it }, placeholder = { Text(stringResource(R.string.search_placeholder), fontSize = 13.sp, color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f)) }, leadingIcon = { Icon(Icons.Default.Search, null, tint = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.size(20.dp)) }, trailingIcon = { if (searchQuery.isNotEmpty()) IconButton(onClick = { searchQuery = "" }) { Icon(Icons.Default.Close, null, tint = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.size(18.dp)) } }, colors = OutlinedTextFieldDefaults.colors(focusedBorderColor = MaterialTheme.colorScheme.primary, unfocusedBorderColor = MaterialTheme.colorScheme.outline.copy(alpha = 0.4f), focusedContainerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.4f), unfocusedContainerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.4f)), singleLine = true, shape = RoundedCornerShape(14.dp), modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp).padding(bottom = 12.dp))
-
             if (albums.isEmpty()) {
                 Column(modifier = Modifier.fillMaxSize().padding(32.dp), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
                     Icon(Icons.Default.PhotoLibrary, null, tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.4f), modifier = Modifier.size(64.dp))
@@ -186,7 +184,13 @@ fun AlbumListScreen(viewModel: MemoirViewModel) {
                     Button(onClick = { searchQuery = ""; viewModel.setAlbumSourceFilter("ALL"); viewModel.setAlbumSelectedMonth(null); viewModel.setAlbumSelectedYear(null) }) { Text(stringResource(R.string.btn_reset_filter)) }
                 }
             } else {
-                LazyVerticalGrid(columns = GridCells.Fixed(2), modifier = Modifier.fillMaxSize().padding(horizontal = 8.dp), verticalArrangement = Arrangement.spacedBy(8.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                LazyVerticalGrid(
+                    columns = GridCells.Fixed(2), 
+                    modifier = Modifier.fillMaxSize().padding(horizontal = 8.dp), 
+                    state = gridState,
+                    verticalArrangement = Arrangement.spacedBy(8.dp), 
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
                     items(filteredAlbums) { album ->
                         AlbumGridCard(album = album, viewModel = viewModel, onClick = { viewModel.navigateTo(Screen.AlbumDetail(album.id)) })
                     }
@@ -194,7 +198,6 @@ fun AlbumListScreen(viewModel: MemoirViewModel) {
             }
         }
     }
-
     if (showCreateDialog) {
         AlertDialog(
             onDismissRequest = { showCreateDialog = false },
@@ -234,7 +237,12 @@ fun AlbumGridCard(album: AlbumEntity, viewModel: MemoirViewModel, onClick: () ->
     Card(onClick = onClick, modifier = modifier.fillMaxWidth().aspectRatio(0.85f), colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface), elevation = CardDefaults.cardElevation(defaultElevation = 2.dp), border = BorderStroke(1.dp, MaterialTheme.colorScheme.onBackground.copy(alpha = 0.08f))) {
         Column {
             Box(modifier = Modifier.fillMaxWidth().weight(1f).clip(RoundedCornerShape(topStart = 12.dp, topEnd = 12.dp))) {
-                MediaView(path = album.coverPath, modifier = Modifier.fillMaxSize())
+                MediaView(
+                    path = album.coverPath, 
+                    autoPlay = false,
+                    allowManualPlay = false,
+                    modifier = Modifier.fillMaxSize()
+                )
                 Box(modifier = Modifier.align(Alignment.TopStart).padding(8.dp).background(color = when (album.sourceType) { "SMB" -> Color(0xFF4CAF50); "CLOUD" -> Color(0xFF2196F3); else -> MaterialTheme.colorScheme.primary }, shape = RoundedCornerShape(6.dp)).padding(horizontal = 6.dp, vertical = 2.dp)) { Text(text = album.sourceType, color = Color.White, fontSize = 9.sp, fontWeight = FontWeight.Bold) }
             }
             Column(modifier = Modifier.padding(10.dp)) {

@@ -9,12 +9,15 @@ import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
+import com.example.ui.screens.profile.UCropContract
+import com.example.ui.screens.profile.UCropOptions
 import androidx.compose.animation.*
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTransformGestures
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
@@ -49,7 +52,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.R
@@ -81,7 +83,8 @@ data class MediaTransformData(
     val offsetY: Float = 0f,
     val filterName: String = "Normal",
     val viewportWidth: Float = 0f,
-    val viewportHeight: Float = 0f
+    val viewportHeight: Float = 0f,
+    val isContentFit: Boolean = false
 )
 
 data class GalleryMediaItem(
@@ -105,7 +108,6 @@ fun AddPostScreen(
     onDismiss: () -> Unit = { viewModel.navigateBack() },
     modifier: Modifier = Modifier
 ) {
-    
     var step by remember { mutableIntStateOf(1) }
     var isPublishing by remember { mutableStateOf(false) }
     val isPublishingState = rememberUpdatedState(isPublishing)
@@ -113,8 +115,20 @@ fun AddPostScreen(
     val context = LocalContext.current
     val primaryColor = MaterialTheme.colorScheme.primary
 
+    val processedMediaPaths = remember { 
+        mutableStateListOf<String>().apply {
+            initialPost?.mediaPaths?.let { addAll(it) }
+        }
+    }
+    var processedMediaTransformsJson by remember { 
+        mutableStateOf(initialPost?.mediaTransformsJson ?: "[]") 
+    }
+    var currentPostFolder by remember { mutableStateOf<File?>(null) }
+    var isProcessingMedia by remember { mutableStateOf(false) }
+    val isProcessingMediaState = rememberUpdatedState(isProcessingMedia)
+
     androidx.activity.compose.BackHandler {
-        if (!isPublishingState.value) {
+        if (!isPublishingState.value && !isProcessingMediaState.value) {
             val now = System.currentTimeMillis()
             if (now - lastBackTime < 2000) {
                 if (step > 1) step-- else onDismiss()
@@ -154,7 +168,8 @@ fun AddPostScreen(
                             offsetY = obj.optDouble("offsetY", 0.0).toFloat(),
                             filterName = obj.optString("filterName", "Normal"),
                             viewportWidth = obj.optDouble("viewportWidth", 0.0).toFloat(),
-                            viewportHeight = obj.optDouble("viewportHeight", 0.0).toFloat()
+                            viewportHeight = obj.optDouble("viewportHeight", 0.0).toFloat(),
+                            isContentFit = obj.optBoolean("isContentFit", false)
                         ))
                     }
                 } catch (e: Exception) { }
@@ -172,7 +187,7 @@ fun AddPostScreen(
     var postDate by remember { mutableLongStateOf(initialPost?.createdAt ?: System.currentTimeMillis()) }
     var isPinned by remember { mutableStateOf(initialPost?.isPinned ?: false) }
     var isLocked by remember { mutableStateOf(initialPost?.isLocked ?: false) }
-
+    var mediaToRemove by remember { mutableStateOf<String?>(null) }
     var showCameraDialog by remember { mutableStateOf(false) }
     var showConnectionBrowser by remember { mutableStateOf(false) }
     var selectedBrowserType by remember { mutableStateOf("SMB") }
@@ -215,11 +230,11 @@ fun AddPostScreen(
                 ) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         if (step > 1) {
-                            IconButton(onClick = { if (!isPublishing) step-- }) {
+                            IconButton(onClick = { if (!isPublishing && !isProcessingMedia) step-- }) {
                                 Icon(Icons.AutoMirrored.Filled.ArrowBack, stringResource(R.string.btn_cancel), tint = MaterialTheme.colorScheme.onSurface)
                             }
                         } else {
-                            IconButton(onClick = { if (!isPublishing) onDismiss() }) {
+                            IconButton(onClick = { if (!isPublishing && !isProcessingMedia) onDismiss() }) {
                                 Icon(Icons.Default.Close, stringResource(R.string.btn_done), tint = MaterialTheme.colorScheme.onSurface)
                             }
                         }
@@ -238,112 +253,193 @@ fun AddPostScreen(
                     if (step < 3) {
                         TextButton(
                             onClick = {
-                                if (selectedMedia.isNotEmpty()) step++
-                                else Toast.makeText(context, context.getString(R.string.msg_min_media), Toast.LENGTH_SHORT).show()
+                                if (selectedMedia.isNotEmpty()) {
+                                    if (step == 2) {
+                                        isProcessingMedia = true
+                                        coroutineScope.launch {
+                                            try {
+                                                val postFolder = withContext(Dispatchers.IO) {
+                                                    currentPostFolder ?: if (initialPost != null) {
+                                                        val oldPath = initialPost.mediaPaths.firstOrNull() ?: ""
+                                                        if (oldPath.startsWith("posts/")) {
+                                                            val folderName = oldPath.split("/").getOrNull(1)
+                                                            if (folderName != null) {
+                                                                File(FileUtils.getPostsDir(context), folderName)
+                                                            } else FileUtils.createPostFolder(context, postDate, java.util.UUID.randomUUID().toString().take(6))
+                                                        } else FileUtils.createPostFolder(context, postDate, java.util.UUID.randomUUID().toString().take(6))
+                                                    } else {
+                                                        FileUtils.createPostFolder(context, postDate, java.util.UUID.randomUUID().toString().take(6))
+                                                    }
+                                                }
+                                                currentPostFolder = postFolder
+
+                                                val mediaMetadataArray = JSONArray()
+                                                val finalMediaPaths = withContext(Dispatchers.IO) {
+                                                    selectedMedia.mapIndexed { idx, path ->
+                                                        val t = mediaTransforms[path] ?: MediaTransformData()
+                                                        val (relPath, metaObj) = FileUtils.processAndSaveMediaInFolder(
+                                                            context = context,
+                                                            targetFolder = postFolder,
+                                                            fileNameWithoutExt = "media_$idx",
+                                                            pathOrUri = path,
+                                                            targetRatioStr = selectedRatio,
+                                                            scale = t.scale,
+                                                            rotation = t.rotation,
+                                                            offsetX = t.offsetX,
+                                                            offsetY = t.offsetY,
+                                                            vw = t.viewportWidth,
+                                                            vh = t.viewportHeight,
+                                                            isContentFit = t.isContentFit
+                                                        )
+                                                        metaObj.put("filterName", t.filterName)
+                                                        mediaMetadataArray.put(metaObj)
+                                                        relPath
+                                                    }
+                                                }
+                                                processedMediaPaths.clear()
+                                                processedMediaPaths.addAll(finalMediaPaths)
+                                                processedMediaTransformsJson = mediaMetadataArray.toString()
+                                                isProcessingMedia = false
+                                                step = 3
+                                            } catch (e: Exception) {
+                                                e.printStackTrace()
+                                                isProcessingMedia = false
+                                                Toast.makeText(context, (context.getString(R.string.operation_result) + ": " + (e.localizedMessage ?: "")), Toast.LENGTH_SHORT).show()
+                                            }
+                                        }
+                                    } else {
+                                        step++
+                                    }
+                                } else {
+                                    Toast.makeText(context, context.getString(R.string.msg_min_media), Toast.LENGTH_SHORT).show()
+                                }
                             },
-                            enabled = selectedMedia.isNotEmpty()
+                            enabled = selectedMedia.isNotEmpty() && !isProcessingMedia && !isPublishing
                         ) {
-                            Text(stringResource(R.string.btn_next), fontWeight = FontWeight.Bold, fontSize = 15.sp, color = if (selectedMedia.isNotEmpty()) primaryColor else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f))
+                            if (isProcessingMedia && step == 2) {
+                                CircularProgressIndicator(color = primaryColor, modifier = Modifier.size(16.dp), strokeWidth = 2.dp)
+                            } else {
+                                Text(
+                                    stringResource(R.string.btn_next), 
+                                    fontWeight = FontWeight.Bold, 
+                                    fontSize = 15.sp, 
+                                    color = if (selectedMedia.isNotEmpty()) primaryColor else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f)
+                                )
+                            }
                         }
                     } else {
                         Button(
                             modifier = Modifier.testTag("publish_post_button"),
-                            enabled = !isPublishing && selectedMedia.isNotEmpty(),
+                            enabled = !isPublishing && !isProcessingMedia && (processedMediaPaths.isNotEmpty() || selectedMedia.isNotEmpty()),
                             colors = ButtonDefaults.buttonColors(containerColor = primaryColor),
                             shape = RoundedCornerShape(8.dp),
                             onClick = {
                                 isPublishing = true
                                 coroutineScope.launch {
-                                    val postFolder = withContext(Dispatchers.IO) {
-                                        if (initialPost != null) {
-                                            val oldPath = initialPost.mediaPaths.firstOrNull() ?: ""
-                                            if (oldPath.startsWith("posts/")) {
-                                                val folderName = oldPath.split("/").getOrNull(1)
-                                                if (folderName != null) {
-                                                    File(FileUtils.getPostsDir(context), folderName)
+                                    try {
+                                        val postFolder = withContext(Dispatchers.IO) {
+                                            currentPostFolder ?: if (initialPost != null) {
+                                                val oldPath = initialPost.mediaPaths.firstOrNull() ?: ""
+                                                if (oldPath.startsWith("posts/")) {
+                                                    val folderName = oldPath.split("/").getOrNull(1)
+                                                    if (folderName != null) {
+                                                        File(FileUtils.getPostsDir(context), folderName)
+                                                    } else FileUtils.createPostFolder(context, postDate, java.util.UUID.randomUUID().toString().take(6))
                                                 } else FileUtils.createPostFolder(context, postDate, java.util.UUID.randomUUID().toString().take(6))
-                                            } else FileUtils.createPostFolder(context, postDate, java.util.UUID.randomUUID().toString().take(6))
+                                            } else {
+                                                FileUtils.createPostFolder(context, postDate, java.util.UUID.randomUUID().toString().take(6))
+                                            }
+                                        }
+                                        currentPostFolder = postFolder
+
+                                        val (finalMediaPaths, finalMetaArray) = if (processedMediaPaths.isNotEmpty()) {
+                                            Pair(processedMediaPaths.toList(), JSONArray(processedMediaTransformsJson.ifEmpty { "[]" }))
                                         } else {
-                                            FileUtils.createPostFolder(context, postDate, java.util.UUID.randomUUID().toString().take(6))
+                                            val mediaMetadataArray = JSONArray()
+                                            val baked = withContext(Dispatchers.IO) {
+                                                selectedMedia.mapIndexed { idx, path ->
+                                                    val t = mediaTransforms[path] ?: MediaTransformData()
+                                                    val (relPath, metaObj) = FileUtils.processAndSaveMediaInFolder(
+                                                        context = context,
+                                                        targetFolder = postFolder,
+                                                        fileNameWithoutExt = "media_$idx",
+                                                        pathOrUri = path,
+                                                        targetRatioStr = selectedRatio,
+                                                        scale = t.scale,
+                                                        rotation = t.rotation,
+                                                        offsetX = t.offsetX,
+                                                        offsetY = t.offsetY,
+                                                        vw = t.viewportWidth,
+                                                        vh = t.viewportHeight,
+                                                        isContentFit = t.isContentFit
+                                                    )
+                                                    metaObj.put("filterName", t.filterName)
+                                                    mediaMetadataArray.put(metaObj)
+                                                    relPath
+                                                }
+                                            }
+                                            Pair(baked, mediaMetadataArray)
                                         }
-                                    }
 
-                                    val mediaMetadataArray = JSONArray()
-                                    val finalMediaPaths = withContext(Dispatchers.IO) {
-                                        selectedMedia.mapIndexed { idx, path ->
-                                            val t = mediaTransforms[path] ?: MediaTransformData()
-                                            val (relPath, metaObj) = FileUtils.processAndSaveMediaInFolder(
-                                                context = context,
-                                                targetFolder = postFolder,
-                                                fileNameWithoutExt = "media_$idx",
-                                                pathOrUri = path,
-                                                targetRatioStr = selectedRatio,
-                                                scale = t.scale,
-                                                rotation = t.rotation,
-                                                offsetX = t.offsetX,
-                                                offsetY = t.offsetY,
-                                                vw = t.viewportWidth,
-                                                vh = t.viewportHeight
+                                        val finalRatioToSave = selectedRatio
+                                        val albumNameToUse = if (createNewAlbum && albumName.isNotBlank()) albumName.trim() else null
+
+                                        withContext(Dispatchers.IO) {
+                                            FileUtils.writePostMetadata(
+                                                postFolder = postFolder,
+                                                postId = initialPost?.id ?: 0,
+                                                caption = caption.trim(),
+                                                location = location.trim(),
+                                                albumName = albumNameToUse,
+                                                createdAt = postDate,
+                                                aspectRatio = finalRatioToSave,
+                                                isLiked = initialPost?.isLiked ?: false,
+                                                isSaved = initialPost?.isSaved ?: false,
+                                                isPinned = isPinned,
+                                                isLocked = isLocked,
+                                                mediaFilesJson = finalMetaArray
                                             )
-                                            metaObj.put("filterName", t.filterName)
-                                            mediaMetadataArray.put(metaObj)
-                                            relPath
                                         }
-                                    }
-                                    val finalRatioToSave = selectedRatio
-                                    val albumNameToUse = if (createNewAlbum && albumName.isNotBlank()) albumName.trim() else null
 
-                                    withContext(Dispatchers.IO) {
-                                        FileUtils.writePostMetadata(
-                                            postFolder = postFolder,
-                                            postId = initialPost?.id ?: 0,
-                                            caption = caption.trim(),
-                                            location = location.trim(),
-                                            albumName = albumNameToUse,
-                                            createdAt = postDate,
-                                            aspectRatio = finalRatioToSave,
-                                            isLiked = initialPost?.isLiked ?: false,
-                                            isSaved = initialPost?.isSaved ?: false,
-                                            isPinned = isPinned,
-                                            isLocked = isLocked,
-                                            mediaFilesJson = mediaMetadataArray
-                                        )
-                                    }
+                                        if (initialPost != null) {
+                                            viewModel.updatePostFull(
+                                                post = initialPost,
+                                                caption = caption.trim(),
+                                                location = location.trim(),
+                                                mediaPaths = finalMediaPaths,
+                                                existingAlbumId = if (!createNewAlbum) selectedExistingAlbumId else null,
+                                                createdAt = postDate,
+                                                aspectRatio = finalRatioToSave,
+                                                mediaTransformsJson = finalMetaArray.toString(),
+                                                isPinned = isPinned,
+                                                isLocked = isLocked
+                                            )
+                                        } else {
+                                            viewModel.publishPost(
+                                                caption = caption.trim(),
+                                                location = location.trim(),
+                                                mediaPaths = finalMediaPaths,
+                                                albumName = albumNameToUse,
+                                                sourceType = sourceType,
+                                                sourcePath = sourcePath,
+                                                existingAlbumId = if (!createNewAlbum) selectedExistingAlbumId else null,
+                                                createdAt = postDate,
+                                                aspectRatio = finalRatioToSave,
+                                                mediaTransformsJson = finalMetaArray.toString(),
+                                                isPinned = isPinned,
+                                                isLocked = isLocked
+                                            )
+                                        }
 
-                                    if (initialPost != null) {
-                                        viewModel.updatePostFull(
-                                            post = initialPost,
-                                            caption = caption.trim(),
-                                            location = location.trim(),
-                                            mediaPaths = finalMediaPaths,
-                                            existingAlbumId = if (!createNewAlbum) selectedExistingAlbumId else null,
-                                            createdAt = postDate,
-                                            aspectRatio = finalRatioToSave,
-                                            mediaTransformsJson = mediaMetadataArray.toString(),
-                                            isPinned = isPinned,
-                                            isLocked = isLocked
-                                        )
-                                    } else {
-                                        viewModel.publishPost(
-                                            caption = caption.trim(),
-                                            location = location.trim(),
-                                            mediaPaths = finalMediaPaths,
-                                            albumName = albumNameToUse,
-                                            sourceType = sourceType,
-                                            sourcePath = sourcePath,
-                                            existingAlbumId = if (!createNewAlbum) selectedExistingAlbumId else null,
-                                            createdAt = postDate,
-                                            aspectRatio = finalRatioToSave,
-                                            mediaTransformsJson = mediaMetadataArray.toString(),
-                                            isPinned = isPinned,
-                                            isLocked = isLocked
-                                        )
+                                        isPublishing = false
+                                        val toastMsg = if (initialPost != null) context.getString(R.string.msg_memory_updated) else context.getString(R.string.msg_memory_shared)
+                                        Toast.makeText(context, toastMsg, Toast.LENGTH_SHORT).show()
+                                        onDismiss()
+                                    } catch (e: Exception) {
+                                        e.printStackTrace()
+                                        isPublishing = false
+                                        Toast.makeText(context, (context.getString(R.string.operation_result) + ": " + (e.localizedMessage ?: "")), Toast.LENGTH_SHORT).show()
                                     }
-
-                                    isPublishing = false
-                                    val toastMsg = if (initialPost != null) context.getString(R.string.msg_memory_updated) else context.getString(R.string.msg_memory_shared)
-                                    Toast.makeText(context, toastMsg, Toast.LENGTH_SHORT).show()
-                                    onDismiss()
                                 }
                             }
                         ) {
@@ -390,9 +486,9 @@ fun AddPostScreen(
                                 }
                             },
                             mediaTransforms = mediaTransforms,
-                            onTransformChange = { path, s, r, ox, oy, vw, vh ->
+                            onTransformChange = { path, s, r, ox, oy, vw, vh, fit ->
                                 val currentFilter = mediaTransforms[path]?.filterName ?: "Normal"
-                                mediaTransforms[path] = MediaTransformData(s, r, ox, oy, currentFilter, vw, vh)
+                                mediaTransforms[path] = MediaTransformData(s, r, ox, oy, currentFilter, vw, vh, fit)
                             },
                             onSelectMediaItem = { mediaItemPath ->
                                 if (multiSelectMode) {
@@ -424,20 +520,15 @@ fun AddPostScreen(
                             selectedRatio = selectedRatio,
                             onRatioChange = { selectedRatio = it },
                             mediaTransforms = mediaTransforms,
-                            onTransformChange = { path, s, r, ox, oy, filter, vw, vh ->
-                                mediaTransforms[path] = MediaTransformData(s, r, ox, oy, filter, vw, vh)
+                            onTransformChange = { path, s, r, ox, oy, filter, vw, vh, fit ->
+                                mediaTransforms[path] = MediaTransformData(s, r, ox, oy, filter, vw, vh, fit)
                             },
                             onRemoveMedia = { pathToRemove ->
-                                if (selectedMedia.size > 1) {
-                                    selectedMedia.remove(pathToRemove)
-                                    mediaTransforms.remove(pathToRemove)
-                                } else {
-                                    Toast.makeText(context, context.getString(R.string.msg_min_media), Toast.LENGTH_SHORT).show()
-                                }
+                                mediaToRemove = pathToRemove
                             }
                         )
                         3 -> StepAddMetadata(
-                            selectedMedia = selectedMedia,
+                            selectedMedia = if (processedMediaPaths.isNotEmpty()) processedMediaPaths else selectedMedia,
                             caption = caption,
                             onCaptionChange = { caption = it },
                             location = location,
@@ -463,7 +554,7 @@ fun AddPostScreen(
                     }
                 }
 
-                if (isPublishing) {
+                if (isPublishing || isProcessingMedia) {
                     Box(modifier = Modifier.fillMaxSize().background(Color.Black.copy(alpha = 0.75f)), contentAlignment = Alignment.Center) {
                         Card(colors = CardDefaults.cardColors(containerColor = Color(0xFF222222)), shape = RoundedCornerShape(16.dp)) {
                             Column(modifier = Modifier.padding(24.dp), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(16.dp)) {
@@ -475,6 +566,30 @@ fun AddPostScreen(
                 }
             }
         }
+    }
+
+    if (mediaToRemove != null) {
+        AlertDialog(
+            onDismissRequest = { mediaToRemove = null },
+            title = { Text(stringResource(R.string.title_delete_media)) },
+            text = { Text(stringResource(R.string.msg_delete_media_confirm)) },
+            confirmButton = {
+                TextButton(onClick = {
+                    mediaToRemove?.let { path ->
+                        selectedMedia.remove(path)
+                        mediaTransforms.remove(path)
+                    }
+                    mediaToRemove = null
+                }) {
+                    Text(stringResource(R.string.btn_delete), color = MaterialTheme.colorScheme.error)
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { mediaToRemove = null }) {
+                    Text(stringResource(R.string.btn_cancel))
+                }
+            }
+        )
     }
 
     if (showCameraDialog) {
@@ -527,7 +642,7 @@ fun StepChooseSource(
     multiSelectMode: Boolean,
     onMultiSelectToggle: () -> Unit,
     mediaTransforms: Map<String, MediaTransformData>,
-    onTransformChange: (path: String, scale: Float, rotation: Float, offsetX: Float, offsetY: Float, vw: Float, vh: Float) -> Unit,
+    onTransformChange: (path: String, scale: Float, rotation: Float, offsetX: Float, offsetY: Float, vw: Float, vh: Float, fit: Boolean) -> Unit,
     onSelectMediaItem: (String) -> Unit,
     onPickGallery: () -> Unit,
     onOpenCamera: () -> Unit,
@@ -583,7 +698,6 @@ fun StepChooseSource(
         
         try {
             withContext(Dispatchers.IO) {
-                // Images
                 val imageProjection = arrayOf(
                     MediaStore.Images.Media._ID,
                     MediaStore.Images.Media.DATE_ADDED,
@@ -619,7 +733,6 @@ fun StepChooseSource(
                     }
                 }
 
-                // Videos
                 val videoProjection = arrayOf(
                     MediaStore.Video.Media._ID,
                     MediaStore.Video.Media.DURATION,
@@ -685,12 +798,6 @@ fun StepChooseSource(
 
     Column(modifier = Modifier.fillMaxSize()) {
         val activeMedia = previewMediaPath?.takeIf { selectedMedia.contains(it) } ?: selectedMedia.lastOrNull()
-        val existingTransform = activeMedia?.let { mediaTransforms[it] } ?: MediaTransformData()
-
-        var previewScale by remember(activeMedia) { mutableFloatStateOf(existingTransform.scale) }
-        var previewRotation by remember(activeMedia) { mutableFloatStateOf(existingTransform.rotation) }
-        var previewOffset by remember(activeMedia) { mutableStateOf(Offset(existingTransform.offsetX, existingTransform.offsetY)) }
-
         val originalRatio = remember(activeMedia) { if (activeMedia != null) FileUtils.getImageAspectRatio(context, activeMedia) else 1.0f }
         val ratioValue = when (selectedRatio) {
             "ORIGINAL" -> originalRatio
@@ -705,35 +812,14 @@ fun StepChooseSource(
                 .fillMaxWidth()
                 .weight(1.15f)
                 .background(if (activeMedia != null) Color.Black else MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.35f))
-                .onGloballyPositioned { viewportSize = it.size }
-                .then(
-                    if (activeMedia != null) {
-                        Modifier.pointerInput(activeMedia) {
-                            detectTransformGestures { _, pan, zoom, rotate ->
-                                previewScale = (previewScale * zoom).coerceIn(1f, 5f)
-                                previewRotation = (previewRotation + rotate) % 360f
-                                previewOffset += pan
-                                val refSize = if (cropBoxSize.width > 0 && cropBoxSize.height > 0) cropBoxSize else viewportSize
-                                onTransformChange(
-                                    activeMedia, 
-                                    previewScale, 
-                                    previewRotation, 
-                                    previewOffset.x, 
-                                    previewOffset.y,
-                                    refSize.width.toFloat(),
-                                    refSize.height.toFloat()
-                                )
-                            }
-                        }
-                    } else Modifier
-                ),
+                .onGloballyPositioned { viewportSize = it.size },
             contentAlignment = Alignment.Center
         ) {
             if (activeMedia != null) {
                 BoxWithConstraints(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                     val containerRatio = this.maxWidth / this.maxHeight
                     val targetRatio = ratioValue.coerceIn(0.4f, 2.5f)
-                    val previewModifier = if (targetRatio > containerRatio) Modifier.fillMaxWidth(0.96f).aspectRatio(targetRatio) else Modifier.fillMaxHeight(0.94f).aspectRatio(targetRatio)
+                    val previewModifier = if (targetRatio > containerRatio) Modifier.fillMaxWidth().aspectRatio(targetRatio) else Modifier.fillMaxHeight().aspectRatio(targetRatio)
                     Box(
                         modifier = previewModifier
                             .clipToBounds()
@@ -743,15 +829,9 @@ fun StepChooseSource(
                     ) {
                         MediaView(
                             path = activeMedia,
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .graphicsLayer {
-                                    scaleX = previewScale
-                                    scaleY = previewScale
-                                    rotationZ = previewRotation
-                                    translationX = previewOffset.x
-                                    translationY = previewOffset.y
-                                },
+                            modifier = Modifier.fillMaxSize(),
+                            autoPlay = false,
+                            allowManualPlay = true,
                             contentScale = if (isContentFit) ContentScale.Fit else ContentScale.Crop
                         )
                     }
@@ -860,6 +940,23 @@ fun StepChooseSource(
                             contentAlignment = Alignment.Center
                         ) {
                             Text("${index + 1}", color = Color.White, fontSize = 9.sp, fontWeight = FontWeight.Bold)
+                        }
+                        Box(
+                            modifier = Modifier
+                                .align(Alignment.TopEnd)
+                                .padding(4.dp)
+                                .size(18.dp)
+                                .clip(CircleShape)
+                                .background(Color.Black.copy(alpha = 0.5f))
+                                .clickable { onSelectMediaItem(path) },
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Close,
+                                contentDescription = null,
+                                tint = Color.White,
+                                modifier = Modifier.size(12.dp)
+                            )
                         }
                     }
                 }
@@ -1007,7 +1104,12 @@ fun StepChooseSource(
                         val isSelected = selectedIdx != -1
                         val isVid = item.isVideo || FileUtils.isVideoPath(item.uriString)
                         Box(modifier = Modifier.aspectRatio(1f).clickable { previewMediaPath = item.uriString; onSelectMediaItem(item.uriString) }) {
-                            MediaView(path = item.uriString, modifier = Modifier.fillMaxSize(), autoPlay = false)
+                            MediaView(
+                                path = item.uriString, 
+                                modifier = Modifier.fillMaxSize(), 
+                                autoPlay = false,
+                                allowManualPlay = false
+                            )
                             if (isVid) {
                                 Box(modifier = Modifier.align(Alignment.BottomEnd).padding(4.dp).clip(RoundedCornerShape(4.dp)).background(Color.Black.copy(alpha = 0.65f)).padding(horizontal = 4.dp, vertical = 2.dp)) {
                                     Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(2.dp)) {
@@ -1036,7 +1138,7 @@ fun StepAdjustMedia(
     selectedRatio: String,
     onRatioChange: (String) -> Unit,
     mediaTransforms: Map<String, MediaTransformData>,
-    onTransformChange: (path: String, scale: Float, rotation: Float, offsetX: Float, offsetY: Float, filter: String, vw: Float, vh: Float) -> Unit,
+    onTransformChange: (path: String, scale: Float, rotation: Float, offsetX: Float, offsetY: Float, filter: String, vw: Float, vh: Float, fit: Boolean) -> Unit,
     onRemoveMedia: (String) -> Unit
 ) {
     var activeIndex by remember { mutableIntStateOf(0) }
@@ -1051,8 +1153,22 @@ fun StepAdjustMedia(
                     val isActive = index == safeActiveIndex
                     Box(modifier = Modifier.size(60.dp).clip(RoundedCornerShape(8.dp)).border(width = if (isActive) 2.dp else 1.dp, color = if (isActive) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outline.copy(alpha = 0.5f), shape = RoundedCornerShape(8.dp)).clickable { activeIndex = index }) {
                         MediaView(path = path, modifier = Modifier.fillMaxSize(), autoPlay = false)
-                        Box(modifier = Modifier.align(Alignment.TopEnd).padding(2.dp).size(18.dp).clip(CircleShape).background(MaterialTheme.colorScheme.surface.copy(alpha = 0.8f)).clickable { onRemoveMedia(path); if (activeIndex >= selectedMedia.size - 1) activeIndex = (selectedMedia.size - 2).coerceAtLeast(0) }, contentAlignment = Alignment.Center) {
-                            Icon(Icons.Default.Close, null, tint = MaterialTheme.colorScheme.onSurface, modifier = Modifier.size(12.dp))
+                        Box(
+                            modifier = Modifier
+                                .align(Alignment.TopEnd)
+                                .padding(4.dp)
+                                .size(20.dp)
+                                .clip(CircleShape)
+                                .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.9f))
+                                .clickable { onRemoveMedia(path) },
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Close,
+                                contentDescription = null,
+                                tint = MaterialTheme.colorScheme.onSurface,
+                                modifier = Modifier.size(14.dp)
+                            )
                         }
                     }
                 }
@@ -1068,8 +1184,9 @@ fun StepAdjustMedia(
                     initialScale = existingTransform.scale,
                     initialRotation = existingTransform.rotation,
                     initialOffset = Offset(existingTransform.offsetX, existingTransform.offsetY),
-                    onTransformChange = { s, r, ox, oy, vw, vh -> 
-                        onTransformChange(activeMedia, s, r, ox, oy, existingTransform.filterName, vw, vh) 
+                    isContentFit = existingTransform.isContentFit,
+                    onTransformChange = { s: Float, r: Float, ox: Float, oy: Float, vw: Float, vh: Float, fit: Boolean -> 
+                        onTransformChange(activeMedia, s, r, ox, oy, existingTransform.filterName, vw, vh, fit) 
                     },
                     modifier = Modifier.fillMaxSize()
                 )
@@ -1217,24 +1334,162 @@ fun ConnectionFileBrowserDialog(
     onNavigateToConnections: () -> Unit,
     onQuickAddConnection: () -> Unit
 ) {
+    var selectedConn by remember { mutableStateOf<SourceConnectionEntity?>(null) }
+    var currentPath by remember { mutableStateOf("") }
+    var folders by remember { mutableStateOf<List<String>>(emptyList()) }
+    var mediaFiles by remember { mutableStateOf<List<com.example.utils.SmbMediaItem>>(emptyList()) }
+    var isLoading by remember { mutableStateOf(false) }
+    val scope = rememberCoroutineScope()
+    val context = LocalContext.current
+
+    fun loadContent(conn: SourceConnectionEntity, path: String) {
+        val credParts = conn.credentials.split(":")
+        val user = credParts.getOrNull(0) ?: ""
+        val pass = credParts.getOrNull(1) ?: ""
+        val dom = credParts.getOrNull(2) ?: ""
+        val shareName = conn.folderPath.split("/").firstOrNull() ?: ""
+        
+        isLoading = true
+        scope.launch {
+            val fRes = com.example.utils.SmbHelper.listSubfoldersInShare(conn.host, shareName, path, user, pass, dom)
+            val mRes = com.example.utils.SmbHelper.listMediaFiles(conn.host, shareName, path, user, pass, dom)
+            isLoading = false
+            folders = fRes.getOrDefault(emptyList())
+            mediaFiles = mRes.getOrDefault(emptyList())
+        }
+    }
+
     AlertDialog(
         onDismissRequest = onDismiss,
-        containerColor = Color(0xFF1E1E1E),
-        title = { Text(if (type == "SMB") stringResource(R.string.title_choose_smb) else stringResource(R.string.title_choose_cloud), color = Color.White) },
-        text = {
+        containerColor = MaterialTheme.colorScheme.surface,
+        title = {
             Column {
-                if (connections.isEmpty()) {
-                    Button(onClick = onQuickAddConnection, modifier = Modifier.fillMaxWidth(), colors = ButtonDefaults.buttonColors(containerColor = instagramBlue)) { Text(stringResource(R.string.btn_quick_add)) }
+                Text(
+                    text = if (selectedConn == null) {
+                        if (type == "SMB") stringResource(R.string.title_choose_smb) else stringResource(R.string.title_choose_cloud)
+                    } else selectedConn!!.name,
+                    style = MaterialTheme.typography.titleLarge,
+                    fontWeight = FontWeight.Bold
+                )
+                if (selectedConn != null) {
+                    Text(
+                        text = if (currentPath.isEmpty()) "/" else "/$currentPath",
+                        style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.primary
+                    )
+                }
+            }
+        },
+        text = {
+            Box(modifier = Modifier.fillMaxWidth().heightIn(min = 200.dp, max = 450.dp)) {
+                if (selectedConn == null) {
+                    LazyColumn(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                        if (connections.isEmpty()) {
+                            item {
+                                Button(onClick = onQuickAddConnection, modifier = Modifier.fillMaxWidth()) {
+                                    Text(stringResource(R.string.btn_quick_add))
+                                }
+                            }
+                        } else {
+                            items(connections) { conn ->
+                                Card(
+                                    modifier = Modifier.fillMaxWidth().clickable {
+                                        selectedConn = conn
+                                        loadContent(conn, "")
+                                    },
+                                    colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f))
+                                ) {
+                                    Row(Modifier.padding(16.dp), verticalAlignment = Alignment.CenterVertically) {
+                                        Icon(Icons.Default.Dns, null, tint = MaterialTheme.colorScheme.primary)
+                                        Spacer(Modifier.width(12.dp))
+                                        Text(conn.name, fontWeight = FontWeight.Bold)
+                                    }
+                                }
+                            }
+                        }
+                    }
                 } else {
-                    connections.forEach { conn ->
-                        Row(modifier = Modifier.fillMaxWidth().clickable { onFilesSelected(listOf("${conn.folderPath}/foto_1.jpg")) }.padding(12.dp)) {
-                            Text(conn.name, color = Color.White)
+                    Column {
+                        if (isLoading) {
+                            CircularProgressIndicator(Modifier.align(Alignment.CenterHorizontally).padding(24.dp))
+                        } else {
+                            LazyColumn(modifier = Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                                if (currentPath.isNotEmpty()) {
+                                    item {
+                                        Row(
+                                            modifier = Modifier.fillMaxWidth().clickable {
+                                                currentPath = if (currentPath.contains("/")) currentPath.substringBeforeLast("/") else ""
+                                                loadContent(selectedConn!!, currentPath)
+                                            }.padding(12.dp),
+                                            verticalAlignment = Alignment.CenterVertically
+                                        ) {
+                                            Icon(Icons.Default.ArrowUpward, null, Modifier.size(18.dp))
+                                            Spacer(Modifier.width(12.dp))
+                                            Text(".. (Kembali)", fontWeight = FontWeight.Bold, fontSize = 13.sp)
+                                        }
+                                        HorizontalDivider(color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f))
+                                    }
+                                }
+                                items(folders) { folder ->
+                                    Row(
+                                        modifier = Modifier.fillMaxWidth().clickable {
+                                            currentPath = if (currentPath.isEmpty()) folder else "$currentPath/$folder"
+                                            loadContent(selectedConn!!, currentPath)
+                                        }.padding(12.dp),
+                                        verticalAlignment = Alignment.CenterVertically
+                                    ) {
+                                        Icon(Icons.Default.Folder, null, tint = MaterialTheme.colorScheme.secondary, modifier = Modifier.size(20.dp))
+                                        Spacer(Modifier.width(12.dp))
+                                        Text(folder, fontSize = 14.sp)
+                                        Spacer(Modifier.weight(1f))
+                                        Icon(Icons.Default.ChevronRight, null, modifier = Modifier.size(16.dp), tint = Color.Gray)
+                                    }
+                                }
+                                items(mediaFiles) { file ->
+                                    Row(
+                                        modifier = Modifier.fillMaxWidth().clickable {
+                                            onFilesSelected(listOf(file.fullPath)) 
+                                        }.padding(12.dp),
+                                        verticalAlignment = Alignment.CenterVertically
+                                    ) {
+                                        Icon(
+                                            if (file.isVideo) Icons.Default.Videocam else Icons.Default.Image,
+                                            null,
+                                            tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f),
+                                            modifier = Modifier.size(20.dp)
+                                        )
+                                        Spacer(Modifier.width(12.dp))
+                                        Text(file.name, fontSize = 13.sp)
+                                        Spacer(Modifier.weight(1f))
+                                        Icon(Icons.Default.Add, null, modifier = Modifier.size(16.dp), tint = MaterialTheme.colorScheme.primary)
+                                    }
+                                }
+
+                                if (folders.isEmpty() && mediaFiles.isEmpty()) {
+                                    item {
+                                        Text(
+                                            stringResource(R.string.msg_empty_folder),
+                                            modifier = Modifier.fillMaxWidth().padding(24.dp),
+                                            textAlign = TextAlign.Center,
+                                            color = Color.Gray
+                                        )
+                                    }
+                                }
+                            }
                         }
                     }
                 }
             }
         },
-        confirmButton = { TextButton(onClick = onNavigateToConnections) { Text(stringResource(R.string.btn_manage_all), color = instagramBlue) } },
-        dismissButton = { TextButton(onClick = onDismiss) { Text(stringResource(R.string.btn_cancel), color = Color.Gray) } }
+        confirmButton = {
+            if (selectedConn == null) {
+                TextButton(onClick = onNavigateToConnections) { Text(stringResource(R.string.btn_manage_all)) }
+            } else {
+                TextButton(onClick = { selectedConn = null; currentPath = "" }) { Text("Ganti Server") }
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) { Text(stringResource(R.string.btn_cancel)) }
+        }
     )
 }

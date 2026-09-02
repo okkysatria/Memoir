@@ -1,13 +1,9 @@
 <resources>
     <string name="app_name">Memoir</string>
-
-    <!-- Navigation -->
     <string name="nav_home">Home</string>
     <string name="nav_explore">Explore</string>
     <string name="nav_albums">Albums</string>
     <string name="nav_profile">Profile</string>
-
-    <!-- Home -->
     <string name="home_title">Memoir</string>
     <string name="on_this_day">On This Day</string>
     <string name="memories_found">%d memories</string>
@@ -19,18 +15,13 @@
     <string name="one_month_ago">1 Month Ago</string>
     <string name="six_months_ago">6 Months Ago</string>
     <string name="years_ago">%d Years Ago</string>
-
     <string name="one_month">1 Month</string>
     <string name="six_months">6 Months</string>
     <string name="years">%d Years</string>
-
-    <!-- Profile -->
     <string name="edit_profile">Edit Profile</string>
     <string name="posts">Posts</string>
     <string name="saved">Saved</string>
     <string name="bio_placeholder">Tell your story...</string>
-
-    <!-- Settings -->
     <string name="settings_title">Settings</string>
     <string name="settings_subtitle">Preferences &amp; Security</string>
     <string name="sec_profile">Profile</string>
@@ -38,22 +29,17 @@
     <string name="sec_security">Security</string>
     <string name="sec_storage">Storage &amp; Sync</string>
     <string name="sec_others">Others</string>
-
     <string name="pref_language">Language</string>
     <string name="pref_dark_mode">Dark Mode</string>
     <string name="pref_theme_color">Accent Color</string>
     <string name="pref_pin_lock">PIN Lock</string>
     <string name="pref_biometric">Biometric</string>
-    <string name="pref_hide_location">Hide Location</string>
-    <string name="pref_hide_location_desc">Remove GPS from new media.</string>
     <string name="pref_clear_cache">Clear Cache</string>
     <string name="pref_smb_explorer">SMB Explorer</string>
     <string name="pref_smb_explorer_desc">Manage NAS data.</string>
     <string name="pref_manage_smb">Connections</string>
     <string name="pref_manual_backup">Local Backup</string>
     <string name="pref_reset_app">Reset App</string>
-
-    <!-- Dialogs & Buttons -->
     <string name="btn_save">Save</string>
     <string name="btn_back">Back</string>
     <string name="btn_cancel">Cancel</string>
@@ -66,17 +52,15 @@
     <string name="confirm_reset_desc">All content will be permanently removed.</string>
     <string name="msg_understand">Understand</string>
     <string name="operation_result">Result</string>
-
-    <!-- Explore -->
     <string name="cat_all">All</string>
     <string name="cat_photo">Photo</string>
     <string name="cat_video">Video</string>
     <string name="cat_story">Story</string>
     <string name="cat_album">Album</string>
-
     <string name="filter_sort">Sort</string>
     <string name="filter_latest">Latest</string>
     <string name="filter_oldest">Oldest</string>
+    <string name="filter_random">Random</string>
     <string name="filter_quick_time">Quick Time</string>
     <string name="filter_this_week">This Week</string>
     <string name="filter_this_month">This Month</string>
@@ -85,16 +69,12 @@
     <string name="filter_month">Month</string>
     <string name="filter_year">Year</string>
     <string name="filter_reset_time">Reset Date</string>
-
     <string name="search_placeholder">Search...</string>
     <string name="no_search_results">No Results</string>
     <string name="no_media_yet">No Media</string>
     <string name="btn_reset_filter">Reset Filter</string>
-
     <string name="status_online">Online</string>
     <string name="status_connected">Connected</string>
-
-    <!-- Albums -->
     <string name="album_archive">Archive</string>
     <string name="btn_create_album">New Album</string>
     <string name="new_album_title">Create Album</string>
@@ -108,7 +88,6 @@
     <string name="msg_no_album_yet">No Albums</string>
     <string name="media_count">%d items</string>
     <string name="status_offline">Offline</string>
-
     <string name="label_conn_source">Source: %s</string>
     <string name="title_album_empty">Empty Album</string>
     <string name="desc_album_empty">Add photos or stories to this album.</string>
@@ -121,8 +100,6 @@
     <string name="desc_tap_to_add">Tap to add media.</string>
     <string name="btn_delete_album">Delete Album</string>
     <string name="btn_delete_item">Delete Item</string>
-
-    <!-- Profile Specific -->
     <string name="btn_change">Change</string>
     <string name="new_highlight">New</string>
     <string name="msg_no_post">No posts.</string>
@@ -132,15 +109,15 @@
     <string name="msg_memories_desc">Past memories will appear here automatically.</string>
     <string name="msg_memories_filter_desc">Change filter to see more.</string>
     <string name="msg_profile_updated">Profile updated</string>
+    <string name="msg_name_required">Name is required</string>
     <string name="msg_highlight_added">Highlight added</string>
     <string name="msg_highlight_updated">Updated</string>
     <string name="msg_highlight_deleted">Deleted</string>
+    <string name="btn_change_photo">Change Photo</string>
     <string name="btn_view_highlight">View</string>
     <string name="btn_edit_highlight">Edit</string>
     <string name="btn_delete_highlight">Delete</string>
     <string name="msg_back_exit">Press back again to exit</string>
-
-    <!-- Lock Screen -->
     <string name="lock_title">Memoir Locked</string>
     <string name="lock_desc">Protected by Security</string>
     <string name="label_enter_pin">Enter PIN</string>
@@ -152,8 +129,6 @@
     <string name="msg_highlight_created">Highlight created</string>
     <string name="msg_highlight_created_only">Created</string>
     <string name="msg_story_published">Story published</string>
-
-    <!-- Story Creator -->
     <string name="label_tap_text">Tap to type</string>
     <string name="label_date">Date</string>
     <string name="label_reset">Reset</string>
@@ -163,7 +138,6 @@
     <string name="btn_publish">Publish</string>
     <string name="label_align_text">Alignment</string>
     <string name="placeholder_type_text">Type here...</string>
-
     <string name="style_modern">MODERN</string>
     <string name="style_classic">CLASSIC</string>
     <string name="style_neon">NEON</string>
@@ -171,7 +145,6 @@
     <string name="style_serif">SERIF</string>
     <string name="style_strong">STRONG</string>
     <string name="style_elegant">ELEGANT</string>
-
     <string name="color_white">White</string>
     <string name="color_black">Black</string>
     <string name="color_yellow">Yellow</string>
@@ -182,7 +155,6 @@
     <string name="color_orange">Orange</string>
     <string name="color_red">Red</string>
     <string name="color_blue">Blue</string>
-
     <string name="filter_normal">Normal</string>
     <string name="filter_warm">Warm</string>
     <string name="filter_cool">Cool</string>
@@ -190,8 +162,6 @@
     <string name="filter_bw">B&amp;W</string>
     <string name="filter_dramatic">Dramatic</string>
     <string name="msg_filter_applied">Filter: %s</string>
-
-    <!-- Add Post -->
     <string name="step_select_media">Select Media</string>
     <string name="step_adjust_media">Edit</string>
     <string name="step_edit_memory">Edit Memory</string>
@@ -242,8 +212,6 @@
     <string name="msg_back_confirm">Press back again</string>
     <string name="msg_cancel_confirm">Press cancel again</string>
     <string name="msg_cancel_story">Discard story?</string>
-
-    <!-- Feed -->
     <string name="my_memoir">My Memoir</string>
     <string name="item_unpin">Unpin</string>
     <string name="item_pin">Pin</string>
@@ -258,8 +226,8 @@
     <string name="title_delete_memory">Delete Memory?</string>
     <string name="msg_delete_memory">Remove this memory permanently?</string>
     <string name="msg_memory_deleted">Deleted</string>
-
-    <!-- Comments / Notes -->
+    <string name="title_delete_media">Remove Media?</string>
+    <string name="msg_delete_media_confirm">Are you sure you want to remove this media from the post?</string>
     <string name="title_notes">Notes</string>
     <string name="btn_close_notes">Close</string>
     <string name="msg_no_notes">No notes.</string>
@@ -269,10 +237,7 @@
     <string name="label_caption">Caption</string>
     <string name="label_my_note">My Note</string>
     <string name="btn_delete_note">Delete</string>
-
     <string name="msg_story_random_hint">Tap to play story</string>
-
-    <!-- Stories -->
     <string name="msg_just_now">Just now</string>
     <string name="msg_minutes_ago">%d min ago</string>
     <string name="msg_hours_ago">%d hr ago</string>
@@ -287,8 +252,6 @@
     <string name="btn_create_add">Create</string>
     <string name="title_delete_story">Delete Story?</string>
     <string name="msg_delete_story">Remove this story?</string>
-
-    <!-- Profile Dialogs -->
     <string name="msg_save_profile_failed">Failed to save</string>
     <string name="label_change_photo">Change Photo</string>
     <string name="btn_pick_gallery">Gallery</string>
@@ -312,8 +275,12 @@
     <string name="msg_story_added_highlight">Added</string>
     <string name="title_delete_highlight">Delete Highlight?</string>
     <string name="msg_delete_highlight">Remove this highlight?</string>
-
-    <!-- Manage Connections -->
+    <string name="sec_maintenance">Maintenance</string>
+    <string name="label_verify_pin_reset">Verify PIN to Reset</string>
+    <string name="msg_total_wipe_desc">This will permanently delete ALL photos, stories, and settings from this device.</string>
+    <string name="btn_total_reset">Wipe Everything</string>
+    <string name="msg_reset_success">App has been reset to factory defaults.</string>
+    <string name="msg_set_pin_first">Set PIN first to enable biometric</string>
     <string name="title_manage_conn">Connections</string>
     <string name="label_server_name">Name</string>
     <string name="label_ip_host">IP / Host</string>
@@ -324,18 +291,12 @@
     <string name="placeholder_target">Backup</string>
     <string name="title_delete_conn">Delete Connection?</string>
     <string name="msg_delete_conn">Delete \"%1$s\" (%2$s)?</string>
-
-    <!-- Backup -->
     <string name="msg_processing_folder">Processing...</string>
     <string name="title_import_folder">Import Folder</string>
     <string name="msg_scanning_folder">Scanning...</string>
     <string name="btn_rescan_folder">Rescan</string>
-
-    <!-- Misc -->
     <string name="msg_success_export">✅ Exported %d files</string>
     <string name="msg_failed_export">❌ Failed: %s</string>
-
-    <!-- Manage Connections Specific -->
     <string name="title_manage_nas">SMB Storage</string>
     <string name="label_auto_discovery">Auto-Discovery</string>
     <string name="msg_no_smb_found">No servers found.</string>
@@ -362,8 +323,20 @@
     <string name="msg_folder_selected">Selected: %s</string>
     <string name="msg_conn_deleted">Deleted</string>
     <string name="btn_use_pin">Use PIN</string>
-
-    <!-- Onboarding -->
+    <string name="title_add_new_nas">Add New NAS Connection</string>
+    <string name="label_friendly_name">Friendly Name (e.g. My Synology)</string>
+    <string name="label_ip_hostname">IP Address / Hostname</string>
+    <string name="label_guest_access">Guest / Anonymous Access</string>
+    <string name="label_user">User</string>
+    <string name="label_pass">Pass</string>
+    <string name="label_domain">Domain</string>
+    <string name="label_share_hint">Share Name (e.g. Photos, Public)</string>
+    <string name="label_path_prefix">Path: %s</string>
+    <string name="btn_finalize_save">Finalize &amp; Save</string>
+    <string name="btn_connect_explore">Connect &amp; Choose Folder</string>
+    <string name="title_explore_folders">Explore Folders</string>
+    <string name="label_in_share">In Share: %s</string>
+    <string name="msg_no_folders">No subfolders found here.</string>
     <string name="ob_title_1">Welcome</string>
     <string name="ob_desc_1">Offline-first private gallery.</string>
     <string name="ob_title_2">NAS Sync</string>
@@ -373,8 +346,6 @@
     <string name="btn_skip">Skip</string>
     <string name="btn_start_memoir">Get Started</string>
     <string name="btn_continue">Continue</string>
-
-    <!-- Permissions -->
     <string name="perm_title">Permissions</string>
     <string name="perm_desc">Required for media access.</string>
     <string name="perm_media_title">Media Access</string>
@@ -386,8 +357,6 @@
     <string name="btn_grant_media">Grant Access</string>
     <string name="btn_continue_memoir">Continue</string>
     <string name="btn_skip_later">Later</string>
-
-    <!-- Notifications -->
     <string name="title_notifications">Activity</string>
     <string name="msg_no_activity">No activity.</string>
     <string name="title_mem_added">Added</string>
@@ -401,8 +370,6 @@
     <string name="desc_local_sec">100% Private.</string>
     <string name="label_mem_flashback">🗓️ %s</string>
     <string name="desc_mem_date">Post from %s</string>
-
-    <!-- SMB Explorer -->
     <string name="title_smb_explorer">SMB Explorer</string>
     <string name="msg_no_smb_saved">No connections.</string>
     <string name="label_select_server">Server</string>
@@ -413,11 +380,8 @@
     <string name="label_memoir_archive">Archive</string>
     <string name="btn_import">Import</string>
     <string name="msg_smb_load_failed">Load failed</string>
-
     <string name="msg_smb_sync_title">NAS Sync Done</string>
     <string name="msg_smb_sync_desc">%d new files synchronized.</string>
-
-    <!-- Toasts & Messages -->
     <string name="msg_album_deleted">Album deleted</string>
     <string name="msg_item_removed_album">Item removed</string>
     <string name="msg_photo_added_album">Photo added</string>
@@ -429,16 +393,12 @@
     <string name="msg_import_folder_failed">❌ Failed: %s</string>
     <string name="msg_rescan_success">✅ Done: %d new</string>
     <string name="msg_no_story_highlight_edit">Empty highlight</string>
-
-    <!-- Language Names -->
     <string name="lang_en">English</string>
     <string name="lang_id">Indonesia</string>
     <string name="lang_zh">中文</string>
     <string name="lang_ja">日本語</string>
     <string name="lang_ru">Русский</string>
     <string name="lang_ar">العربية</string>
-
-    <!-- Settings specific -->
     <string name="status_active">Active</string>
     <string name="status_inactive">Inactive</string>
     <string name="btn_remove_pin">Remove PIN</string>
@@ -447,32 +407,20 @@
     <string name="btn_clean">Clean</string>
     <string name="desc_manage_smb">NAS Config</string>
     <string name="desc_manual_backup">Export data</string>
-
     <string name="label_memoir_user">Memoir (%s)</string>
     <string name="channel_sync_name">NAS Sync</string>
     <string name="channel_sync_desc">NAS media sync</string>
-
     <string name="label_video">Video</string>
     <string name="label_multi_photo">Multi</string>
-
     <string name="back_to_explore">Back</string>
     <string name="back_to_profile">Back</string>
     <string name="label_exploration">EXPLORE</string>
     <string name="msg_no_saved_post">No saved posts</string>
-
-    <string name="title_backup_slideshow">Backup</string>
-    <string name="tab_backup_folder">Folder</string>
-    <string name="tab_slideshow">Slideshow</string>
     <string name="title_folder_backup">Backup</string>
     <string name="label_post_folder_structure">%d posts</string>
     <string name="btn_export_folder_data">Export Folder</string>
     <string name="title_data_folder_guide">Guide</string>
     <string name="desc_data_folder_guide">Media stored in \'memoir_data/posts/\'.</string>
-    <string name="title_slideshow_generator">Slideshow</string>
-    <string name="desc_slideshow_generator">Select photos</string>
-    <string name="msg_no_slideshow_post">No photos</string>
-    <string name="label_select_photo_count">Select (%d)</string>
-
     <string name="label_me">Me</string>
     <string name="theme_signature">Signature</string>
     <string name="theme_navy">Navy</string>
@@ -482,7 +430,6 @@
     <string name="theme_emerald">Emerald</string>
     <string name="theme_sunset">Sunset</string>
     <string name="theme_violet">Violet</string>
-
     <string name="desc_pinned">Pinned</string>
     <string name="desc_menu">Menu</string>
     <string name="desc_like">Like</string>
@@ -493,11 +440,9 @@
     <string name="desc_switch_camera">Switch Camera</string>
     <string name="desc_selected">Selected</string>
     <string name="desc_in_highlight">In Highlight</string>
-
     <string name="err_invalid_share">Share \'%s\' is not a valid disk directory.</string>
     <string name="err_folder_not_found_smb">Folder \'%s\' not found on SMB server.</string>
     <string name="label_nas_server_default">NAS Server (%s)</string>
-
     <string name="msg_test_conn_success">SMB/NAS connection successful!</string>
     <string name="msg_test_conn_failed">Failed to connect to SMB</string>
     <string name="msg_sync_searching">Searching for media files at %s...</string>
@@ -517,7 +462,6 @@
     <string name="msg_export_success_files">✅ Successfully exported %d files to folder \'%s\'!</string>
     <string name="msg_importing_from">Importing data from \'%s\'...</string>
     <string name="msg_import_success_from">✅ Successfully imported %1$d new memories from \'%2$s\'!</string>
-
     <string name="preset_blue">Pantai Melasti 🌊</string>
     <string name="preset_sunset">Sunset Bali 🌅</string>
     <string name="preset_temple">Pura Luhur 🛕</string>
@@ -526,12 +470,10 @@
     <string name="preset_slate">Sudut Kota 🌆</string>
     <string name="preset_purple">Memoir Zen 🧘</string>
     <string name="preset_default">Memoir Photo</string>
-
     <string name="widget_title_memory">📅 Memory Today</string>
     <string name="widget_title_welcome">✨ Welcome to Memoir</string>
     <string name="widget_desc_years_ago">%d years ago • %s</string>
     <string name="widget_desc_empty">Add a post to get started</string>
-
     <string name="about_memoir">About</string>
     <string name="memoir_version">v1.2.0 • Offline Gallery</string>
 </resources>

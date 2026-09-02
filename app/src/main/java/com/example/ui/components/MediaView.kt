@@ -7,16 +7,20 @@ import androidx.compose.foundation.gestures.awaitEachGesture
 import androidx.compose.foundation.gestures.calculatePan
 import androidx.compose.foundation.gestures.calculateZoom
 import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.BrokenImage
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.runtime.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
@@ -96,7 +100,6 @@ fun ZoomableBox(
     var scale by remember { mutableFloatStateOf(1f) }
     var offsetX by remember { mutableFloatStateOf(0f) }
     var offsetY by remember { mutableFloatStateOf(0f) }
-
     val animatedScale by animateFloatAsState(
         targetValue = scale,
         animationSpec = spring(
@@ -121,9 +124,7 @@ fun ZoomableBox(
         ),
         label = "offsetYAnim"
     )
-
     val dimAlpha = ((animatedScale - 1f) / 2f).coerceIn(0f, 0.75f)
-
     Box(
         modifier = modifier
             .zIndex(if (animatedScale > 1.01f) 100f else 0f)
@@ -157,7 +158,6 @@ fun ZoomableBox(
                             val event = awaitPointerEvent()
                             val zoom = event.calculateZoom()
                             val pan = event.calculatePan()
-
                             if (event.changes.size > 1 || scale > 1.01f) {
                                 val newScale = (scale * zoom).coerceIn(1f, 4.5f)
                                 scale = newScale
@@ -171,8 +171,6 @@ fun ZoomableBox(
                                 }
                             }
                         } while (event.changes.any { it.pressed })
-
-                        
                         scale = 1f
                         offsetX = 0f
                         offsetY = 0f
@@ -196,7 +194,6 @@ fun ShimmerPlaceholder(modifier: Modifier = Modifier) {
         ),
         label = "shimmerTranslate"
     )
-
     val shimmerBrush = Brush.linearGradient(
         colors = listOf(
             Color(0xFF1A1A1A),
@@ -208,7 +205,6 @@ fun ShimmerPlaceholder(modifier: Modifier = Modifier) {
         start = Offset(translateAnim - 200f, 0f),
         end = Offset(translateAnim + 200f, 0f)
     )
-
     Box(
         modifier = modifier
             .fillMaxSize()
@@ -224,11 +220,11 @@ fun MediaView(
     filterName: String = "Original",
     showLabel: Boolean = false,
     contentScale: ContentScale = ContentScale.Crop,
-    autoPlay: Boolean = true
+    autoPlay: Boolean = true,
+    allowManualPlay: Boolean = true
 ) {
     val isGradient = path.startsWith("gradient_")
     val colorFilter = rememberColorFilterForEffect(filterName)
-
     if (isGradient) {
         val brush = when (path) {
             "gradient_blue" -> Brush.linearGradient(listOf(OceanStart, OceanEnd))
@@ -240,7 +236,6 @@ fun MediaView(
             "gradient_purple" -> Brush.linearGradient(listOf(PurpleStart, PurpleEnd))
             else -> Brush.linearGradient(listOf(SlateStart, SlateEnd))
         }
-
         val label = when (path) {
             "gradient_blue" -> stringResource(R.string.preset_blue)
             "gradient_sunset" -> stringResource(R.string.preset_sunset)
@@ -251,7 +246,6 @@ fun MediaView(
             "gradient_purple" -> stringResource(R.string.preset_purple)
             else -> stringResource(R.string.preset_default)
         }
-
         Box(
             modifier = modifier
                 .background(brush)
@@ -261,7 +255,6 @@ fun MediaView(
             Canvas(modifier = Modifier.fillMaxSize()) {
                 val center = Offset(size.width / 2f, size.height / 2f)
                 val radius = size.width.coerceAtMost(size.height) * 0.22f
-                
                 drawCircle(
                     color = Color.White.copy(alpha = 0.15f),
                     radius = radius,
@@ -273,7 +266,6 @@ fun MediaView(
                     val yStart = center.y + radius * Math.sin(angle).toFloat()
                     val xEnd = center.x + (radius + 40f) * Math.cos(angle + 0.5).toFloat()
                     val yEnd = center.y + (radius + 40f) * Math.sin(angle + 0.5).toFloat()
-                    
                     drawLine(
                         color = Color.White.copy(alpha = 0.1f),
                         start = Offset(xStart, yStart),
@@ -282,7 +274,6 @@ fun MediaView(
                     )
                 }
             }
-
             if (showLabel) {
                 Text(
                     text = label,
@@ -298,58 +289,92 @@ fun MediaView(
             }
         }
     } else if (com.example.utils.FileUtils.isVideoPath(path)) {
-        if (autoPlay) {
+        var manualPlay by remember { mutableStateOf(false) }
+        val effectivePlay = autoPlay || (allowManualPlay && manualPlay)
+        if (effectivePlay) {
             VideoPlayerView(
                 path = path,
-                modifier = modifier,
+                modifier = modifier.clipToBounds(),
                 filterName = filterName,
                 contentScale = contentScale,
                 autoPlay = true
             )
         } else {
-            
-            
             val context = androidx.compose.ui.platform.LocalContext.current
-            val videoUri = remember(path) {
-                when {
-                    path.startsWith("content://") || path.startsWith("file://") -> android.net.Uri.parse(path)
-                    path.startsWith("/") -> android.net.Uri.fromFile(java.io.File(path))
-                    else -> android.net.Uri.fromFile(com.example.utils.FileUtils.getLocalFile(context, path))
+            val thumbFile = remember(path) {
+                val baseFile = com.example.utils.FileUtils.getLocalFile(context, path)
+                java.io.File(baseFile.parentFile, baseFile.name + ".thumb.jpg")
+            }
+            val videoModel: Any = remember(path, thumbFile) {
+                if (thumbFile.exists()) {
+                    thumbFile
+                } else {
+                    when {
+                        path.startsWith("content://") || path.startsWith("file://") -> android.net.Uri.parse(path)
+                        path.startsWith("/") -> android.net.Uri.fromFile(java.io.File(path))
+                        else -> android.net.Uri.fromFile(com.example.utils.FileUtils.getLocalFile(context, path))
+                    }
                 }
             }
-
-            SubcomposeAsyncImage(
-                model = coil.request.ImageRequest.Builder(context)
-                    .data(videoUri)
-                    .crossfade(true)
-                    .decoderFactory(VideoFrameDecoder.Factory())
-                    .videoFrameMillis(1000) 
-                    .build(),
-                contentDescription = contentDescription,
-                modifier = modifier.fillMaxSize(),
-                contentScale = contentScale,
-                colorFilter = colorFilter,
-            ) {
-                val state = painter.state
-                if (state is AsyncImagePainter.State.Loading) {
-                    ShimmerPlaceholder(modifier = Modifier.fillMaxSize())
-                } else if (state is AsyncImagePainter.State.Error) {
-                    
+            val modifierToUse = if (allowManualPlay) {
+                modifier.fillMaxSize().clickable { manualPlay = true }
+            } else {
+                modifier.fillMaxSize()
+            }
+            Box(modifier = modifierToUse) {
+                SubcomposeAsyncImage(
+                    model = coil.request.ImageRequest.Builder(context)
+                        .data(videoModel)
+                        .crossfade(true)
+                        .apply {
+                            if (!thumbFile.exists()) {
+                                decoderFactory(VideoFrameDecoder.Factory())
+                                videoFrameMillis(1000)
+                            }
+                        }
+                        .build(),
+                    contentDescription = contentDescription,
+                    modifier = Modifier.fillMaxSize(),
+                    contentScale = contentScale,
+                    colorFilter = colorFilter,
+                ) {
+                    val state = painter.state
+                    if (state is AsyncImagePainter.State.Loading) {
+                        ShimmerPlaceholder(modifier = Modifier.fillMaxSize())
+                    } else if (state is AsyncImagePainter.State.Error) {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .background(Color(0xFF1E1E1E)),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.PlayArrow,
+                                contentDescription = null,
+                                tint = Color.White.copy(alpha = 0.2f),
+                                modifier = Modifier.size(32.dp)
+                            )
+                        }
+                    } else {
+                        SubcomposeAsyncImageContent()
+                    }
+                }
+                if (allowManualPlay && !effectivePlay) {
                     Box(
                         modifier = Modifier
-                            .fillMaxSize()
-                            .background(Color(0xFF1E1E1E)),
+                            .size(48.dp)
+                            .clip(CircleShape)
+                            .background(Color.Black.copy(alpha = 0.4f))
+                            .align(Alignment.Center),
                         contentAlignment = Alignment.Center
                     ) {
                         Icon(
                             imageVector = Icons.Default.PlayArrow,
-                            contentDescription = null,
-                            tint = Color.White.copy(alpha = 0.2f),
+                            contentDescription = "Play",
+                            tint = Color.White,
                             modifier = Modifier.size(32.dp)
                         )
                     }
-                } else {
-                    SubcomposeAsyncImageContent()
                 }
             }
         }
@@ -368,7 +393,6 @@ fun MediaView(
                 }
             }
         }
-
         SubcomposeAsyncImage(
             model = imageModel,
             contentDescription = contentDescription ?: stringResource(R.string.nav_home),
@@ -402,6 +426,3 @@ fun MediaView(
         }
     }
 }
-
-
-

@@ -32,7 +32,6 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.ui.components.MediaView
 import com.example.ui.viewmodel.MemoirViewModel
 import com.example.ui.viewmodel.Screen
-
 import androidx.compose.ui.res.stringResource
 import com.example.R
 
@@ -42,17 +41,13 @@ fun AlbumDetailScreen(albumId: Long, viewModel: MemoirViewModel) {
     val items by viewModel.getItemsForAlbum(albumId).collectAsStateWithLifecycle(initialValue = emptyList())
     val posts by viewModel.posts.collectAsStateWithLifecycle()
     val stories by viewModel.stories.collectAsStateWithLifecycle()
-
     var showAddMediaDialog by remember { mutableStateOf(false) }
     var selectedTab by remember { mutableStateOf("feed") }
-
     val context = LocalContext.current
-
     val presetGradients = listOf(
         "gradient_sunset", "gradient_blue", "gradient_orange", "gradient_nature", 
         "gradient_temple", "gradient_purple", "gradient_slate"
     )
-
     album?.let { currentAlbum ->
         Scaffold(
             floatingActionButton = {
@@ -88,7 +83,6 @@ fun AlbumDetailScreen(albumId: Long, viewModel: MemoirViewModel) {
                                 tint = MaterialTheme.colorScheme.onSurface
                             )
                         }
-
                         Text(
                             text = currentAlbum.name,
                             fontSize = 18.sp,
@@ -99,7 +93,6 @@ fun AlbumDetailScreen(albumId: Long, viewModel: MemoirViewModel) {
                             modifier = Modifier.weight(1f).padding(horizontal = 8.dp),
                             textAlign = TextAlign.Center
                         )
-
                         IconButton(
                             onClick = {
                                 viewModel.deleteAlbum(currentAlbum)
@@ -117,7 +110,6 @@ fun AlbumDetailScreen(albumId: Long, viewModel: MemoirViewModel) {
                         }
                     }
                 }
-
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -193,7 +185,6 @@ fun AlbumDetailScreen(albumId: Long, viewModel: MemoirViewModel) {
                         }
                     }
                 }
-
                 if (items.isEmpty()) {
                     Column(
                         modifier = Modifier
@@ -235,9 +226,33 @@ fun AlbumDetailScreen(albumId: Long, viewModel: MemoirViewModel) {
                         horizontalArrangement = Arrangement.spacedBy(2.dp)
                     ) {
                         items(items) { mediaItem ->
-                            Box(modifier = Modifier.aspectRatio(1f)) {
-                                MediaView(path = mediaItem.mediaPath, modifier = Modifier.fillMaxSize())
-                                
+                            Box(modifier = Modifier
+                                .aspectRatio(1f)
+                                .clip(RoundedCornerShape(1.dp))
+                            ) {
+                                MediaView(
+                                    path = mediaItem.mediaPath, 
+                                    autoPlay = false,
+                                    allowManualPlay = false,
+                                    modifier = Modifier.fillMaxSize()
+                                )
+                                if (com.example.utils.FileUtils.isVideoPath(mediaItem.mediaPath)) {
+                                    Box(
+                                        modifier = Modifier
+                                            .align(Alignment.TopStart)
+                                            .padding(6.dp)
+                                            .size(18.dp)
+                                            .background(Color.Black.copy(alpha = 0.4f), CircleShape),
+                                        contentAlignment = Alignment.Center
+                                    ) {
+                                        Icon(
+                                            imageVector = Icons.Default.PlayArrow,
+                                            contentDescription = null,
+                                            tint = Color.White,
+                                            modifier = Modifier.size(12.dp)
+                                        )
+                                    }
+                                }
                                 Box(
                                     modifier = Modifier
                                         .align(Alignment.TopEnd)
@@ -268,7 +283,6 @@ fun AlbumDetailScreen(albumId: Long, viewModel: MemoirViewModel) {
     } ?: Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
         CircularProgressIndicator()
     }
-
     if (showAddMediaDialog) {
         AlertDialog(
             onDismissRequest = { showAddMediaDialog = false },
@@ -294,7 +308,6 @@ fun AlbumDetailScreen(albumId: Long, viewModel: MemoirViewModel) {
                             }
                         }
                     }
-
                     Box(modifier = Modifier.fillMaxWidth().height(140.dp)) {
                         when (selectedTab) {
                             "feed" -> {

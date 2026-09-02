@@ -10,7 +10,6 @@ import com.example.ui.theme.MyApplicationTheme
 import com.example.ui.viewmodel.MemoirViewModel
 import com.example.ui.viewmodel.MemoirViewModelFactory
 import com.example.worker.SmbSyncScheduler
-
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.CompositionLocalProvider
@@ -37,23 +36,22 @@ class MainActivity : AppCompatActivity() {
 
             androidx.compose.runtime.LaunchedEffect(language) {
                 if (language.isNotEmpty()) {
-                    val appLocale: LocaleListCompat = LocaleListCompat.forLanguageTags(language)
-                    AppCompatDelegate.setApplicationLocales(appLocale)
+                    val languageTag = if (language == "id") "in" else language
+                    val appLocale: LocaleListCompat = LocaleListCompat.forLanguageTags(languageTag)
+                    
+                    if (AppCompatDelegate.getApplicationLocales() != appLocale) {
+                        AppCompatDelegate.setApplicationLocales(appLocale)
+                    }
                     
                     val locale = when (language) {
-                        "id" -> java.util.Locale.forLanguageTag("id-ID")
+                        "id" -> java.util.Locale("in", "ID")
                         "zh" -> java.util.Locale.SIMPLIFIED_CHINESE
                         "ja" -> java.util.Locale.JAPANESE
-                        "ru" -> java.util.Locale.forLanguageTag("ru-RU")
-                        "ar" -> java.util.Locale.forLanguageTag("ar-SA")
+                        "ru" -> java.util.Locale("ru", "RU")
+                        "ar" -> java.util.Locale("ar", "SA")
                         else -> java.util.Locale.ENGLISH
                     }
                     java.util.Locale.setDefault(locale)
-                    
-                    // Force configuration update for the current activity resources
-                    val config = resources.configuration
-                    config.setLocale(locale)
-                    resources.updateConfiguration(config, resources.displayMetrics)
                 }
             }
 

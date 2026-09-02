@@ -7,7 +7,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 
-
 private val DefaultLightScheme = lightColorScheme(
     primary           = MemoirViolet,
     onPrimary         = Color.White,
@@ -50,7 +49,6 @@ private val DefaultDarkScheme = darkColorScheme(
     outlineVariant    = Color(0xFF2A2A3A)
 )
 
-
 private val OceanLightScheme = lightColorScheme(
     primary           = OceanPrimary,
     onPrimary         = Color.White,
@@ -79,7 +77,6 @@ private val OceanDarkScheme = darkColorScheme(
     surfaceVariant    = DarkSurfaceVariant,
     outline           = DarkOutline
 )
-
 
 private val EmeraldLightScheme = lightColorScheme(
     primary           = EmeraldPrimary,
@@ -110,7 +107,6 @@ private val EmeraldDarkScheme = darkColorScheme(
     outline           = DarkOutline
 )
 
-
 private val SunsetLightScheme = lightColorScheme(
     primary           = SunsetPrimary,
     onPrimary         = Color.White,
@@ -139,7 +135,6 @@ private val SunsetDarkScheme = darkColorScheme(
     surfaceVariant    = DarkSurfaceVariant,
     outline           = DarkOutline
 )
-
 
 private val RoseLightScheme = lightColorScheme(
     primary           = RosePrimary,
@@ -170,7 +165,6 @@ private val RoseDarkScheme = darkColorScheme(
     outline           = DarkOutline
 )
 
-
 private val MonoLightScheme = lightColorScheme(
     primary           = MonoPrimary,
     onPrimary         = Color.White,
@@ -200,7 +194,6 @@ private val MonoDarkScheme = darkColorScheme(
     outline           = Color(0xFF374151)
 )
 
-
 private val NavyLightScheme = lightColorScheme(
     primary           = NavyPrimary,
     onPrimary         = Color.White,
@@ -229,7 +222,6 @@ private val NavyDarkScheme = darkColorScheme(
     surfaceVariant    = DarkSurfaceVariant,
     outline           = DarkOutline
 )
-
 
 private fun getLightScheme(colorTheme: String) = when (colorTheme) {
     "MONOCHROME"  -> MonoLightScheme
@@ -278,7 +270,6 @@ private fun getDarkScheme(colorTheme: String) = when (colorTheme) {
     )
     else -> DefaultDarkScheme
 }
-
 
 @Composable
 fun MyApplicationTheme(

@@ -42,26 +42,23 @@ fun SmbExplorerScreen(viewModel: MemoirViewModel) {
     val username by viewModel.username.collectAsStateWithLifecycle()
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
-
     var selectedConnection by remember { mutableStateOf<SourceConnectionEntity?>(null) }
     var currentPath by remember { mutableStateOf("") }
     var folders by remember { mutableStateOf<List<String>>(emptyList()) }
     var mediaFiles by remember { mutableStateOf<List<SmbMediaItem>>(emptyList()) }
     var isLoading by remember { mutableStateOf(false) }
     var syncStatusText by remember { mutableStateOf<String?>(null) }
-
     LaunchedEffect(connections) {
         if (connections.size == 1 && selectedConnection == null) {
             selectedConnection = connections.first()
         }
     }
-
     fun loadContent(conn: SourceConnectionEntity, path: String) {
         val credParts = conn.credentials.split(":")
         val user = credParts.getOrNull(0) ?: ""
         val pass = credParts.getOrNull(1) ?: ""
+        val dom = credParts.getOrNull(2) ?: ""
         val shareName = conn.folderPath.split("/").firstOrNull() ?: ""
-        
         isLoading = true
         scope.launch {
             val foldersRes = SmbHelper.listSubfoldersInShare(
@@ -69,31 +66,29 @@ fun SmbExplorerScreen(viewModel: MemoirViewModel) {
                 shareName = shareName,
                 parentFolder = path,
                 username = user,
-                password = pass
+                password = pass,
+                domain = dom
             )
             val filesRes = SmbHelper.listMediaFiles(
                 host = conn.host,
                 shareName = shareName,
                 folderPath = path,
                 username = user,
-                password = pass
+                password = pass,
+                domain = dom
             )
-            
             isLoading = false
             folders = foldersRes.getOrDefault(emptyList())
             mediaFiles = filesRes.getOrDefault(emptyList())
-            
             if (foldersRes.isFailure && filesRes.isFailure) {
                 val msg = context.getString(R.string.msg_smb_load_failed)
                 Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
             }
         }
     }
-
     LaunchedEffect(selectedConnection, currentPath) {
         selectedConnection?.let { loadContent(it, currentPath) }
     }
-
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -120,7 +115,6 @@ fun SmbExplorerScreen(viewModel: MemoirViewModel) {
                 )
             }
         }
-
         if (connections.isEmpty()) {
             Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                 Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(16.dp)) {
@@ -146,10 +140,8 @@ fun SmbExplorerScreen(viewModel: MemoirViewModel) {
                         }
                     }
                 }
-
                 selectedConnection?.let { conn ->
                     val shareName = conn.folderPath.split("/").firstOrNull() ?: ""
-                    
                     Card(
                         modifier = Modifier.fillMaxWidth(),
                         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f))
@@ -162,9 +154,7 @@ fun SmbExplorerScreen(viewModel: MemoirViewModel) {
                                 color = MaterialTheme.colorScheme.primary,
                                 fontWeight = FontWeight.Bold
                             )
-                            
                             Spacer(Modifier.height(8.dp))
-                            
                             Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
                                 if (currentPath.isNotBlank()) {
                                     IconButton(
@@ -176,19 +166,16 @@ fun SmbExplorerScreen(viewModel: MemoirViewModel) {
                                         Icon(Icons.Default.ArrowUpward, stringResource(R.string.btn_up), tint = MaterialTheme.colorScheme.primary)
                                     }
                                 }
-                                
                                 Spacer(Modifier.weight(1f))
-                                
                                 val credParts = conn.credentials.split(":")
                                 val user = credParts.getOrNull(0) ?: ""
                                 val pass = credParts.getOrNull(1) ?: ""
-
                                 Button(
                                     onClick = {
-                                        viewModel.exportMemoirDataToSmbWithUserFolder(
+                                        viewModel.exportMemoirDataToSmb(
                                             host = conn.host,
                                             shareName = shareName,
-                                            remoteParentFolder = currentPath,
+                                            remoteFolder = currentPath,
                                             username = user,
                                             password = pass,
                                             onProgress = { syncStatusText = it },
@@ -211,9 +198,7 @@ fun SmbExplorerScreen(viewModel: MemoirViewModel) {
                         }
                     }
                 }
-
                 Spacer(Modifier.height(16.dp))
-                
                 syncStatusText?.let {
                     Surface(
                         modifier = Modifier.fillMaxWidth().padding(bottom = 12.dp),
@@ -227,14 +212,12 @@ fun SmbExplorerScreen(viewModel: MemoirViewModel) {
                         }
                     }
                 }
-
                 Box(Modifier.weight(1f).fillMaxWidth()) {
                     AnimatedContent(
                         targetState = currentPath,
                         transitionSpec = {
                             val initialDepth = initialState.count { it == '/' } + (if (initialState.isEmpty()) 0 else 1)
                             val targetDepth = targetState.count { it == '/' } + (if (targetState.isEmpty()) 0 else 1)
-
                             if (targetDepth > initialDepth || (initialState.isEmpty() && targetState.isNotEmpty())) {
                                 (scaleIn(initialScale = 0.92f, animationSpec = tween(350, easing = LinearOutSlowInEasing)) + fadeIn(animationSpec = tween(350)))
                                     .togetherWith(scaleOut(targetScale = 1.08f, animationSpec = tween(350)) + fadeOut(animationSpec = tween(350)))
@@ -258,7 +241,6 @@ fun SmbExplorerScreen(viewModel: MemoirViewModel) {
                                     items(folders) { folder ->
                                         val userFolderName = stringResource(R.string.label_memoir_user, username)
                                         val isMemoirFolder = folder == userFolderName
-
                                         Card(
                                             modifier = Modifier.fillMaxWidth(),
                                             onClick = {
@@ -285,7 +267,6 @@ fun SmbExplorerScreen(viewModel: MemoirViewModel) {
                                                         Text(stringResource(R.string.label_memoir_archive), fontSize = 11.sp, color = MaterialTheme.colorScheme.primary)
                                                     }
                                                 }
-
                                                 if (isMemoirFolder) {
                                                     Button(
                                                         onClick = {
@@ -295,7 +276,6 @@ fun SmbExplorerScreen(viewModel: MemoirViewModel) {
                                                                 val user = credParts.getOrNull(0) ?: ""
                                                                 val pass = credParts.getOrNull(1) ?: ""
                                                                 val fullFolderPath = if (targetPath.isBlank()) folder else "$targetPath/$folder"
-
                                                                 viewModel.importMemoirDataFromSmbUserFolder(
                                                                     host = conn.host,
                                                                     shareName = shareName,
@@ -324,7 +304,6 @@ fun SmbExplorerScreen(viewModel: MemoirViewModel) {
                                             }
                                         }
                                     }
-
                                     items(mediaFiles) { file ->
                                         Row(
                                             modifier = Modifier

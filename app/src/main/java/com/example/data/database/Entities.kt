@@ -15,10 +15,7 @@ data class PostEntity(
     val isSaved: Boolean = false,
     val isPinned: Boolean = false,
     val isLocked: Boolean = false,
-    
     val aspectRatio: String = "1:1",
-    
-    
     val mediaTransformsJson: String = ""
 )
 
@@ -27,7 +24,7 @@ data class StoryEntity(
     @PrimaryKey(autoGenerate = true) val id: Long = 0,
     val mediaPath: String,
     val createdAt: Long = System.currentTimeMillis(),
-    val expiresAt: Long = System.currentTimeMillis() + 7 * 24 * 60 * 60 * 1000L, 
+    val expiresAt: Long = System.currentTimeMillis() + 24 * 60 * 60 * 1000L,
     val highlightId: Long? = null,
     val isWatched: Boolean = false,
     val caption: String? = null,
@@ -40,7 +37,7 @@ data class AlbumEntity(
     @PrimaryKey(autoGenerate = true) val id: Long = 0,
     val name: String,
     val coverPath: String = "",
-    val sourceType: String = "LOCAL", 
+    val sourceType: String = "LOCAL",
     val sourcePath: String = "",
     val createdAt: Long = System.currentTimeMillis()
 )
@@ -51,18 +48,18 @@ data class AlbumItemEntity(
     val albumId: Long,
     val mediaPath: String,
     val sourceType: String = "LOCAL",
-    val mimeType: String = "image" 
+    val mimeType: String = "image"
 )
 
 @Entity(tableName = "source_connections")
 data class SourceConnectionEntity(
     @PrimaryKey(autoGenerate = true) val id: Long = 0,
-    val type: String, 
+    val type: String,
     val name: String,
     val host: String = "",
     val folderPath: String = "",
-    val credentials: String = "", 
-    val status: String = "ONLINE" 
+    val credentials: String = "",
+    val status: String = "ONLINE"
 )
 
 @Entity(tableName = "comments")

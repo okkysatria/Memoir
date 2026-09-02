@@ -8,9 +8,6 @@ import androidx.glance.appwidget.state.updateAppWidgetState
 import androidx.glance.state.GlanceStateDefinition
 import androidx.glance.state.PreferencesGlanceStateDefinition
 
-
-
-
 data class MemoirWidgetState(
     val photoPath: String = "",
     val caption: String = "",
@@ -26,7 +23,6 @@ data class MemoirWidgetState(
         val KEY_HAS_MEMORY = booleanPreferencesKey("widget_has_memory")
 
         fun load(context: Context): MemoirWidgetState {
-            
             return MemoirWidgetState()
         }
 

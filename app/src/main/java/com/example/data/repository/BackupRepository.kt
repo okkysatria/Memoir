@@ -18,21 +18,10 @@ import java.util.Locale
 import java.util.zip.ZipEntry
 import java.util.zip.ZipOutputStream
 
-
-
-
-
-
-
-
 class BackupRepository(
     private val context: Context,
     private val dao: MemoirDao
 ) {
-    
-    
-    
-
     fun getTagsForPost(postId: Long): Flow<List<PostTagEntity>> =
         dao.getTagsForPost(postId)
 
@@ -44,15 +33,6 @@ class BackupRepository(
     suspend fun deleteTag(tag: PostTagEntity) = dao.deleteTag(tag)
 
     suspend fun clearTagsForPost(postId: Long) = dao.deleteTagsForPost(postId)
-
-    
-    
-    
-
-    
-
-
-
 
     suspend fun scanAndIndexMemoirFolder(context: Context): Int {
         var importedCount = 0
@@ -163,10 +143,6 @@ class BackupRepository(
         return importedCount
     }
 
-    
-
-
-
     suspend fun exportMemoirDataToDocumentTree(context: Context, treeUri: Uri): Result<Int> = kotlinx.coroutines.withContext(kotlinx.coroutines.Dispatchers.IO) {
         try {
             val rootDoc = androidx.documentfile.provider.DocumentFile.fromTreeUri(context, treeUri)
@@ -210,10 +186,6 @@ class BackupRepository(
             Result.failure(e)
         }
     }
-
-    
-
-
 
     suspend fun importMemoirDataFromDocumentTree(context: Context, treeUri: Uri): Result<Int> = kotlinx.coroutines.withContext(kotlinx.coroutines.Dispatchers.IO) {
         try {

@@ -41,17 +41,12 @@ data class SmbMediaItem(
 )
 
 object SmbHelper {
-
     private fun buildConfig(): SmbConfig {
         return SmbConfig.builder()
             .withTimeout(5000, TimeUnit.MILLISECONDS)
             .withSoTimeout(5000, TimeUnit.MILLISECONDS)
             .build()
     }
-
-    
-
-
     suspend fun testConnection(
         context: Context,
         host: String,
@@ -69,8 +64,22 @@ object SmbHelper {
                 } else {
                     AuthenticationContext(username, password.toCharArray(), domain)
                 }
-                val session = connection.authenticate(authContext)
+                val session = try {
+                    connection.authenticate(authContext)
+                } catch (e: com.hierynomus.mssmb2.SMBApiException) {
+                    if (e.status == com.hierynomus.mserref.NtStatus.STATUS_ACCESS_DENIED) {
+                        if (username.isBlank()) {
+                            return@withContext Result.failure(Exception("Access Denied: Server requires a username (Guest mode disabled)."))
+                        } else {
+                            return@withContext Result.failure(Exception("Access Denied: Invalid username, password, or domain."))
+                        }
+                    }
+                    throw e
+                }
                 val cleanShare = shareName.trim().removePrefix("/").removeSuffix("/")
+                if (cleanShare.isBlank()) {
+                    return@withContext Result.success(true)
+                }
                 session.connectShare(cleanShare).use { share ->
                     if (share is DiskShare) {
                         return@withContext Result.success(true)
@@ -86,10 +95,45 @@ object SmbHelper {
             try { client.close() } catch (_: Exception) {}
         }
     }
-
-    
-
-
+    suspend fun listSubfoldersInShare(
+        host: String,
+        shareName: String,
+        parentFolder: String = "",
+        username: String = "",
+        password: String = "",
+        domain: String = ""
+    ): Result<List<String>> = withContext(Dispatchers.IO) {
+        val client = SMBClient(buildConfig())
+        try {
+            val cleanHost = host.replace("smb://", "").replace("/", "").trim()
+            val cleanShare = shareName.trim().removePrefix("/").removeSuffix("/")
+            client.connect(cleanHost).use { connection ->
+                val authContext = if (username.isBlank()) {
+                    AuthenticationContext.anonymous()
+                } else {
+                    AuthenticationContext(username, password.toCharArray(), domain)
+                }
+                val session = connection.authenticate(authContext)
+                (session.connectShare(cleanShare) as DiskShare).use { diskShare ->
+                    val cleanParent = parentFolder.trim().removePrefix("/").removeSuffix("/").replace("/", "\\")
+                    val files: List<FileIdBothDirectoryInformation> = diskShare.list(cleanParent)
+                    val folderNames = files
+                        .filter {
+                            val isDir = (it.fileAttributes and FileAttributes.FILE_ATTRIBUTE_DIRECTORY.value) != 0L
+                            isDir && it.fileName != "." && it.fileName != ".."
+                        }
+                        .map { it.fileName }
+                        .sorted()
+                    return@withContext Result.success(folderNames)
+                }
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            return@withContext Result.failure(e)
+        } finally {
+            try { client.close() } catch (_: Exception) {}
+        }
+    }
     suspend fun listMediaFiles(
         host: String,
         shareName: String,
@@ -103,7 +147,6 @@ object SmbHelper {
             val cleanHost = host.replace("smb://", "").replace("/", "").trim()
             val cleanShare = shareName.trim().removePrefix("/").removeSuffix("/")
             val cleanFolder = folderPath.trim().removePrefix("/").removeSuffix("/").replace("/", "\\")
-
             client.connect(cleanHost).use { connection ->
                 val authContext = if (username.isBlank()) {
                     AuthenticationContext.anonymous()
@@ -114,17 +157,14 @@ object SmbHelper {
                 (session.connectShare(cleanShare) as DiskShare).use { diskShare ->
                     val items = mutableListOf<SmbMediaItem>()
                     val files: List<FileIdBothDirectoryInformation> = diskShare.list(cleanFolder)
-
                     for (fileInfo in files) {
                         val fileName = fileInfo.fileName
                         if (fileName == "." || fileName == "..") continue
-                        
                         val lower = fileName.lowercase()
                         val isImage = lower.endsWith(".jpg") || lower.endsWith(".jpeg") ||
                                 lower.endsWith(".png") || lower.endsWith(".webp") || lower.endsWith(".heic")
                         val isVideo = lower.endsWith(".mp4") || lower.endsWith(".mkv") ||
                                 lower.endsWith(".webm") || lower.endsWith(".mov") || lower.endsWith(".3gp")
-
                         if (isImage || isVideo) {
                             val fullPath = if (cleanFolder.isBlank()) fileName else "$cleanFolder\\$fileName"
                             items.add(
@@ -147,10 +187,6 @@ object SmbHelper {
             try { client.close() } catch (_: Exception) {}
         }
     }
-
-    
-
-
     suspend fun downloadMediaToCache(
         context: Context,
         host: String,
@@ -165,7 +201,6 @@ object SmbHelper {
             val cleanHost = host.replace("smb://", "").replace("/", "").trim()
             val cleanShare = shareName.trim().removePrefix("/").removeSuffix("/")
             val cleanPath = remoteFilePath.replace("/", "\\")
-
             client.connect(cleanHost).use { connection ->
                 val authContext = if (username.isBlank()) {
                     AuthenticationContext.anonymous()
@@ -182,13 +217,10 @@ object SmbHelper {
                         SMB2CreateDisposition.FILE_OPEN,
                         null
                     )
-
                     val fileName = remoteFilePath.substringAfterLast('\\').substringAfterLast('/')
                     val cacheDir = File(context.cacheDir, "smb_downloads")
                     if (!cacheDir.exists()) cacheDir.mkdirs()
-
                     val targetFile = File(cacheDir, "smb_${System.currentTimeMillis()}_$fileName")
-                    
                     smbFile.inputStream.use { input ->
                         FileOutputStream(targetFile).use { output ->
                             input.copyTo(output)
@@ -204,12 +236,6 @@ object SmbHelper {
             try { client.close() } catch (_: Exception) {}
         }
     }
-
-    
-
-
-
-
     suspend fun syncMemoirFolderToSmb(
         context: Context,
         host: String,
@@ -224,7 +250,6 @@ object SmbHelper {
             val cleanHost = host.replace("smb://", "").replace("/", "").trim()
             val cleanShare = shareName.trim().removePrefix("/").removeSuffix("/")
             val cleanBase = remoteBaseFolder.trim().removePrefix("/").removeSuffix("/").replace("/", "\\")
-
             client.connect(cleanHost).use { connection ->
                 val authContext = if (username.isBlank()) {
                     AuthenticationContext.anonymous()
@@ -233,19 +258,14 @@ object SmbHelper {
                 }
                 val session = connection.authenticate(authContext)
                 (session.connectShare(cleanShare) as DiskShare).use { diskShare ->
-                    
                     if (cleanBase.isNotBlank() && !diskShare.folderExists(cleanBase)) {
                         diskShare.mkdir(cleanBase)
                     }
-
                     val memoirDir = FileUtils.getMemoirDataDir(context)
                     var uploadedCount = 0
-
                     memoirDir.walkTopDown().filter { it.isFile }.forEach { localFile ->
                         val relPath = localFile.relativeTo(memoirDir).path.replace("/", "\\")
                         val remotePath = if (cleanBase.isBlank()) relPath else "$cleanBase\\$relPath"
-
-                        
                         val parentParts = remotePath.split("\\").dropLast(1)
                         var subPath = ""
                         for (part in parentParts) {
@@ -255,8 +275,6 @@ object SmbHelper {
                                 try { diskShare.mkdir(subPath) } catch (_: Exception) {}
                             }
                         }
-
-                        
                         var needUpload = true
                         if (diskShare.fileExists(remotePath)) {
                             try {
@@ -266,7 +284,6 @@ object SmbHelper {
                                 }
                             } catch (_: Exception) {}
                         }
-
                         if (needUpload) {
                             val smbFile = diskShare.openFile(
                                 remotePath,
@@ -284,7 +301,6 @@ object SmbHelper {
                             uploadedCount++
                         }
                     }
-
                     return@withContext Result.success(uploadedCount)
                 }
             }
@@ -295,55 +311,6 @@ object SmbHelper {
             try { client.close() } catch (_: Exception) {}
         }
     }
-
-    
-
-
-    suspend fun listSubfoldersInShare(
-        host: String,
-        shareName: String,
-        parentFolder: String = "",
-        username: String = "",
-        password: String = "",
-        domain: String = ""
-    ): Result<List<String>> = withContext(Dispatchers.IO) {
-        val client = SMBClient(buildConfig())
-        try {
-            val cleanHost = host.replace("smb://", "").replace("/", "").trim()
-            val cleanShare = shareName.trim().removePrefix("/").removeSuffix("/")
-            val cleanFolder = parentFolder.trim().removePrefix("/").removeSuffix("/").replace("/", "\\")
-
-            client.connect(cleanHost).use { connection ->
-                val authContext = if (username.isBlank()) {
-                    AuthenticationContext.anonymous()
-                } else {
-                    AuthenticationContext(username, password.toCharArray(), domain)
-                }
-                val session = connection.authenticate(authContext)
-                (session.connectShare(cleanShare) as DiskShare).use { diskShare ->
-                    val files: List<FileIdBothDirectoryInformation> = diskShare.list(cleanFolder)
-                    val folderNames = files
-                        .filter {
-                            val isDir = (it.fileAttributes and FileAttributes.FILE_ATTRIBUTE_DIRECTORY.value) != 0L
-                            isDir && it.fileName != "." && it.fileName != ".."
-                        }
-                        .map { it.fileName }
-                        .sorted()
-                    return@withContext Result.success(folderNames)
-                }
-            }
-        } catch (e: Exception) {
-            e.printStackTrace()
-            return@withContext Result.failure(e)
-        } finally {
-            try { client.close() } catch (_: Exception) {}
-        }
-    }
-
-    
-
-
-
     suspend fun importMemoirFolderFromSmb(
         context: Context,
         dao: MemoirDao,
@@ -358,7 +325,6 @@ object SmbHelper {
             val cleanHost = host.replace("smb://", "").replace("/", "").trim()
             val cleanShare = shareName.trim().removePrefix("/").removeSuffix("/")
             val cleanBase = remoteFolder.trim().removePrefix("/").removeSuffix("/").replace("/", "\\")
-
             client.connect(cleanHost).use { connection ->
                 val authContext = if (username.isBlank()) {
                     AuthenticationContext.anonymous()
@@ -371,23 +337,18 @@ object SmbHelper {
                     if (!diskShare.folderExists(remotePostsFolder)) {
                         return@withContext Result.failure(Exception(context.getString(R.string.err_folder_not_found_smb, remotePostsFolder)))
                     }
-
                     var importedCount = 0
                     val postFolders = diskShare.list(remotePostsFolder)
                         .filter {
                             val isDir = (it.fileAttributes and FileAttributes.FILE_ATTRIBUTE_DIRECTORY.value) != 0L
                             isDir && it.fileName != "." && it.fileName != ".."
                         }
-
                     val localPostsDir = FileUtils.getPostsDir(context)
                     val existingPosts = dao.getAllPosts().first()
-
                     for (folderInfo in postFolders) {
                         val folderName = folderInfo.fileName
                         val remotePostDir = "$remotePostsFolder\\$folderName"
                         val localPostDir = File(localPostsDir, folderName).also { if (!it.exists()) it.mkdirs() }
-
-                        
                         val remoteJsonPath = "$remotePostDir\\post.json"
                         if (diskShare.fileExists(remoteJsonPath)) {
                             val localJsonFile = File(localPostDir, "post.json")
@@ -402,8 +363,6 @@ object SmbHelper {
                             smbJson.inputStream.use { input ->
                                 FileOutputStream(localJsonFile).use { output -> input.copyTo(output) }
                             }
-
-                            
                             val filesInPost = diskShare.list(remotePostDir)
                             for (fileInfo in filesInPost) {
                                 if (fileInfo.fileName != "." && fileInfo.fileName != ".." && fileInfo.fileName != "post.json") {
@@ -423,8 +382,6 @@ object SmbHelper {
                                     }
                                 }
                             }
-
-                            
                             try {
                                 val json = org.json.JSONObject(localJsonFile.readText(Charsets.UTF_8))
                                 val createdAt = json.optLong("createdAt", localPostDir.lastModified())
@@ -436,7 +393,6 @@ object SmbHelper {
                                 val isSaved = json.optBoolean("isSaved", false)
                                 val isPinned = json.optBoolean("isPinned", false)
                                 val isLocked = json.optBoolean("isLocked", false)
-
                                 val mediaArray = json.optJSONArray("mediaFiles")
                                 val mediaPaths = mutableListOf<String>()
                                 if (mediaArray != null && mediaArray.length() > 0) {
@@ -452,11 +408,9 @@ object SmbHelper {
                                         mediaPaths.add("posts/$folderName/${f.name}")
                                     }
                                 }
-
                                 val isDuplicate = existingPosts.any { p ->
                                     p.createdAt == createdAt || (mediaPaths.isNotEmpty() && p.mediaPaths.contains(mediaPaths.first()))
                                 }
-
                                 if (!isDuplicate && mediaPaths.isNotEmpty()) {
                                     dao.insertPost(
                                         PostEntity(
@@ -479,7 +433,6 @@ object SmbHelper {
                             }
                         }
                     }
-
                     return@withContext Result.success(importedCount)
                 }
             }
@@ -490,14 +443,6 @@ object SmbHelper {
             try { client.close() } catch (_: Exception) {}
         }
     }
-
-    
-    
-    
-
-    
-
-
     suspend fun discoverSmbServers(
         context: Context,
         onServerFound: (DiscoveredServer) -> Unit
@@ -505,7 +450,6 @@ object SmbHelper {
         val foundServers = Collections.synchronizedList(mutableListOf<DiscoveredServer>())
         val localIp = getLocalWifiIpAddress(context) ?: "192.168.1.1"
         val subnet = localIp.substringBeforeLast(".")
-
         val jobs = mutableListOf<Job>()
         for (i in 1..254) {
             val targetIp = "$subnet.$i"
@@ -525,7 +469,6 @@ object SmbHelper {
         jobs.joinAll()
         foundServers.toList()
     }
-
     private fun isSmbPortOpen(ip: String, port: Int = 445, timeoutMs: Int = 280): Boolean {
         return try {
             Socket().use { socket ->
@@ -536,7 +479,6 @@ object SmbHelper {
             false
         }
     }
-
     private fun getLocalWifiIpAddress(context: Context): String? {
         try {
             val wifiManager = context.applicationContext.getSystemService(Context.WIFI_SERVICE) as? android.net.wifi.WifiManager
@@ -552,7 +494,6 @@ object SmbHelper {
                 )
             }
         } catch (_: Exception) {}
-
         try {
             val interfaces = NetworkInterface.getNetworkInterfaces()
             while (interfaces.hasMoreElements()) {
@@ -566,7 +507,6 @@ object SmbHelper {
                 }
             }
         } catch (_: Exception) {}
-
         return null
     }
 }
