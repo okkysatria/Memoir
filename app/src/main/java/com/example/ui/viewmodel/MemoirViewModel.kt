@@ -1,6 +1,7 @@
 package com.example.ui.viewmodel
 
 import android.app.Application
+import android.os.Environment
 import com.example.R
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.ViewModel
@@ -15,12 +16,17 @@ import androidx.paging.cachedIn
 import com.example.data.database.*
 import com.example.data.repository.MemoirRepository
 import com.example.data.repository.UserPreferencesRepository
+import com.example.glance.MemoirWidget
 import com.example.utils.FileUtils
+import com.example.utils.SmbHelper
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import java.io.File
+import java.io.FileOutputStream
 import java.util.Calendar
 import java.util.Date
+import java.util.UUID
 
 sealed class Screen {
     data object Home : Screen()
@@ -212,8 +218,10 @@ class MemoirViewModel(application: Application) : AndroidViewModel(application) 
             }
         }
         viewModelScope.launch {
+            cleanExpiredStories()
             stories.collect { list ->
-                val sorted = list.filter { it.expiresAt > System.currentTimeMillis() }
+                val now = System.currentTimeMillis()
+                val sorted = list.filter { it.expiresAt > now }
                     .sortedWith(compareBy<StoryEntity> { it.isWatched }.thenByDescending { it.createdAt })
                 _homeStories.value = sorted
             }
@@ -279,7 +287,7 @@ class MemoirViewModel(application: Application) : AndroidViewModel(application) 
                 name = "Sudut Kota",
                 coverPath = "gradient_orange",
                 sourceType = "LOCAL",
-                sourcePath = android.os.Environment.getExternalStorageDirectory().path + "/Pictures/City"
+                sourcePath = Environment.getExternalStorageDirectory().path + "/Pictures/City"
             )
         )
 
@@ -406,23 +414,27 @@ class MemoirViewModel(application: Application) : AndroidViewModel(application) 
     }
 
     fun openStoryViewer(allActiveStories: List<StoryEntity>, startIndex: Int) {
+        if (allActiveStories.isEmpty()) return
+        val safeIndex = startIndex.coerceIn(0, allActiveStories.size - 1)
         _activeStories.value = allActiveStories
-        _activeStoryIndex.value = startIndex
+        _activeStoryIndex.value = safeIndex
         _storyViewerOpen.value = true
-        if (startIndex < allActiveStories.size) {
-            markStoryAsWatched(allActiveStories[startIndex])
-        }
+        markStoryAsWatched(allActiveStories[safeIndex])
     }
 
     fun closeStoryViewer() {
         _storyViewerOpen.value = false
+        _activeStories.value = emptyList()
+        _activeStoryIndex.value = 0
+        cleanExpiredStories()
     }
 
     fun nextStory() {
+        val currentList = _activeStories.value
         val nextIndex = _activeStoryIndex.value + 1
-        if (nextIndex < _activeStories.value.size) {
+        if (nextIndex < currentList.size) {
             _activeStoryIndex.value = nextIndex
-            markStoryAsWatched(_activeStories.value[nextIndex])
+            markStoryAsWatched(currentList[nextIndex])
         } else {
             closeStoryViewer()
         }
@@ -432,10 +444,26 @@ class MemoirViewModel(application: Application) : AndroidViewModel(application) 
         val prevIndex = _activeStoryIndex.value - 1
         if (prevIndex >= 0) {
             _activeStoryIndex.value = prevIndex
+            val currentList = _activeStories.value
+            if (prevIndex < currentList.size) {
+                markStoryAsWatched(currentList[prevIndex])
+            }
         }
     }
 
     private fun markStoryAsWatched(story: StoryEntity) {
+        val currentStories = _activeStories.value
+        val idx = currentStories.indexOfFirst { it.id == story.id }
+        if (idx >= 0 && currentStories[idx].isWatched) {
+            return
+        }
+
+        if (idx >= 0) {
+            val updated = currentStories.toMutableList()
+            updated[idx] = story.copy(isWatched = true)
+            _activeStories.value = updated
+        }
+
         viewModelScope.launch(Dispatchers.IO) {
             repository.updateStory(story.copy(isWatched = true))
         }
@@ -543,7 +571,7 @@ class MemoirViewModel(application: Application) : AndroidViewModel(application) 
     private fun updateWidget() {
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                com.example.glance.MemoirWidget().updateAll(getApplication())
+                MemoirWidget().updateAll(getApplication())
             } catch (e: Exception) {
                 e.printStackTrace()
             }
@@ -562,7 +590,7 @@ class MemoirViewModel(application: Application) : AndroidViewModel(application) 
         viewModelScope.launch {
             val app = getApplication<Application>()
             onProgress(app.getString(R.string.msg_export_starting_folder, remoteFolder))
-            val res = com.example.utils.SmbHelper.syncMemoirFolderToSmb(
+            val res = SmbHelper.syncMemoirFolderToSmb(
                 context = app, host = host, shareName = shareName, remoteBaseFolder = remoteFolder,
                 username = username, password = password
             )
@@ -618,7 +646,7 @@ class MemoirViewModel(application: Application) : AndroidViewModel(application) 
             val app = getApplication<Application>()
             onProgress(app.getString(R.string.msg_importing_from, remoteUserFolder))
             val db = MemoirDatabase.getDatabase(app)
-            val res = com.example.utils.SmbHelper.importMemoirFolderFromSmb(
+            val res = SmbHelper.importMemoirFolderFromSmb(
                 context = app, dao = db.memoirDao(), host = host, shareName = shareName,
                 remoteFolder = remoteUserFolder, username = username, password = password
             )
@@ -681,13 +709,13 @@ class MemoirViewModel(application: Application) : AndroidViewModel(application) 
             val app = getApplication<Application>()
             var finalStoryMediaPath = mediaPath
             if (!mediaPath.startsWith("gradient_")) {
-                val storyFolder = FileUtils.createStoryFolder(app, createdAt, java.util.UUID.randomUUID().toString().take(6))
+                val storyFolder = FileUtils.createStoryFolder(app, createdAt, UUID.randomUUID().toString().take(6))
                 val isVideo = FileUtils.isVideoPath(mediaPath)
                 val ext = if (isVideo) ".mp4" else ".jpg"
-                val destFile = java.io.File(storyFolder, "media$ext")
+                val destFile = File(storyFolder, "media$ext")
                 try {
                     if (mediaPath.startsWith("content://")) {
-                        app.contentResolver.openInputStream(mediaPath.toUri())?.use { input -> java.io.FileOutputStream(destFile).use { output -> input.copyTo(output) } }
+                        app.contentResolver.openInputStream(mediaPath.toUri())?.use { input -> FileOutputStream(destFile).use { output -> input.copyTo(output) } }
                     } else {
                         val srcFile = FileUtils.getLocalFile(app, mediaPath)
                         if (srcFile.exists() && srcFile.absolutePath != destFile.absolutePath) {
@@ -722,10 +750,26 @@ class MemoirViewModel(application: Application) : AndroidViewModel(application) 
     ) {
         viewModelScope.launch {
             val app = getApplication<Application>()
-            val res = com.example.utils.SmbHelper.testConnection(app, host, shareName, username, password, domain)
+            val res = SmbHelper.testConnection(app, host, shareName, username, password, domain)
             res.fold(
                 onSuccess = { onResult(true, app.getString(R.string.msg_test_conn_success)) },
                 onFailure = { onResult(false, it.localizedMessage ?: app.getString(R.string.msg_test_conn_failed)) }
+            )
+        }
+    }
+
+    fun listSmbShares(
+        host: String,
+        username: String = "",
+        password: String = "",
+        domain: String = "",
+        onResult: (List<String>?, String?) -> Unit
+    ) {
+        viewModelScope.launch {
+            val res = SmbHelper.listShares(host, username, password, domain)
+            res.fold(
+                onSuccess = { onResult(it, null) },
+                onFailure = { onResult(null, it.localizedMessage) }
             )
         }
     }
@@ -741,7 +785,7 @@ class MemoirViewModel(application: Application) : AndroidViewModel(application) 
         viewModelScope.launch {
             val app = getApplication<Application>()
             onProgress(app.getString(R.string.msg_sync_searching, "${connection.host}/$shareName"))
-            val listRes = com.example.utils.SmbHelper.listMediaFiles(host = connection.host, shareName = shareName, folderPath = connection.folderPath, username = username, password = password, domain = domain)
+            val listRes = SmbHelper.listMediaFiles(host = connection.host, shareName = shareName, folderPath = connection.folderPath, username = username, password = password, domain = domain)
             listRes.fold(
                 onSuccess = { items ->
                     if (items.isEmpty()) {
@@ -752,7 +796,7 @@ class MemoirViewModel(application: Application) : AndroidViewModel(application) 
                     val downloadedPaths = mutableListOf<String>()
                     for ((idx, item) in items.withIndex()) {
                         onProgress(app.getString(R.string.msg_sync_item_progress, idx + 1, items.size, item.name))
-                        val dlRes = com.example.utils.SmbHelper.downloadMediaToCache(app, host = connection.host, shareName = shareName, remoteFilePath = item.fullPath, username = username, password = password, domain = domain)
+                        val dlRes = SmbHelper.downloadMediaToCache(app, host = connection.host, shareName = shareName, remoteFilePath = item.fullPath, username = username, password = password, domain = domain)
                         dlRes.onSuccess { file -> downloadedPaths.add(file.absolutePath) }
                     }
                     if (downloadedPaths.isNotEmpty()) {
@@ -860,8 +904,57 @@ class MemoirViewModel(application: Application) : AndroidViewModel(application) 
         }
     }
 
-    fun deleteStory(story: StoryEntity) {
+    fun cleanExpiredStories() {
         viewModelScope.launch(Dispatchers.IO) {
+            val app = getApplication<Application>()
+            val now = System.currentTimeMillis()
+            val expired = repository.getExpiredStories(now)
+            for (story in expired) {
+                if (!story.mediaPath.startsWith("gradient_")) {
+                    try {
+                        val file = FileUtils.getLocalFile(app, story.mediaPath)
+                        if (file.exists()) {
+                            file.delete()
+                            file.parentFile?.takeIf { it.name.startsWith("story_") }?.deleteRecursively()
+                        }
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                    }
+                }
+            }
+            repository.deleteExpiredStories(now)
+            updateWidget()
+        }
+    }
+
+    fun deleteStory(story: StoryEntity) {
+        val currentStories = _activeStories.value
+        val delIndex = currentStories.indexOfFirst { it.id == story.id }
+        if (delIndex >= 0) {
+            val updated = currentStories.filter { it.id != story.id }
+            if (updated.isEmpty()) {
+                closeStoryViewer()
+            } else {
+                _activeStories.value = updated
+                val nextIndex = if (delIndex < updated.size) delIndex else updated.size - 1
+                _activeStoryIndex.value = nextIndex
+                markStoryAsWatched(updated[nextIndex])
+            }
+        }
+
+        viewModelScope.launch(Dispatchers.IO) {
+            val app = getApplication<Application>()
+            if (!story.mediaPath.startsWith("gradient_")) {
+                try {
+                    val file = FileUtils.getLocalFile(app, story.mediaPath)
+                    if (file.exists()) {
+                        file.delete()
+                        file.parentFile?.takeIf { it.name.startsWith("story_") }?.deleteRecursively()
+                    }
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+            }
             repository.deleteStory(story)
             updateWidget()
         }

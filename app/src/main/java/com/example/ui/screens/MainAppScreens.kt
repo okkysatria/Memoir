@@ -51,6 +51,7 @@ fun MemoirApp(viewModel: MemoirViewModel) {
     val activeStoryIndex by viewModel.activeStoryIndex.collectAsStateWithLifecycle()
     val isAppLocked by viewModel.isAppLocked.collectAsStateWithLifecycle()
     val highlights by viewModel.highlights.collectAsStateWithLifecycle()
+    val profileImagePath by viewModel.profileImagePath.collectAsStateWithLifecycle()
     val screenStack by viewModel.screenStack.collectAsStateWithLifecycle()
     var showPinDialog by remember { mutableStateOf(false) }
     var pinInput by remember { mutableStateOf("") }
@@ -275,7 +276,6 @@ fun MemoirApp(viewModel: MemoirViewModel) {
                     onClose = { viewModel.closeStoryViewer() },
                     onDeleteStory = { story ->
                         viewModel.deleteStory(story)
-                        viewModel.nextStory()
                     },
                     highlights = highlights,
                     onAddToHighlight = { story, highlightId ->
@@ -311,7 +311,8 @@ fun MemoirApp(viewModel: MemoirViewModel) {
                         showStoryCreator = false
                         val msg = context.getString(R.string.msg_story_published)
                         Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
-                    }
+                    },
+                    profileImagePath = profileImagePath
                 )
             }
         }

@@ -1,6 +1,7 @@
 package com.example.ui.screens
 
 import android.widget.Toast
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -21,6 +22,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
@@ -34,6 +36,7 @@ import com.example.ui.viewmodel.MemoirViewModel
 import com.example.ui.viewmodel.Screen
 import androidx.compose.ui.res.stringResource
 import com.example.R
+import com.example.utils.FileUtils
 
 @Composable
 fun AlbumDetailScreen(albumId: Long, viewModel: MemoirViewModel) {
@@ -48,13 +51,15 @@ fun AlbumDetailScreen(albumId: Long, viewModel: MemoirViewModel) {
         "gradient_sunset", "gradient_blue", "gradient_orange", "gradient_nature", 
         "gradient_temple", "gradient_purple", "gradient_slate"
     )
+
     album?.let { currentAlbum ->
         Scaffold(
             floatingActionButton = {
                 FloatingActionButton(
                     onClick = { showAddMediaDialog = true },
                     containerColor = MaterialTheme.colorScheme.primary,
-                    contentColor = Color.White
+                    contentColor = Color.White,
+                    shape = RoundedCornerShape(16.dp)
                 ) {
                     Icon(imageVector = Icons.Default.Add, contentDescription = stringResource(R.string.btn_add_memory))
                 }
@@ -63,6 +68,7 @@ fun AlbumDetailScreen(albumId: Long, viewModel: MemoirViewModel) {
             Column(
                 modifier = Modifier
                     .fillMaxSize()
+                    .background(MaterialTheme.colorScheme.background)
                     .padding(paddingValues)
             ) {
                 Surface(
@@ -72,17 +78,22 @@ fun AlbumDetailScreen(albumId: Long, viewModel: MemoirViewModel) {
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(horizontal = 8.dp, vertical = 8.dp),
+                            .padding(horizontal = 8.dp, vertical = 10.dp),
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
-                        IconButton(onClick = { viewModel.navigateBack() }) {
+                        IconButton(
+                            onClick = { viewModel.navigateBack() },
+                            modifier = Modifier.size(38.dp)
+                        ) {
                             Icon(
                                 imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                                 contentDescription = stringResource(R.string.btn_back),
-                                tint = MaterialTheme.colorScheme.onSurface
+                                tint = MaterialTheme.colorScheme.onSurface,
+                                modifier = Modifier.size(22.dp)
                             )
                         }
+                        
                         Text(
                             text = currentAlbum.name,
                             fontSize = 18.sp,
@@ -93,6 +104,7 @@ fun AlbumDetailScreen(albumId: Long, viewModel: MemoirViewModel) {
                             modifier = Modifier.weight(1f).padding(horizontal = 8.dp),
                             textAlign = TextAlign.Center
                         )
+                        
                         IconButton(
                             onClick = {
                                 viewModel.deleteAlbum(currentAlbum)
@@ -100,20 +112,22 @@ fun AlbumDetailScreen(albumId: Long, viewModel: MemoirViewModel) {
                                 val msg = context.getString(R.string.msg_album_deleted, currentAlbum.name)
                                 Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
                             },
-                            modifier = Modifier.testTag("delete_album_button")
+                            modifier = Modifier.size(38.dp).testTag("delete_album_button")
                         ) {
                             Icon(
                                 imageVector = Icons.Default.Delete,
                                 contentDescription = stringResource(R.string.btn_delete_album),
-                                tint = MaterialTheme.colorScheme.error
+                                tint = MaterialTheme.colorScheme.error,
+                                modifier = Modifier.size(22.dp)
                             )
                         }
                     }
                 }
+
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 16.dp, vertical = 6.dp)
+                        .padding(horizontal = 16.dp, vertical = 10.dp)
                         .background(
                             color = when (currentAlbum.sourceType) {
                                 "SMB" -> Color(0xFFE8F5E9)
@@ -185,6 +199,7 @@ fun AlbumDetailScreen(albumId: Long, viewModel: MemoirViewModel) {
                         }
                     }
                 }
+                
                 if (items.isEmpty()) {
                     Column(
                         modifier = Modifier
@@ -220,8 +235,7 @@ fun AlbumDetailScreen(albumId: Long, viewModel: MemoirViewModel) {
                         columns = GridCells.Fixed(3),
                         modifier = Modifier
                             .weight(1f)
-                            .fillMaxWidth()
-                            .padding(top = 8.dp),
+                            .fillMaxWidth(),
                         verticalArrangement = Arrangement.spacedBy(2.dp),
                         horizontalArrangement = Arrangement.spacedBy(2.dp)
                     ) {
@@ -236,7 +250,7 @@ fun AlbumDetailScreen(albumId: Long, viewModel: MemoirViewModel) {
                                     allowManualPlay = false,
                                     modifier = Modifier.fillMaxSize()
                                 )
-                                if (com.example.utils.FileUtils.isVideoPath(mediaItem.mediaPath)) {
+                                if (FileUtils.isVideoPath(mediaItem.mediaPath)) {
                                     Box(
                                         modifier = Modifier
                                             .align(Alignment.TopStart)
@@ -286,135 +300,124 @@ fun AlbumDetailScreen(albumId: Long, viewModel: MemoirViewModel) {
     if (showAddMediaDialog) {
         AlertDialog(
             onDismissRequest = { showAddMediaDialog = false },
-            title = { Text(stringResource(R.string.title_add_to_album), fontWeight = FontWeight.Bold, fontSize = 16.sp) },
+            title = { 
+                Text(
+                    stringResource(R.string.title_add_to_album), 
+                    style = MaterialTheme.typography.headlineSmall,
+                    fontWeight = FontWeight.Bold
+                ) 
+            },
             text = {
-                Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.spacedBy(4.dp)
-                    ) {
-                        listOf("feed" to stringResource(R.string.tab_posts), "story" to stringResource(R.string.tab_stories), "preset" to stringResource(R.string.tab_gradients)).forEach { (tabKey, tabLabel) ->
-                            val isSel = selectedTab == tabKey
-                            Button(
-                                onClick = { selectedTab = tabKey },
-                                colors = ButtonDefaults.buttonColors(
-                                    containerColor = if (isSel) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surfaceVariant,
-                                    contentColor = if (isSel) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurfaceVariant
-                                ),
-                                contentPadding = PaddingValues(horizontal = 8.dp, vertical = 4.dp),
-                                modifier = Modifier.weight(1f).height(32.dp)
-                            ) {
-                                Text(tabLabel, fontSize = 10.sp, fontWeight = FontWeight.Bold)
+                Column(
+                    verticalArrangement = Arrangement.spacedBy(16.dp),
+                    modifier = Modifier.fillMaxWidth().padding(top = 8.dp)
+                ) {
+                    val tabs = listOf(
+                        "feed" to stringResource(R.string.tab_posts), 
+                        "story" to stringResource(R.string.tab_stories), 
+                        "preset" to stringResource(R.string.tab_gradients)
+                    )
+                    
+                    val currentTabIndex = tabs.indexOfFirst { it.first == selectedTab }
+                    
+                    TabRow(
+                        selectedTabIndex = currentTabIndex,
+                        containerColor = Color.Transparent,
+                        divider = {},
+                        indicator = { tabPositions ->
+                            if (currentTabIndex < tabPositions.size) {
+                                TabRowDefaults.SecondaryIndicator(
+                                    modifier = Modifier.tabIndicatorOffset(tabPositions[currentTabIndex]),
+                                    color = MaterialTheme.colorScheme.primary
+                                )
                             }
                         }
+                    ) {
+                        tabs.forEach { (tabKey, tabLabel) ->
+                            val isSel = selectedTab == tabKey
+                            Tab(
+                                selected = isSel,
+                                onClick = { selectedTab = tabKey },
+                                text = { 
+                                    Text(
+                                        tabLabel, 
+                                        style = MaterialTheme.typography.labelLarge,
+                                        fontWeight = if (isSel) FontWeight.Bold else FontWeight.Medium
+                                    ) 
+                                }
+                            )
+                        }
                     }
-                    Box(modifier = Modifier.fillMaxWidth().height(140.dp)) {
-                        when (selectedTab) {
-                            "feed" -> {
-                                val allFeedMedias = posts.flatMap { it.mediaPaths }.distinct()
-                                if (allFeedMedias.isEmpty()) {
-                                    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                                        Text(stringResource(R.string.msg_no_feed_media), fontSize = 11.sp, color = Color.Gray)
-                                    }
-                                } else {
-                                    LazyRow(
-                                        horizontalArrangement = Arrangement.spacedBy(8.dp),
-                                        modifier = Modifier.fillMaxSize()
+
+                    Box(modifier = Modifier.fillMaxWidth().height(180.dp)) {
+                        val mediaPaths = when (selectedTab) {
+                            "feed" -> posts.flatMap { it.mediaPaths }.distinct()
+                            "story" -> stories.map { it.mediaPath }.distinct()
+                            "preset" -> presetGradients
+                            else -> emptyList()
+                        }
+                        
+                        if (mediaPaths.isEmpty()) {
+                            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                                Text(
+                                    text = when (selectedTab) {
+                                        "feed" -> stringResource(R.string.msg_no_feed_media)
+                                        "story" -> stringResource(R.string.msg_no_story_media)
+                                        else -> "No presets available"
+                                    },
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                                )
+                            }
+                        } else {
+                            LazyRow(
+                                horizontalArrangement = Arrangement.spacedBy(12.dp),
+                                modifier = Modifier.fillMaxSize(),
+                                contentPadding = PaddingValues(vertical = 4.dp)
+                            ) {
+                                items(mediaPaths) { mediaPath ->
+                                    Surface(
+                                        modifier = Modifier
+                                            .size(160.dp, 160.dp)
+                                            .clip(RoundedCornerShape(16.dp))
+                                            .clickable {
+                                                viewModel.addItemsToAlbum(
+                                                    albumId = albumId,
+                                                    mediaPaths = listOf(mediaPath),
+                                                    sourceType = album?.sourceType ?: "LOCAL"
+                                                )
+                                                val msgRes = when (selectedTab) {
+                                                    "feed" -> R.string.msg_photo_added_album
+                                                    "story" -> R.string.msg_story_added_album
+                                                    else -> R.string.msg_gradient_added_album
+                                                }
+                                                Toast.makeText(context, context.getString(msgRes), Toast.LENGTH_SHORT).show()
+                                            },
+                                        shape = RoundedCornerShape(16.dp),
+                                        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant)
                                     ) {
-                                        items(allFeedMedias) { mediaPath ->
+                                        Box {
+                                            MediaView(path = mediaPath, modifier = Modifier.fillMaxSize())
                                             Box(
                                                 modifier = Modifier
-                                                    .size(90.dp)
-                                                    .clip(RoundedCornerShape(8.dp))
-                                                    .border(1.dp, Color.LightGray.copy(alpha = 0.5f), RoundedCornerShape(8.dp))
-                                                    .clickable {
-                                                        viewModel.addItemsToAlbum(
-                                                            albumId = albumId,
-                                                            mediaPaths = listOf(mediaPath),
-                                                            sourceType = album?.sourceType ?: "LOCAL"
-                                                        )
-                                                        val msg = context.getString(R.string.msg_photo_added_album)
-                                                        Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
-                                                    }
-                                            ) {
-                                                MediaView(path = mediaPath, modifier = Modifier.fillMaxSize())
-                                                Box(
-                                                    modifier = Modifier.fillMaxSize().background(Color.Black.copy(alpha = 0.15f)),
-                                                    contentAlignment = Alignment.Center
-                                                ) {
-                                                    Icon(imageVector = Icons.Default.AddCircle, contentDescription = null, tint = Color.White, modifier = Modifier.size(24.dp))
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                            "story" -> {
-                                val allStoryMedias = stories.map { it.mediaPath }.distinct()
-                                if (allStoryMedias.isEmpty()) {
-                                    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                                        Text(stringResource(R.string.msg_no_story_media), fontSize = 11.sp, color = Color.Gray)
-                                    }
-                                } else {
-                                    LazyRow(
-                                        horizontalArrangement = Arrangement.spacedBy(8.dp),
-                                        modifier = Modifier.fillMaxSize()
-                                    ) {
-                                        items(allStoryMedias) { mediaPath ->
-                                            Box(
-                                                modifier = Modifier
-                                                    .size(90.dp)
-                                                    .clip(RoundedCornerShape(8.dp))
-                                                    .border(1.dp, Color.LightGray.copy(alpha = 0.5f), RoundedCornerShape(8.dp))
-                                                    .clickable {
-                                                        viewModel.addItemsToAlbum(
-                                                            albumId = albumId,
-                                                            mediaPaths = listOf(mediaPath),
-                                                            sourceType = album?.sourceType ?: "LOCAL"
-                                                        )
-                                                        val msg = context.getString(R.string.msg_story_added_album)
-                                                        Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
-                                                    }
-                                            ) {
-                                                MediaView(path = mediaPath, modifier = Modifier.fillMaxSize())
-                                                Box(
-                                                    modifier = Modifier.fillMaxSize().background(Color.Black.copy(alpha = 0.15f)),
-                                                    contentAlignment = Alignment.Center
-                                                ) {
-                                                    Icon(imageVector = Icons.Default.AddCircle, contentDescription = null, tint = Color.White, modifier = Modifier.size(24.dp))
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                            "preset" -> {
-                                LazyRow(
-                                    horizontalArrangement = Arrangement.spacedBy(8.dp),
-                                    modifier = Modifier.fillMaxSize()
-                                ) {
-                                    items(presetGradients) { path ->
-                                        Box(
-                                            modifier = Modifier
-                                                .size(90.dp)
-                                                .clip(RoundedCornerShape(8.dp))
-                                                .border(1.dp, Color.LightGray.copy(alpha = 0.5f), RoundedCornerShape(8.dp))
-                                                .clickable {
-                                                    viewModel.addItemsToAlbum(
-                                                        albumId = albumId,
-                                                        mediaPaths = listOf(path),
-                                                        sourceType = album?.sourceType ?: "LOCAL"
-                                                    )
-                                                    val msg = context.getString(R.string.msg_gradient_added_album)
-                                                    Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
-                                                }
-                                        ) {
-                                            MediaView(path = path, modifier = Modifier.fillMaxSize())
-                                            Box(
-                                                modifier = Modifier.fillMaxSize().background(Color.Black.copy(alpha = 0.15f)),
+                                                    .fillMaxSize()
+                                                    .background(Color.Black.copy(alpha = 0.2f)),
                                                 contentAlignment = Alignment.Center
                                             ) {
-                                                Icon(imageVector = Icons.Default.AddCircle, contentDescription = null, tint = Color.White, modifier = Modifier.size(24.dp))
+                                                Surface(
+                                                    color = Color.White.copy(alpha = 0.9f),
+                                                    shape = CircleShape,
+                                                    modifier = Modifier.size(36.dp)
+                                                ) {
+                                                    Box(contentAlignment = Alignment.Center) {
+                                                        Icon(
+                                                            imageVector = Icons.Default.Add,
+                                                            contentDescription = null,
+                                                            tint = Color.Black,
+                                                            modifier = Modifier.size(24.dp)
+                                                        )
+                                                    }
+                                                }
                                             }
                                         }
                                     }
@@ -424,16 +427,22 @@ fun AlbumDetailScreen(albumId: Long, viewModel: MemoirViewModel) {
                     }
                     Text(
                         text = stringResource(R.string.desc_tap_to_add),
-                        fontSize = 10.sp,
-                        color = Color.Gray
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.fillMaxWidth()
                     )
                 }
             },
             confirmButton = {
-                Button(onClick = { showAddMediaDialog = false }) {
+                Button(
+                    onClick = { showAddMediaDialog = false },
+                    shape = RoundedCornerShape(12.dp)
+                ) {
                     Text(stringResource(R.string.btn_done))
                 }
-            }
+            },
+            shape = RoundedCornerShape(28.dp)
         )
     }
 }

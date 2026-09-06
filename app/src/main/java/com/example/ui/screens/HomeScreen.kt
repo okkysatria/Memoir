@@ -51,6 +51,7 @@ fun HomeScreen(viewModel: MemoirViewModel, onAddStoryClick: () -> Unit) {
     val context = LocalContext.current
     val posts by viewModel.homePosts.collectAsStateWithLifecycle()
     val stories by viewModel.homeStories.collectAsStateWithLifecycle()
+    val allStories by viewModel.stories.collectAsStateWithLifecycle()
     var selectedPostForComments by remember { mutableStateOf<com.example.data.database.PostEntity?>(null) }
     var isRefreshing by remember { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
@@ -150,15 +151,17 @@ fun HomeScreen(viewModel: MemoirViewModel, onAddStoryClick: () -> Unit) {
                 item {
                     StoriesTray(
                         stories = stories, 
-                        allStories = stories,
+                        allStories = allStories,
                         onStoryClick = { index ->
                             viewModel.openStoryViewer(stories, index)
                         },
                         onAddStoryClick = onAddStoryClick,
                         onKilasBalikClick = { story ->
-                            val index = stories.indexOf(story)
+                            val index = stories.indexOfFirst { it.id == story.id }
                             if (index >= 0) {
                                 viewModel.openStoryViewer(stories, index)
+                            } else {
+                                viewModel.openStoryViewer(listOf(story), 0)
                             }
                         }
                     )

@@ -50,6 +50,9 @@ interface MemoirDao {
     @Delete
     suspend fun deleteStory(story: StoryEntity)
 
+    @Query("SELECT * FROM stories WHERE expiresAt < :now AND highlightId IS NULL")
+    suspend fun getExpiredStories(now: Long = System.currentTimeMillis()): List<StoryEntity>
+
     @Query("DELETE FROM stories WHERE expiresAt < :now AND highlightId IS NULL")
     suspend fun deleteExpiredStories(now: Long = System.currentTimeMillis())
 

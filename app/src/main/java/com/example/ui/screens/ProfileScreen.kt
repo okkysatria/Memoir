@@ -230,28 +230,47 @@ fun ProfileScreen(viewModel: MemoirViewModel, onAddStoryClick: () -> Unit) {
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(20.dp)
         ) {
+            val activeUserStories = remember(stories) {
+                stories.filter { it.expiresAt > System.currentTimeMillis() }
+            }
+            val hasActiveStories = activeUserStories.isNotEmpty()
+            val hasUnwatchedStories = activeUserStories.any { !it.isWatched }
+
+            val avatarBorder = when {
+                hasUnwatchedStories -> BorderStroke(
+                    2.5.dp,
+                    Brush.linearGradient(
+                        listOf(
+                            Color(0xFF833AB4),
+                            Color(0xFFC13584),
+                            Color(0xFFE1306C),
+                            Color(0xFFFD1D1D),
+                            Color(0xFFF77737),
+                            Color(0xFFFCAF45)
+                        )
+                    )
+                )
+                hasActiveStories -> BorderStroke(
+                    1.5.dp,
+                    MaterialTheme.colorScheme.outline.copy(alpha = 0.45f)
+                )
+                else -> BorderStroke(
+                    1.dp,
+                    MaterialTheme.colorScheme.outline.copy(alpha = 0.2f)
+                )
+            }
+
             Box(
                 modifier = Modifier
                     .size(86.dp)
-                    .border(
-                        BorderStroke(
-                            2.dp,
-                            Brush.linearGradient(
-                                listOf(
-                                    MaterialTheme.colorScheme.primary,
-                                    MaterialTheme.colorScheme.secondary
-                                )
-                            )
-                        ),
-                        CircleShape
-                    )
+                    .border(avatarBorder, CircleShape)
                     .padding(4.dp)
                     .clip(CircleShape)
                     .background(MaterialTheme.colorScheme.surfaceVariant)
                     .clickable {
-                        val activeUserStories = stories.filter { it.expiresAt > System.currentTimeMillis() }
-                        if (activeUserStories.isNotEmpty()) {
-                            viewModel.openStoryViewer(activeUserStories, 0)
+                        if (hasActiveStories) {
+                            val firstUnwatchedIndex = activeUserStories.indexOfFirst { !it.isWatched }.let { if (it >= 0) it else 0 }
+                            viewModel.openStoryViewer(activeUserStories, firstUnwatchedIndex)
                         } else {
                             onAddStoryClick()
                         }

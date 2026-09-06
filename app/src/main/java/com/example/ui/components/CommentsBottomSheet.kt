@@ -20,6 +20,7 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.R
@@ -99,7 +100,7 @@ fun CommentsBottomSheet(
                                     createdAt = post.createdAt
                                 ),
                                 isCaption = true,
-                                onDelete = {} 
+                                onDelete = {}
                             )
                         }
                         item {
@@ -130,7 +131,7 @@ fun CommentsBottomSheet(
                                     text = stringResource(R.string.msg_notes_desc),
                                     fontSize = 12.sp,
                                     color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f),
-                                    textAlign = androidx.compose.ui.text.style.TextAlign.Center
+                                    textAlign = TextAlign.Center
                                 )
                             }
                         }

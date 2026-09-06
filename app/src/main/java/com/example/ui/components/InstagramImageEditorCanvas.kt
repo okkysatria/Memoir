@@ -109,7 +109,7 @@ fun InstagramImageEditorCanvas(
         selectedRatio == "4:5" -> 0.8f
         selectedRatio == "16:9" -> 16f / 9f
         selectedRatio == "9:16" -> 9f / 16f
-        else -> 1f 
+        else -> 1f
     }
 
     LaunchedEffect(scale, rotation, offset, viewportSize, contentFit) {
@@ -235,12 +235,12 @@ fun InstagramImageEditorCanvas(
                             offset = Offset.Zero
                             scale = 1f
                         },
-                        label = { 
+                        label = {
                             Text(
-                                text = if (ratio == "ORIGINAL") stringResource(R.string.label_aspect_original) else ratio, 
-                                fontSize = 10.sp, 
+                                text = if (ratio == "ORIGINAL") stringResource(R.string.label_aspect_original) else ratio,
+                                fontSize = 10.sp,
                                 fontWeight = FontWeight.Bold
-                            ) 
+                            )
                         },
                         colors = FilterChipDefaults.filterChipColors(
                             selectedContainerColor = MaterialTheme.colorScheme.primary,

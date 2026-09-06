@@ -25,7 +25,8 @@ class MemoirRepository(private val memoirDao: MemoirDao) {
     suspend fun insertStory(story: StoryEntity): Long = memoirDao.insertStory(story)
     suspend fun updateStory(story: StoryEntity) = memoirDao.updateStory(story)
     suspend fun deleteStory(story: StoryEntity) = memoirDao.deleteStory(story)
-    suspend fun deleteExpiredStories() = memoirDao.deleteExpiredStories()
+    suspend fun getExpiredStories(now: Long = System.currentTimeMillis()): List<StoryEntity> = memoirDao.getExpiredStories(now)
+    suspend fun deleteExpiredStories(now: Long = System.currentTimeMillis()) = memoirDao.deleteExpiredStories(now)
 
     suspend fun insertAlbum(album: AlbumEntity): Long = memoirDao.insertAlbum(album)
     suspend fun updateAlbum(album: AlbumEntity) = memoirDao.updateAlbum(album)

@@ -190,7 +190,65 @@ fun CameraView(
     }
 }
 
-private fun takePhoto(
+@Composable
+fun CameraViewFinder(
+    modifier: Modifier = Modifier,
+    lensFacing: Int = CameraSelector.LENS_FACING_BACK,
+    flashMode: Int = ImageCapture.FLASH_MODE_OFF,
+    takePhotoTrigger: Int = 0,
+    onImageCaptured: (File) -> Unit
+) {
+    val context = LocalContext.current
+    val lifecycleOwner = androidx.lifecycle.compose.LocalLifecycleOwner.current
+
+    val previewView = remember { PreviewView(context) }
+    val imageCapture = remember { ImageCapture.Builder().setFlashMode(flashMode).build() }
+
+    LaunchedEffect(lensFacing, flashMode) {
+        val cameraProviderFuture = ProcessCameraProvider.getInstance(context)
+        cameraProviderFuture.addListener({
+            val cameraProvider = cameraProviderFuture.get()
+            val preview = Preview.Builder().build().also {
+                it.setSurfaceProvider(previewView.surfaceProvider)
+            }
+            imageCapture.flashMode = flashMode
+
+            val cameraSelector = CameraSelector.Builder()
+                .requireLensFacing(lensFacing)
+                .build()
+
+            try {
+                cameraProvider.unbindAll()
+                cameraProvider.bindToLifecycle(
+                    lifecycleOwner,
+                    cameraSelector,
+                    preview,
+                    imageCapture
+                )
+            } catch (exc: Exception) {
+                Log.e("CameraViewFinder", "Binding kamera gagal", exc)
+            }
+        }, ContextCompat.getMainExecutor(context))
+    }
+
+    LaunchedEffect(takePhotoTrigger) {
+        if (takePhotoTrigger > 0) {
+            takePhoto(
+                context = context,
+                imageCapture = imageCapture,
+                executor = ContextCompat.getMainExecutor(context),
+                onImageCaptured = onImageCaptured
+            )
+        }
+    }
+
+    AndroidView(
+        factory = { previewView },
+        modifier = modifier
+    )
+}
+
+internal fun takePhoto(
     context: Context,
     imageCapture: ImageCapture,
     executor: Executor,

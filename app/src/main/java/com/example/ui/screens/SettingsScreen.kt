@@ -8,6 +8,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
@@ -58,12 +59,42 @@ fun SettingsScreen(viewModel: MemoirViewModel) {
     val username by viewModel.username.collectAsStateWithLifecycle()
     val profileImagePath by viewModel.profileImagePath.collectAsStateWithLifecycle()
     val currentLanguage by viewModel.language.collectAsStateWithLifecycle()
+    val connections by viewModel.connections.collectAsStateWithLifecycle()
 
     var showEditProfileDialog by remember { mutableStateOf(false) }
     var showResetPinDialog by remember { mutableStateOf(false) }
     var resetPinInput by remember { mutableStateOf("") }
     var showClearCacheConfirm by remember { mutableStateOf(false) }
     var isClearingCache by remember { mutableStateOf(false) }
+
+    var isBackingUpToSmb by remember { mutableStateOf(false) }
+    var backupStatusMessage by remember { mutableStateOf<String?>(null) }
+    var showSelectConnectionDialog by remember { mutableStateOf(false) }
+
+    fun startSmbBackup(conn: com.example.data.database.SourceConnectionEntity) {
+        val credParts = conn.credentials.split(":")
+        val u = credParts.getOrNull(0) ?: ""
+        val p = credParts.getOrNull(1) ?: ""
+        val parts = conn.folderPath.split("/").filter { it.isNotBlank() }
+        val share = parts.firstOrNull() ?: ""
+        val remoteFolder = if (parts.size > 1) parts.drop(1).joinToString("/") else ""
+
+        isBackingUpToSmb = true
+        backupStatusMessage = context.getString(R.string.msg_backup_in_progress)
+        viewModel.exportMemoirDataToSmb(
+            host = conn.host,
+            shareName = share,
+            remoteFolder = remoteFolder,
+            username = u,
+            password = p,
+            onProgress = { msg -> backupStatusMessage = msg },
+            onResult = { success, msg ->
+                isBackingUpToSmb = false
+                backupStatusMessage = null
+                Toast.makeText(context, msg, if (success) Toast.LENGTH_SHORT else Toast.LENGTH_LONG).show()
+            }
+        )
+    }
 
     val backupRepo = remember {
         com.example.data.repository.BackupRepository(
@@ -234,17 +265,50 @@ fun SettingsScreen(viewModel: MemoirViewModel) {
             }
 
             SettingsGroup(title = stringResource(R.string.sec_storage)) {
+                val hasSmb = connections.isNotEmpty()
+                val smbSubtitle = if (hasSmb) {
+                    val first = connections.first()
+                    "${first.name} (\\\\${first.host}\\${first.folderPath})"
+                } else {
+                    stringResource(R.string.desc_manage_smb)
+                }
+
                 SettingsActionItem(
-                    title = stringResource(R.string.pref_smb_explorer),
-                    icon = Icons.Default.Explore,
-                    subtitle = stringResource(R.string.pref_smb_explorer_desc),
-                    onClick = { viewModel.navigateTo(Screen.SmbExplorer) }
+                    title = stringResource(R.string.title_manage_nas),
+                    icon = Icons.Default.Dns,
+                    subtitle = smbSubtitle,
+                    statusColor = if (hasSmb) Color(0xFF4CAF50) else MaterialTheme.colorScheme.onSurfaceVariant,
+                    onClick = { viewModel.navigateTo(Screen.ManageConnections) }
                 )
                 SettingsActionItem(
-                    title = stringResource(R.string.pref_manage_smb),
-                    icon = Icons.Default.Dns,
-                    subtitle = stringResource(R.string.desc_manage_smb),
-                    onClick = { viewModel.navigateTo(Screen.ManageConnections) }
+                    title = stringResource(R.string.pref_backup_now),
+                    icon = Icons.Default.CloudUpload,
+                    subtitle = if (isBackingUpToSmb) (backupStatusMessage ?: stringResource(R.string.msg_backup_in_progress)) else stringResource(R.string.desc_backup_now),
+                    statusColor = if (isBackingUpToSmb) MaterialTheme.colorScheme.primary else if (hasSmb) Color(0xFF4CAF50) else MaterialTheme.colorScheme.onSurfaceVariant,
+                    trailingIcon = Icons.Default.PlayArrow,
+                    onClick = {
+                        if (isBackingUpToSmb) return@SettingsActionItem
+                        if (connections.isEmpty()) {
+                            Toast.makeText(context, context.getString(R.string.msg_no_connection_add_first), Toast.LENGTH_LONG).show()
+                            viewModel.navigateTo(Screen.ManageConnections)
+                        } else if (connections.size == 1) {
+                            startSmbBackup(connections.first())
+                        } else {
+                            showSelectConnectionDialog = true
+                        }
+                    }
+                )
+                if (isBackingUpToSmb) {
+                    LinearProgressIndicator(
+                        modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 6.dp),
+                        color = MaterialTheme.colorScheme.primary
+                    )
+                }
+                SettingsActionItem(
+                    title = stringResource(R.string.pref_smb_explorer),
+                    icon = Icons.Default.FolderOpen,
+                    subtitle = stringResource(R.string.pref_smb_explorer_desc),
+                    onClick = { viewModel.navigateTo(Screen.SmbExplorer) }
                 )
                 SettingsActionItem(
                     title = stringResource(R.string.pref_manual_backup),
@@ -392,6 +456,48 @@ fun SettingsScreen(viewModel: MemoirViewModel) {
                 viewModel.updateProfile(name, uname, bio, imagePath)
                 showEditProfileDialog = false
                 Toast.makeText(context, context.getString(R.string.msg_profile_updated), Toast.LENGTH_SHORT).show()
+            }
+        )
+    }
+
+    if (showSelectConnectionDialog) {
+        AlertDialog(
+            onDismissRequest = { showSelectConnectionDialog = false },
+            title = { Text(stringResource(R.string.title_select_nas_connection), fontWeight = FontWeight.Bold) },
+            text = {
+                LazyColumn(verticalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.fillMaxWidth()) {
+                    items(connections) { conn ->
+                        Card(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clickable {
+                                    showSelectConnectionDialog = false
+                                    startSmbBackup(conn)
+                                },
+                            shape = RoundedCornerShape(12.dp),
+                            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f))
+                        ) {
+                            Row(
+                                modifier = Modifier.padding(14.dp),
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.spacedBy(12.dp)
+                            ) {
+                                Icon(Icons.Default.Dns, null, tint = MaterialTheme.colorScheme.primary)
+                                Column(modifier = Modifier.weight(1f)) {
+                                    Text(conn.name, fontWeight = FontWeight.Bold, fontSize = 14.sp)
+                                    Text("\\\\${conn.host}\\${conn.folderPath}", fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                                }
+                                Icon(Icons.Default.CloudUpload, null, tint = MaterialTheme.colorScheme.primary)
+                            }
+                        }
+                    }
+                }
+            },
+            confirmButton = {},
+            dismissButton = {
+                TextButton(onClick = { showSelectConnectionDialog = false }) {
+                    Text(stringResource(R.string.btn_cancel))
+                }
             }
         )
     }

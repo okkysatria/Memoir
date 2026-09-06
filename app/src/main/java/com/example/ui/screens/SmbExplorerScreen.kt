@@ -144,18 +144,12 @@ fun SmbExplorerScreen(viewModel: MemoirViewModel) {
                     val shareName = conn.folderPath.split("/").firstOrNull() ?: ""
                     Card(
                         modifier = Modifier.fillMaxWidth(),
-                        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f))
+                        shape = RoundedCornerShape(16.dp),
+                        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)),
+                        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f))
                     ) {
-                        Column(Modifier.padding(12.dp)) {
-                            val locPath = "\\\\${conn.host}\\$shareName\\${currentPath.replace("/", "\\")}"
-                            Text(
-                                text = stringResource(R.string.label_location_path, locPath),
-                                fontSize = 12.sp,
-                                color = MaterialTheme.colorScheme.primary,
-                                fontWeight = FontWeight.Bold
-                            )
-                            Spacer(Modifier.height(8.dp))
-                            Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+                        Column(Modifier.padding(14.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                            Row(verticalAlignment = Alignment.CenterVertically) {
                                 if (currentPath.isNotBlank()) {
                                     IconButton(
                                         onClick = { 
@@ -165,50 +159,67 @@ fun SmbExplorerScreen(viewModel: MemoirViewModel) {
                                     ) {
                                         Icon(Icons.Default.ArrowUpward, stringResource(R.string.btn_up), tint = MaterialTheme.colorScheme.primary)
                                     }
-                                }
-                                Spacer(Modifier.weight(1f))
-                                val credParts = conn.credentials.split(":")
-                                val user = credParts.getOrNull(0) ?: ""
-                                val pass = credParts.getOrNull(1) ?: ""
-                                Button(
-                                    onClick = {
-                                        viewModel.exportMemoirDataToSmb(
-                                            host = conn.host,
-                                            shareName = shareName,
-                                            remoteFolder = currentPath,
-                                            username = user,
-                                            password = pass,
-                                            onProgress = { syncStatusText = it },
-                                            onResult = { success, msg ->
-                                                syncStatusText = null
-                                                Toast.makeText(context, msg, if (success) Toast.LENGTH_SHORT else Toast.LENGTH_LONG).show()
-                                                loadContent(conn, currentPath)
-                                            }
-                                        )
-                                    },
-                                    enabled = syncStatusText == null,
-                                    shape = RoundedCornerShape(8.dp),
-                                    contentPadding = PaddingValues(horizontal = 12.dp, vertical = 4.dp)
-                                ) {
-                                    Icon(Icons.Default.CloudUpload, null, Modifier.size(16.dp))
                                     Spacer(Modifier.width(6.dp))
-                                    Text(stringResource(R.string.btn_export_here), fontSize = 12.sp, fontWeight = FontWeight.Bold)
                                 }
+                                val locPath = "\\\\${conn.host}\\$shareName\\${currentPath.replace("/", "\\")}"
+                                Text(
+                                    text = locPath,
+                                    fontSize = 13.sp,
+                                    color = MaterialTheme.colorScheme.primary,
+                                    fontWeight = FontWeight.Bold,
+                                    maxLines = 1,
+                                    overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis,
+                                    modifier = Modifier.weight(1f)
+                                )
+                            }
+
+                            val credParts = conn.credentials.split(":")
+                            val user = credParts.getOrNull(0) ?: ""
+                            val pass = credParts.getOrNull(1) ?: ""
+                            Button(
+                                onClick = {
+                                    viewModel.exportMemoirDataToSmb(
+                                        host = conn.host,
+                                        shareName = shareName,
+                                        remoteFolder = currentPath,
+                                        username = user,
+                                        password = pass,
+                                        onProgress = { syncStatusText = it },
+                                        onResult = { success, msg ->
+                                            syncStatusText = null
+                                            Toast.makeText(context, msg, if (success) Toast.LENGTH_SHORT else Toast.LENGTH_LONG).show()
+                                            loadContent(conn, currentPath)
+                                        }
+                                    )
+                                },
+                                enabled = syncStatusText == null,
+                                shape = RoundedCornerShape(12.dp),
+                                modifier = Modifier.fillMaxWidth().height(44.dp)
+                            ) {
+                                Icon(Icons.Default.CloudUpload, null, Modifier.size(18.dp))
+                                Spacer(Modifier.width(8.dp))
+                                Text(stringResource(R.string.btn_export_folder_now), fontSize = 13.sp, fontWeight = FontWeight.Bold)
                             }
                         }
                     }
                 }
-                Spacer(Modifier.height(16.dp))
+                Spacer(Modifier.height(12.dp))
                 syncStatusText?.let {
-                    Surface(
+                    Card(
                         modifier = Modifier.fillMaxWidth().padding(bottom = 12.dp),
-                        color = MaterialTheme.colorScheme.primaryContainer,
-                        shape = RoundedCornerShape(8.dp)
+                        shape = RoundedCornerShape(12.dp),
+                        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer)
                     ) {
-                        Row(Modifier.padding(12.dp), verticalAlignment = Alignment.CenterVertically) {
-                            CircularProgressIndicator(Modifier.size(16.dp), strokeWidth = 2.dp)
-                            Spacer(Modifier.width(12.dp))
-                            Text(it, fontSize = 12.sp, fontWeight = FontWeight.Medium)
+                        Column(Modifier.padding(14.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                CircularProgressIndicator(Modifier.size(18.dp), strokeWidth = 2.dp)
+                                Spacer(Modifier.width(10.dp))
+                                Text(it, fontSize = 12.sp, fontWeight = FontWeight.SemiBold)
+                            }
+                            LinearProgressIndicator(
+                                modifier = Modifier.fillMaxWidth(),
+                                color = MaterialTheme.colorScheme.primary
+                            )
                         }
                     }
                 }

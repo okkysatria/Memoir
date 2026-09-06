@@ -154,14 +154,23 @@ fun StoriesTray(
             items = stories,
             key = { _, story -> story.id }
         ) { index, story ->
-            val ringBrush = if (story.isWatched) {
-                Brush.linearGradient(listOf(Color.LightGray.copy(alpha = 0.6f), Color.LightGray.copy(alpha = 0.4f)))
+            val ringStroke = if (story.isWatched) {
+                BorderStroke(
+                    width = 1.5.dp,
+                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.35f)
+                )
             } else {
-                Brush.linearGradient(
-                    listOf(
-                        Color(0xFF833AB4),
-                        Color(0xFFFD1D1D),
-                        Color(0xFFFCB045)
+                BorderStroke(
+                    width = 2.5.dp,
+                    brush = Brush.linearGradient(
+                        listOf(
+                            Color(0xFF833AB4),
+                            Color(0xFFC13584),
+                            Color(0xFFE1306C),
+                            Color(0xFFFD1D1D),
+                            Color(0xFFF77737),
+                            Color(0xFFFCAF45)
+                        )
                     )
                 )
             }
@@ -173,11 +182,8 @@ fun StoriesTray(
                 Box(
                     modifier = Modifier
                         .size(66.dp)
-                        .border(
-                            BorderStroke(if (story.isWatched) 1.5.dp else 2.5.dp, ringBrush), 
-                            CircleShape
-                        )
-                        .padding(4.dp)
+                        .border(ringStroke, CircleShape)
+                        .padding(3.5.dp)
                 ) {
                     Box(
                         modifier = Modifier
@@ -194,7 +200,7 @@ fun StoriesTray(
                     text = run {
                         val cap = story.caption
                         if (!cap.isNullOrBlank()) {
-                            val maxChars = 14
+                            val maxChars = 12
                             if (cap.length > maxChars) cap.take(maxChars) + "…" else cap
                         } else {
                             val currentLocale = context.resources.configuration.locales[0]
@@ -203,7 +209,11 @@ fun StoriesTray(
                         }
                     },
                     fontSize = 11.sp,
-                    color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.8f),
+                    fontWeight = if (story.isWatched) FontWeight.Normal else FontWeight.Medium,
+                    color = if (story.isWatched)
+                        MaterialTheme.colorScheme.onBackground.copy(alpha = 0.55f)
+                    else
+                        MaterialTheme.colorScheme.onBackground.copy(alpha = 0.95f),
                     maxLines = 1
                 )
             }

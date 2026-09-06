@@ -53,6 +53,13 @@ android {
     buildConfig = true
   }
   testOptions { unitTests { isIncludeAndroidResources = true } }
+  packaging {
+    resources {
+      excludes += "/META-INF/{AL2.0,LGPL2.1}"
+      excludes += "/META-INF/LICENSE.md"
+      excludes += "/META-INF/NOTICE.md"
+    }
+  }
 }
 
 // Configure the Secrets Gradle Plugin to use .env and .env.example files
@@ -89,6 +96,9 @@ dependencies {
   implementation(libs.androidx.compose.ui.graphics)
   implementation(libs.androidx.compose.ui.tooling.preview)
   implementation(libs.smbj)
+  implementation(libs.jcifs)
+  implementation(libs.bcprov)
+  implementation(libs.bcpkix)
   implementation(libs.androidx.biometric)
   implementation(libs.androidx.glance.appwidget)
   implementation(libs.androidx.glance.material3)
